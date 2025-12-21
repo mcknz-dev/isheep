@@ -1,5 +1,5 @@
 export const SITE_CONFIG = {
     name: "iSheep",
-    apiBase: "http://localhost:8787",
+    apiBase: "https://isheep.onrender.com",
     categories: ["All", "Today", "Explore", "Read Later"]
 };
