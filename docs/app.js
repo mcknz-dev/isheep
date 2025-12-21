@@ -303,6 +303,8 @@ function renderCard(a) {
     summary.textContent = (a.summary || "").slice(0, 220);
     card.appendChild(summary);
 
+
+
     return card;
 }
 
