@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iSheep</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="../assets/homepage/favicon.png">
+    <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+<div class="shell">
+
+    <!-- NAV BAR -->
+    <div class="nav-pill">
+        <div class="brand">
+            <span class="site-name">iSheep</span>
+            <img src="/frontend/assets/homepage/isheep2.png" class="logo-icon">
+        </div>
+
+        <nav class="tabs" id="tabs"></nav>
+
+        <div class="user">
+            <button class="icon-btn" id="openSettings" aria-label="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="news-grid" id="newsGrid"></div>
+        <div class="status" id="status"></div>
+    </main>
+
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop hidden" id="modalBackdrop">
+    <div class="modal">
+
+        <div class="modal-header">
+            <h3>Settings</h3>
+            <button id="closeSettings">×</button>
+        </div>
+
+        <!-- SETTINGS TABS -->
+        <div class="settings-tabs">
+            <button class="settings-tab active" data-tab="feeds">Feeds</button>
+            <button class="settings-tab" data-tab="appearance">Appearance</button>
+        </div>
+
+        <!-- FEEDS PANEL -->
+        <div class="settings-panel active" id="feedsPanel">
+            <p class="muted">Choose which sources you want included.</p>
+            <div id="feedList"></div>
+        </div>
+
+        <!-- APPEARANCE PANEL -->
+        <div class="settings-panel" id="appearancePanel">
+            <div class="appearance-row">
+                <label>Theme</label>
+                <select id="themeSelect">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+
+            <div class="appearance-row">
+                <label>Border color</label>
+                <input type="color" id="borderColorPicker">
+            </div>
+
+            <div class="appearance-row">
+                <label>Cards per row</label>
+                <select id="columnSelect">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- MODAL ACTIONS -->
+        <div class="modal-actions">
+            <button id="selectAll" class="btn">Select all</button>
+            <button id="selectNone" class="btn">Select none</button>
+            <button id="saveFeeds" class="btn primary">Save</button>
+        </div>
+
+    </div>
+</div>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
