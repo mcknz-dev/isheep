@@ -1,5 +1,4 @@
 import { SITE_CONFIG } from "./config.js";
-import { DEFAULT_ENABLED_FEEDS } from "./feeds.js";
 
 /* ---------- HELPERS ---------- */
 const $ = (sel) => document.querySelector(sel);
@@ -17,6 +16,7 @@ function isToday(dateString) {
     );
 }
 
+/* ---------- APPEARANCE ---------- */
 function loadAppearance(){
     try {
         return JSON.parse(localStorage.getItem("appearance")) || {
@@ -79,35 +79,33 @@ const selectNoneBtn = $("#selectNone");
 /* ---------- STATE ---------- */
 let activeCategory = "All";
 let allFeeds = [];
-let enabledFeeds = loadEnabledFeeds();
+let enabledFeeds = [];
 let feedChecks = new Map();
 
 /* ---------- INIT ---------- */
 document.title = SITE_CONFIG.name;
-document.querySelector(".site-name").textContent = SITE_CONFIG.name;
+$(".site-name").textContent = SITE_CONFIG.name;
 
 renderTabs();
 wireModal();
+applyAppearance();
+
 await loadFeedsFromServer();
+enabledFeeds = loadEnabledFeeds();
 await loadAndRenderNews();
 
-const settingsTabs = document.querySelectorAll(".settings-tab");
-const panels = {
-    feeds: document.getElementById("feedsPanel"),
-    appearance: document.getElementById("appearancePanel")
-};
-
-settingsTabs.forEach(tab => {
+/* ---------- SETTINGS TABS ---------- */
+document.querySelectorAll(".settings-tab").forEach(tab => {
     tab.addEventListener("click", () => {
-        settingsTabs.forEach(t => t.classList.remove("active"));
-        Object.values(panels).forEach(p => p.classList.remove("active"));
+        document.querySelectorAll(".settings-tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".settings-panel").forEach(p => p.classList.remove("active"));
 
         tab.classList.add("active");
-        panels[tab.dataset.tab].classList.add("active");
+        document.getElementById(tab.dataset.tab + "Panel").classList.add("active");
     });
 });
 
-/* ---------- TABS ---------- */
+/* ---------- TOP TABS ---------- */
 function renderTabs() {
     tabsEl.innerHTML = "";
 
@@ -145,47 +143,14 @@ function wireModal() {
     });
 
     saveFeedsBtn?.addEventListener("click", async () => {
-        const selected = [];
+        enabledFeeds = [];
         feedChecks.forEach((cb, id) => {
-            if (cb.checked) selected.push(id);
+            if (cb.checked) enabledFeeds.push(id);
         });
 
-        enabledFeeds = selected.length ? selected : [];
-        saveEnabledFeeds(enabledFeeds);
+        localStorage.setItem("enabledFeeds", JSON.stringify(enabledFeeds));
         closeModal();
         await loadAndRenderNews();
-    });
-}
-const appearance = loadAppearance();
-
-const themeSelect = document.getElementById("themeSelect");
-const borderPicker = document.getElementById("borderColorPicker");
-const columnSelect = document.getElementById("columnSelect");
-
-if (themeSelect) {
-    themeSelect.value = appearance.theme;
-    themeSelect.addEventListener("change", () => {
-        appearance.theme = themeSelect.value;
-        saveAppearance(appearance);
-        applyAppearance();
-    });
-}
-
-if (borderPicker) {
-    borderPicker.value = appearance.borderColor;
-    borderPicker.addEventListener("input", () => {
-        appearance.borderColor = borderPicker.value;
-        saveAppearance(appearance);
-        applyAppearance();
-    });
-}
-
-if (columnSelect) {
-    columnSelect.value = appearance.columns;
-    columnSelect.addEventListener("change", () => {
-        appearance.columns = Number(columnSelect.value);
-        saveAppearance(appearance);
-        applyAppearance();
     });
 }
 
@@ -202,16 +167,19 @@ function closeModal() {
 function loadEnabledFeeds() {
     try {
         const raw = localStorage.getItem("enabledFeeds");
-        if (!raw) return [...DEFAULT_ENABLED_FEEDS];
-        const ids = JSON.parse(raw);
-        return Array.isArray(ids) && ids.length ? ids : [...DEFAULT_ENABLED_FEEDS];
-    } catch {
-        return [...DEFAULT_ENABLED_FEEDS];
-    }
-}
+        if (raw) {
+            const ids = JSON.parse(raw);
+            if (Array.isArray(ids) && ids.length) return ids;
+        }
 
-function saveEnabledFeeds(ids) {
-    localStorage.setItem("enabledFeeds", JSON.stringify(ids));
+        // FIRST VISIT → enable ALL feeds
+        const all = allFeeds.map(f => f.id);
+        localStorage.setItem("enabledFeeds", JSON.stringify(all));
+        return all;
+
+    } catch {
+        return allFeeds.map(f => f.id);
+    }
 }
 
 async function loadFeedsFromServer() {
@@ -257,51 +225,31 @@ async function loadAndRenderNews() {
     gridEl.innerHTML = "";
     statusEl.textContent = "Loading…";
 
-    /* ---------- READ LATER ---------- */
     if (activeCategory === "Read Later") {
         const saved = loadReadLater();
-
-        if (saved.length === 0) {
+        if (!saved.length) {
             statusEl.textContent = "No saved stories yet.";
             return;
         }
-
         statusEl.textContent = `${saved.length} saved stories`;
         saved.forEach(a => gridEl.appendChild(renderCard(a)));
         return;
     }
 
-    const feedsParam = enabledFeeds.length ? enabledFeeds.join(",") : "";
-
     const url = new URL(`${SITE_CONFIG.apiBase}/api/news`);
-    if (feedsParam) url.searchParams.set("feeds", feedsParam);
+    url.searchParams.set("feeds", enabledFeeds.join(","));
     url.searchParams.set("limit", "60");
 
-    const res = await fetch(url.toString());
-    let articles = await res.json();
+    let articles = await (await fetch(url)).json();
 
-    if (!Array.isArray(articles)) {
-        statusEl.textContent = "Failed to load news.";
-        return;
-    }
-
-    /* ---------- TODAY ---------- */
     if (activeCategory === "Today") {
         articles = articles.filter(a =>
-            isToday(a.published || a.isoDate || a.date || a.pubDate)
+            isToday(a.published || a.isoDate || a.pubDate)
         );
     }
 
-    /* ---------- EXPLORE (placeholder) ---------- */
-    if (activeCategory === "Explore") {
-        articles = articles.filter(a => !a.isApple);
-    }
-
-    if (articles.length === 0) {
-        statusEl.textContent =
-            activeCategory === "Today"
-                ? "No stories published today yet."
-                : "No articles found.";
+    if (!articles.length) {
+        statusEl.textContent = "No articles found.";
         return;
     }
 
@@ -314,105 +262,62 @@ function renderCard(a) {
     const card = document.createElement("div");
     card.className = "card";
 
-    /* Save button */
     const saveBtn = document.createElement("button");
     saveBtn.className = "save-btn";
     saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
 
-    saveBtn.addEventListener("click", (e) => {
-        e.preventDefault();
+    saveBtn.onclick = (e) => {
         e.stopPropagation();
-
-        if (isSaved(a.link)) {
-            removeFromReadLater(a.link);
-            saveBtn.textContent = "☆";
-        } else {
-            saveToReadLater(a);
-            saveBtn.textContent = "★";
-        }
-    });
+        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
+        saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
+    };
 
     card.appendChild(saveBtn);
 
-    /* Source */
     const source = document.createElement("div");
     source.className = "badge";
     source.textContent = a.source || "Source";
     card.appendChild(source);
 
-    /* Image */
     if (a.image) {
         const imgWrap = document.createElement("div");
         imgWrap.className = "card-image";
-
         const img = document.createElement("img");
         img.src = a.image;
-        img.alt = a.title || "Article image";
         img.loading = "lazy";
-
         imgWrap.appendChild(img);
         card.appendChild(imgWrap);
     }
 
-    /* Title */
     const title = document.createElement("h3");
     title.className = "title";
-
     const link = document.createElement("a");
-    link.href = a.link || "#";
+    link.href = a.link;
     link.target = "_blank";
-    link.rel = "noopener noreferrer";
     link.textContent = a.title || "Untitled";
-
     title.appendChild(link);
     card.appendChild(title);
 
-    /* Summary */
     const summary = document.createElement("p");
     summary.className = "summary";
     summary.textContent = (a.summary || "").slice(0, 220);
     card.appendChild(summary);
 
-    /* Meta */
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    meta.textContent = (a.categories || []).join(", ");
-    card.appendChild(meta);
-
     return card;
 }
 
+/* ---------- APPLY APPEARANCE ---------- */
 function applyAppearance(){
-    const appearance = loadAppearance();
-    const root = document.documentElement;
+    const a = loadAppearance();
+    const r = document.documentElement;
 
-    /* Theme */
-    if (appearance.theme === "dark") {
-        root.style.setProperty("--bg", "#111");
-        root.style.setProperty("--card", "#1a1a1a");
-        root.style.setProperty("--text", "#f5f5f5");
-        root.style.setProperty("--muted", "#aaa");
-    } else if (appearance.theme === "light") {
-        root.style.setProperty("--bg", "#f6f6f6");
-        root.style.setProperty("--card", "#ffffff");
-        root.style.setProperty("--text", "#111");
-        root.style.setProperty("--muted", "#6b6b6b");
-    } else {
-        // system
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            root.style.setProperty("--bg", "#111");
-            root.style.setProperty("--card", "#1a1a1a");
-            root.style.setProperty("--text", "#f5f5f5");
-            root.style.setProperty("--muted", "#aaa");
-        }
+    if (a.theme === "dark") {
+        r.style.setProperty("--bg", "#111");
+        r.style.setProperty("--card", "#1a1a1a");
+        r.style.setProperty("--text", "#f5f5f5");
+        r.style.setProperty("--muted", "#aaa");
     }
 
-    /* Border color */
-    root.style.setProperty("--border", appearance.borderColor);
-
-    /* Grid columns */
-    document.documentElement.style.setProperty(
-        "--grid-columns",
-        appearance.columns
-    );
+    r.style.setProperty("--border", a.borderColor);
+    r.style.setProperty("--grid-columns", a.columns);
 }
