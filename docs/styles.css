@@ -373,71 +373,148 @@ body {
     border-bottom: 1px solid #eee;
 }
 
-/* ---------- RESPONSIVE ---------- */
+/* ======================================================
+   MOBILE STYLES ONLY — iSheep
+   ====================================================== */
+
 @media (max-width: 900px) {
+
+    /* ---------- LAYOUT ---------- */
+    body {
+        padding: 16px;
+    }
+
+    .shell {
+        max-width: 100%;
+    }
+
+    /* ---------- NAV BAR ---------- */
+    .nav-pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Brand */
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .site-name {
+        font-size: 48px;
+        line-height: 1;
+    }
+
+    .logo-icon {
+        width: 45px;
+
+    }
+
+    /* Hide desktop controls */
+    .tabs,
+    .user {
+        display: none !important;
+    }
+
+    /* ---------- HAMBURGER ---------- */
+    .hamburger-btn {
+        display: block;
+        font-size: 26px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        line-height: 1;
+    }
+
+    /* ---------- MOBILE MENU ---------- */
+    .mobile-menu {
+        position: absolute;
+        top: 72px;
+        right: 16px;
+        width: 220px;
+
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(20px);
+
+        border: 1px solid var(--border);
+        border-radius: 16px;
+
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        gap: 4px;
+
+        z-index: 999;
+    }
+
+    .mobile-menu.hidden {
+        display: none;
+    }
+
+    /* Menu items */
+    .mobile-item {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: none;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        color: inherit;
+    }
+
+    .mobile-item:hover {
+        background: rgba(0, 0, 0, 0.06);
+    }
+
+    .mobile-item.active {
+        font-weight: 600;
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .mobile-item.settings {
+        color: #ff8a3d;
+        font-weight: 600;
+    }
+
+    .mobile-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 6px 0;
+    }
+
+    /* ---------- CARDS ---------- */
     .news-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
-    .nav-pill {
-        flex-wrap: wrap;
-    }
-
-    .tabs {
-        width: 100%;
-        justify-content: center;
-    }
-    .site-name {
-        font-size: 60px;
-        text-align: center;
-        justify-content: center;
-
-
-    }
-    /* ---------- CARD ---------- */
     .card {
-        background: var(--card);
-        border: 1px solid var(--border);
+        padding: 12px;
         border-radius: var(--radius-card);
-        padding: 10px;
-        position: relative;
         display: flex;
         flex-direction: column;
         gap: 12px;
     }
 
-    .card-top {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
-
-    /* ---------- CARD IMAGE ---------- */
     .card-image {
         width: 100%;
-
         border-radius: 14px;
         overflow: hidden;
-
-        background: #eaeaea;
     }
 
     .card-image img {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
         display: block;
-    }
-
-    /* Pills inside cards */
-    .badge {
-        font-size: 16px;
-        padding: 4px 10px;
-        border-radius: var(--radius-pill);
-        text-align: center;
-        background: rgba(134, 130, 131, 0);
-        white-space: nowrap;
-
+        object-fit: cover;
     }
 
     .title {
@@ -450,39 +527,25 @@ body {
 
     .summary {
         font-size: 14px;
+        line-height: 1.45;
         color: var(--muted);
-        line-height: 1.4;
         margin: 0;
     }
 
     .meta {
-        margin-top: auto;
         font-size: 12px;
         color: var(--muted);
+        margin-top: auto;
     }
+}
 
-    .card a {
-        color: inherit;
-        text-decoration: none;
-    }
+/* ======================================================
+   DESKTOP SAFETY — NEVER REMOVE
+   ====================================================== */
 
-    .card a:hover {
-        text-decoration: underline;
-    }
-    .nav-pill{
-        text-align: center;
-        justify-content: center;
-    }
-
-    .tabs{
-        border: 1px solid var(--border);
-        width: 140%;
-        border-radius: 14px;
-        backdrop-filter: blur(20px);
-
-    }
-    .tab{
-        font-size: 20px;
-        width: 100%;
+@media (min-width: 901px) {
+    .hamburger-btn,
+    .mobile-menu {
+        display: none;
     }
 }

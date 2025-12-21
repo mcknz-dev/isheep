@@ -323,3 +323,49 @@ function applyAppearance(){
     r.style.setProperty("--border", a.borderColor);
     r.style.setProperty("--grid-columns", a.columns);
 }
+
+const hamburger = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileSettings = document.getElementById('mobileSettings');
+const openSettings = document.getElementById('openSettings');
+
+hamburger?.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+});
+
+mobileSettings?.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    openSettings.click(); // reuse existing settings modal
+});
+
+// Close when clicking outside
+document.addEventListener('click', (e) => {
+    if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+        mobileMenu.classList.add('hidden');
+    }
+});
+
+// --- Mobile menu category switching ---
+document.querySelectorAll(".mobile-item").forEach(btn => {
+    btn.addEventListener("click", async () => {
+        const label = btn.textContent.trim();
+
+        // Ignore Settings
+        if (label === "Settings") return;
+
+        activeCategory = label;
+
+        // Update desktop tabs state (keeps things in sync)
+        document.querySelectorAll(".tab").forEach(t => {
+            t.classList.toggle("active", t.textContent === label);
+        });
+
+        // Update mobile menu active state
+        document.querySelectorAll(".mobile-item").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // Close menu + reload
+        mobileMenu.classList.add("hidden");
+        await loadAndRenderNews();
+    });
+});

@@ -37,10 +37,14 @@
             <img src="assets/homepage/Sheep.png" class="logo-icon">
         </div>
 
+        <button class="hamburger-btn" id="hamburgerBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
         <nav class="tabs" id="tabs"></nav>
 
         <div class="user">
-            <button class="icon-btn" id="openSettings" aria-label="Settings">
+            <button class="icon-btn" id="openSettings">
                 <i class="fa-solid fa-gear"></i>
             </button>
         </div>
@@ -77,7 +81,7 @@
 
         <!-- APPEARANCE PANEL -->
         <div class="settings-panel" id="appearancePanel">
-           <!-- <div class="appearance-row">
+            <div class="appearance-row">
                 <label>Theme</label>
                 <select id="themeSelect">
                     <option value="system">System</option>
@@ -98,7 +102,7 @@
                     <option value="3">3</option>
                     <option value="4">4</option>
                 </select>
-            </div> -->
+            </div>
             <p>COMING SOON....</p>
         </div>
 
@@ -110,6 +114,19 @@
         </div>
 
     </div>
+</div>
+
+<div class="mobile-menu hidden" id="mobileMenu">
+    <button class="mobile-item active">All</button>
+    <button class="mobile-item">Today</button>
+    <button class="mobile-item">Explore</button>
+    <button class="mobile-item">Saved</button>
+
+    <div class="mobile-divider"></div>
+
+    <button class="mobile-item settings" id="mobileSettings">
+        <i class="fa-solid fa-gear"></i> Settings
+    </button>
 </div>
 
 <script type="module" src="./app.js"></script>
