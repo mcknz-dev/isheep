@@ -318,14 +318,7 @@ function renderCard(a) {
     /* Save */
     saveBtn.className = "save-btn";
 
-    const title = document.createElement("h3");
-    title.className = "title";
-    const link = document.createElement("a");
-    link.href = a.link;
-    link.target = "_blank";
-    link.textContent = a.title || "Untitled";
-    title.appendChild(link);
-    card.appendChild(title);
+
 
     if (a.image) {
         const imgWrap = document.createElement("div");
@@ -336,13 +329,16 @@ function renderCard(a) {
         imgWrap.appendChild(img);
         card.appendChild(imgWrap);
     }
+    const title = document.createElement("h3");
+    title.className = "title";
+    const link = document.createElement("a");
+    link.href = a.link;
+    link.target = "_blank";
+    link.textContent = a.title || "Untitled";
+    title.appendChild(link);
+    card.appendChild(title);
 
 
-    header.appendChild(source);
-    header.appendChild(time);
-    header.appendChild(saveBtn);
-
-    card.appendChild(header);
 
 
 
@@ -350,6 +346,11 @@ function renderCard(a) {
     summary.className = "summary";
     summary.textContent = (a.summary || "").slice(0, 220);
     card.appendChild(summary);
+
+    card.appendChild(header);
+    header.appendChild(source);
+    header.appendChild(time);
+    header.appendChild(saveBtn);
 
 
 
