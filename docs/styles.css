@@ -101,6 +101,7 @@ body {
     font-weight: 800;
     font-family: Orbitron;
     letter-spacing: 2px;
+    color: #070707;
 }
 
 /* ---------- USER AREA ---------- */
@@ -489,7 +490,7 @@ height: 200px;
     }
 
     .site-name {
-        font-size: 52px;
+        font-size: 60px;
         line-height: 1;
     }
 
@@ -507,11 +508,12 @@ height: 200px;
     /* ---------- HAMBURGER ---------- */
     .hamburger-btn {
         display: block;
-        font-size: 32px;
+        font-size: 40px;
         background: transparent;
         border: none;
         cursor: pointer;
         padding: 4px;
+        color: #F58220;
     }
 
     /* ---------- MOBILE MENU ---------- */
