@@ -471,5 +471,18 @@ body {
     }
     .nav-pill{
         text-align: center;
+        justify-content: center;
+    }
+
+    .tabs{
+        border: 1px solid var(--border);
+        width: 140%;
+        border-radius: 14px;
+        backdrop-filter: blur(20px);
+
+    }
+    .tab{
+        font-size: 20px;
+        width: 100%;
     }
 }
