@@ -492,6 +492,7 @@ height: 200px;
     .site-name {
         font-size: 60px;
         line-height: 1;
+        margin-left: -10px;
     }
 
     .logo-icon {
