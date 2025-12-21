@@ -384,8 +384,11 @@ body {
         padding: 16px;
     }
 
+
     .shell {
-        max-width: 100%;
+        max-width:100%;
+        padding-left: 1px;
+        padding-right: 1px;
     }
 
     /* ---------- NAV BAR ---------- */
@@ -407,12 +410,12 @@ body {
     }
 
     .site-name {
-        font-size: 48px;
+        font-size: 52px;
         line-height: 1;
     }
 
     .logo-icon {
-        width: 45px;
+        width: 50px;
 
     }
 
@@ -425,11 +428,11 @@ body {
     /* ---------- HAMBURGER ---------- */
     .hamburger-btn {
         display: block;
-        font-size: 26px;
+        font-size: 32px;
         background: transparent;
         border: none;
         cursor: pointer;
-        padding: 8px;
+        padding: 4px;
         line-height: 1;
     }
 
@@ -497,7 +500,7 @@ body {
     }
 
     .card {
-        padding: 12px;
+        padding: 4px;
         border-radius: var(--radius-card);
         display: flex;
         flex-direction: column;
@@ -530,6 +533,7 @@ body {
         line-height: 1.45;
         color: var(--muted);
         margin: 0;
+        text-align: center;
     }
 
     .meta {
@@ -549,3 +553,4 @@ body {
         display: none;
     }
 }
+
