@@ -373,36 +373,115 @@ body {
     border-bottom: 1px solid #eee;
 }
 
+/* ===============================
+   CARD — GLOBAL (MOBILE + DESKTOP)
+   =============================== */
+
+.card {
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Header row */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+
+/* Source */
+.card-header .badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.05);
+    white-space: nowrap;
+}
+
+/* Time — ALWAYS VISIBLE */
+.card-header .time {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Save star — HARD RESET */
+.card-header .save-btn {
+    position: static !important;
+    inset: auto !important;
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff8a3d;
+    padding: 4px;
+}
+
+/* Image */
+.card-image {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.card-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Text */
+.title {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+    margin: 0;
+}
+
+.summary {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+    text-align: center;
+    margin: 0;
+}
+
 /* ======================================================
-   MOBILE STYLES ONLY — iSheep
+   MOBILE ONLY — iSheep (FINAL CLEAN)
    ====================================================== */
 
 @media (max-width: 900px) {
 
-    /* ---------- LAYOUT ---------- */
+    /* ---------- PAGE ---------- */
     body {
         padding: 16px;
     }
 
-
     .shell {
-        max-width:100%;
-        padding-left: 1px;
-        padding-right: 1px;
+        max-width: 100%;
+        padding: 0 4px;
     }
 
-    /* ---------- NAV BAR ---------- */
+    /* ---------- NAV ---------- */
     .nav-pill {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         position: relative;
         z-index: 10;
     }
 
-    /* Brand */
     .brand {
         display: flex;
         align-items: center;
@@ -415,11 +494,11 @@ body {
     }
 
     .logo-icon {
-        width: 50px;
-
+        width: 48px;
+        height: 48px;
     }
 
-    /* Hide desktop controls */
+    /* Hide desktop UI */
     .tabs,
     .user {
         display: none !important;
@@ -433,7 +512,6 @@ body {
         border: none;
         cursor: pointer;
         padding: 4px;
-        line-height: 1;
     }
 
     /* ---------- MOBILE MENU ---------- */
@@ -442,18 +520,14 @@ body {
         top: 72px;
         right: 16px;
         width: 220px;
-
-        background: rgba(255, 255, 255, 0.97);
+        background: rgba(255,255,255,0.97);
         backdrop-filter: blur(20px);
-
         border: 1px solid var(--border);
         border-radius: 16px;
-
+        padding: 8px;
         display: flex;
         flex-direction: column;
-        padding: 8px;
         gap: 4px;
-
         z-index: 999;
     }
 
@@ -461,25 +535,19 @@ body {
         display: none;
     }
 
-    /* Menu items */
     .mobile-item {
         padding: 12px;
         font-size: 16px;
         border-radius: 12px;
-        border: none;
         background: transparent;
+        border: none;
         text-align: left;
         cursor: pointer;
-        color: inherit;
-    }
-
-    .mobile-item:hover {
-        background: rgba(0, 0, 0, 0.06);
     }
 
     .mobile-item.active {
         font-weight: 600;
-        background: rgba(0, 0, 0, 0.08);
+        background: rgba(0,0,0,0.08);
     }
 
     .mobile-item.settings {
@@ -493,23 +561,62 @@ body {
         margin: 6px 0;
     }
 
-    /* ---------- CARDS ---------- */
+    /* ---------- GRID ---------- */
     .news-grid {
         grid-template-columns: 1fr;
         gap: 16px;
     }
 
+    /* ---------- CARD ---------- */
     .card {
-        padding: 4px;
-        border-radius: var(--radius-card);
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(0,0,0,0.12);
         display: flex;
         flex-direction: column;
         gap: 12px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+
     }
 
+    /* ---------- CARD HEADER ---------- */
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .card-header .badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(0,0,0,0.05);
+        white-space: nowrap;
+    }
+
+    .card-header .time {
+        font-size: 12px;
+        color: #666;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .card-header .save-btn {
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #ff8a3d;
+        padding: 4px;
+    }
+
+
+    /* ---------- IMAGE ---------- */
     .card-image {
         width: 100%;
-        border-radius: 14px;
+        border-radius: 16px;
         overflow: hidden;
     }
 
@@ -520,31 +627,26 @@ body {
         object-fit: cover;
     }
 
+    /* ---------- TEXT ---------- */
     .title {
         font-size: 18px;
         font-weight: 800;
         line-height: 1.25;
-        margin: 0;
         text-align: center;
+        margin: 0;
     }
 
     .summary {
         font-size: 14px;
         line-height: 1.45;
         color: var(--muted);
-        margin: 0;
         text-align: center;
-    }
-
-    .meta {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: auto;
+        margin: 0;
     }
 }
 
 /* ======================================================
-   DESKTOP SAFETY — NEVER REMOVE
+   DESKTOP SAFETY
    ====================================================== */
 
 @media (min-width: 901px) {
@@ -553,4 +655,3 @@ body {
         display: none;
     }
 }
-

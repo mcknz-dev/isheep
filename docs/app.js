@@ -33,6 +33,30 @@ function loadAppearance(){
     }
 }
 
+function timeAgo(dateString) {
+    if (!dateString) return "—";
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "—";
+
+    const seconds = Math.floor((Date.now() - date) / 1000);
+
+    const units = [
+        { label: "y", secs: 31536000 },
+        { label: "mo", secs: 2592000 },
+        { label: "d", secs: 86400 },
+        { label: "h", secs: 3600 },
+        { label: "m", secs: 60 }
+    ];
+
+    for (const u of units) {
+        const v = Math.floor(seconds / u.secs);
+        if (v > 0) return `${v}${u.label} ago`;
+    }
+
+    return "just now";
+}
+
 function saveAppearance(settings){
     localStorage.setItem("appearance", JSON.stringify(settings));
 }
@@ -272,12 +296,36 @@ function renderCard(a) {
         saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
     };
 
-    card.appendChild(saveBtn);
+    const header = document.createElement("div");
+    header.className = "card-header";
 
+    /* Source */
     const source = document.createElement("div");
     source.className = "badge";
     source.textContent = a.source || "Source";
-    card.appendChild(source);
+
+    /* Time */
+    const time = document.createElement("div");
+    time.className = "time";
+    const published =
+        a.published ||
+        a.isoDate ||
+        a.pubDate ||
+        a.date;
+
+    time.textContent = timeAgo(published);
+
+    /* Save */
+    saveBtn.className = "save-btn";
+
+    const title = document.createElement("h3");
+    title.className = "title";
+    const link = document.createElement("a");
+    link.href = a.link;
+    link.target = "_blank";
+    link.textContent = a.title || "Untitled";
+    title.appendChild(link);
+    card.appendChild(title);
 
     if (a.image) {
         const imgWrap = document.createElement("div");
@@ -289,14 +337,14 @@ function renderCard(a) {
         card.appendChild(imgWrap);
     }
 
-    const title = document.createElement("h3");
-    title.className = "title";
-    const link = document.createElement("a");
-    link.href = a.link;
-    link.target = "_blank";
-    link.textContent = a.title || "Untitled";
-    title.appendChild(link);
-    card.appendChild(title);
+
+    header.appendChild(source);
+    header.appendChild(time);
+    header.appendChild(saveBtn);
+
+    card.appendChild(header);
+
+
 
     const summary = document.createElement("p");
     summary.className = "summary";
