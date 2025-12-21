@@ -87,7 +87,7 @@ body {
     border-radius: var(--radius-pill);
     font-weight: 700;
     cursor: pointer;
-    font-size: 25px;
+    font-size: 20px;
 }
 
 .tab.active {
@@ -388,9 +388,9 @@ body {
         justify-content: center;
     }
     .site-name {
-        font-size: 50px;
+        font-size: 60px;
         text-align: center;
-        margin-left: 51px;
+        margin-left: 58px;
     }
     /* ---------- CARD ---------- */
     .card {
