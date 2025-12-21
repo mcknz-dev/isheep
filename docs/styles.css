@@ -59,12 +59,12 @@ body {
 
 
 .logo-icon {
-    width: 200px;
+    width: 50px;
 
     display: block;
     flex-shrink: 0;
 
-    margin-left: -75px; /* ← key line */
+
 
     image-rendering: pixelated;
 }
@@ -468,5 +468,8 @@ body {
 
     .card a:hover {
         text-decoration: underline;
+    }
+    .nav-pill{
+        text-align: center;
     }
 }
