@@ -1,4 +1,4 @@
-:root {
+p:root {
     --bg: #f6f6f6;
     --pill: #e6e6e6;
     --card: #ffffff;
@@ -657,5 +657,13 @@ height: 200px;
     .hamburger-btn,
     .mobile-menu {
         display: none;
+    }
+}
+
+/* Tablets (iPad mini, small tablets) */
+@media (max-width: 1024px) and (min-width: 600px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 }
