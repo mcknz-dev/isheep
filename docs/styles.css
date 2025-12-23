@@ -714,3 +714,21 @@ height: 200px;
         border-radius: 0; /* remove pill rounding */
     }
 }
+
+@media (max-width: 900px) {
+    body {
+        position: relative;
+        background: none;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("assets/homepage/LIGHTSIX.jpg");
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+        pointer-events: none;
+    }
+}
