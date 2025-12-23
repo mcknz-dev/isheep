@@ -25,7 +25,7 @@ body {
                     rgba(255, 255, 255, 0.47),
                     rgba(255, 255, 255, 0.6)
             ),
-            url("assets/homepage/LIGHTSIX.jpg");
+            url("assets/homepage/SLMacBook16.png");
 
     background-size: cover;
     background-position: center;
@@ -702,5 +702,15 @@ height: 200px;
         position: sticky;
         top: 0;
         z-index: 1000;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-pill {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+
+        border-radius: 0; /* remove pill rounding */
     }
 }
