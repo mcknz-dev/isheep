@@ -55,6 +55,10 @@ body {
 
     width: 100%;
     padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
 
 
 }
@@ -681,5 +685,22 @@ height: 200px;
     .news-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-pill {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: 8px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-pill {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
     }
 }
