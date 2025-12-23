@@ -1,4 +1,8 @@
-p:root {
+/* ======================================================
+   ROOT VARIABLES
+   ====================================================== */
+
+:root {
     --bg: #f6f6f6;
     --pill: #e6e6e6;
     --card: #ffffff;
@@ -10,42 +14,48 @@ p:root {
     --radius-card: 18px;
 }
 
-/* ---------- RESET ---------- */
+/* ======================================================
+   RESET
+   ====================================================== */
+
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, Helvetica, Arial;
-
-
+    font-family: ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
     color: var(--text);
 }
 
+/* ======================================================
+   LAYOUT
+   ====================================================== */
 
-/* ---------- LAYOUT ---------- */
 .shell {
     max-width: 2000px;
     margin: 40px auto;
     padding: 0 20px;
 }
 
-/* ---------- NAV PILL ---------- */
+/* ======================================================
+   NAV BAR / PILL
+   ====================================================== */
+
 .topbar {
     margin-bottom: -10px;
-    margin-top: -40px;
-
+    margin-top: -30px;
 }
 
 .nav-pill {
     display: flex;
     align-items: center;
-    gap: 18px;
+    justify-content: space-between;
+    gap: 14px;
     position: sticky;
-    z-index: 1000;
     top: 0;
+    z-index: 1000;
 
     padding: 14px 20px;
     background: rgba(255, 255, 255, 0.2);
@@ -54,45 +64,45 @@ body {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-
-    border-radius: 20;
     margin-top: -40px;
+
     margin-bottom: 20px;
-
-
-
 }
 
-/* Brand */
-
+/* ======================================================
+   BRAND
+   ====================================================== */
 
 .brand {
     display: flex;
-    align-items: center;      /* vertical alignment */
-    /* space between text and icon */
+    align-items: center;
+    gap: 10px;
 }
-
 
 .logo-icon {
     width: 50px;
-
-    display: block;
     flex-shrink: 0;
-
-
-
     image-rendering: pixelated;
 }
 
-/* ---------- TABS ---------- */
+.site-name {
+    font-size: 40px;
+    font-family: Orbitron, sans-serif;
+    letter-spacing: 2px;
+    color: #070707;
+}
+
+
+
+/* ======================================================
+   TABS
+   ====================================================== */
+
 .tabs {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 1;
-
-    background: transparent;
-    border: none;
 }
 
 .tab {
@@ -101,8 +111,8 @@ body {
     padding: 8px 14px;
     border-radius: var(--radius-pill);
     font-weight: 700;
-    cursor: pointer;
     font-size: 15px;
+    cursor: pointer;
 }
 
 .tab.active {
@@ -111,14 +121,10 @@ body {
     border-radius: 12px;
 }
 
-.site-name {
-    font-size: 40px; /* ← change this */
-    font-family: Orbitron, sans-serif;
-    letter-spacing: 2px;
-    color: #070707;
-}
+/* ======================================================
+   USER AREA
+   ====================================================== */
 
-/* ---------- USER AREA ---------- */
 .user {
     display: flex;
     align-items: center;
@@ -135,22 +141,19 @@ body {
 .avatar {
     width: 36px;
     height: 36px;
-
     border-radius: 50%;
     border: 1px solid var(--border);
-    overflow: hidden;              /* 🔑 THIS is the key */
+    overflow: hidden;
+    background: #070707;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: #070707;
 }
 
 .avatar img {
-    width: 130%;                   /* 🔑 force fill */
+    width: 130%;
     object-fit: cover;
-
     image-rendering: pixelated;
 }
 
@@ -160,6 +163,7 @@ body {
     padding: 2px;
     cursor: pointer;
     border-radius: 50%;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -174,119 +178,148 @@ body {
     transform: rotate(180deg);
     transition: transform 0.15s ease;
 }
-/* ---------- NEWS GRID ---------- */
+
+/* ======================================================
+   NEWS GRID
+   ====================================================== */
+
 .news-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
-/* ---------- CARD ---------- */
+/* ======================================================
+   CARD (GLOBAL)
+   ====================================================== */
+
 .card {
     background: rgba(255,255,255,0.92);
     border-radius: 22px;
-    padding: 12px;
-
     border: 1px solid rgba(0,0,0,0.08);
     box-shadow:
             0 8px 24px rgba(0,0,0,0.06),
             0 1px 2px rgba(0,0,0,0.04);
 
+    /* 🔑 Edge-to-edge image support */
+    padding: 0;
+    overflow: hidden;
+
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
-.card-top {
+
+
+
+/* ======================================================
+   CARD HEADER
+   ====================================================== */
+
+.card-header {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
 }
 
-/* ---------- CARD IMAGE ---------- */
+/* Badge */
+.badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.05);
+    white-space: nowrap;
+}
+
+/* Time — right beside badge */
+.card-header .time {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Star — far right */
+.card-header .save-btn {
+    margin-left: auto;
+
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff8a3d;
+    padding: 4px;
+}
+
+/* ======================================================
+   CARD IMAGE (EDGE-TO-EDGE)
+   ====================================================== */
+
 .card-image {
     width: 100%;
-height: 200px;
-    border-radius: 14px;
+    height: 200px;
     overflow: hidden;
-
-    background: #eaeaea;
 }
 
 .card-image img {
     width: 100%;
-
+    height: 100%;
     object-fit: cover;
     display: block;
 }
 
-.save-btn {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
-
-    border: none;
-    background: transparent;
-    font-size: 20px;
-    cursor: pointer;
-
-    color: #F58220;
-}
-
-.save-btn:hover {
-    color: #000;
-}
-/* Pills inside cards */
-.badge {
-    font-size: 16px;
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
-    text-align: center;
-    background: #f0f0f0;
-    white-space: nowrap;
-
-}
+/* ======================================================
+   CARD TEXT
+   ====================================================== */
 
 .title {
     font-size: 18px;
     font-weight: 800;
     line-height: 1.25;
+    text-align: center;
     margin: 0;
+    padding: 0 14px;
 }
 
-.summary {
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.4;
-    margin: 0;
-}
-
-.meta {
-    margin-top: auto;
-    font-size: 12px;
-    color: var(--muted);
-}
-
-.card a {
+/* 🔑 Prevent blue links */
+.title a {
     color: inherit;
     text-decoration: none;
 }
 
-.card a:hover {
+.title a:hover {
     text-decoration: underline;
 }
 
-/* ---------- STATUS ---------- */
+.summary {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+    text-align: center;
+    margin: 0;
+    padding: 0 16px 16px;
+}
+
+/* ======================================================
+   STATUS
+   ====================================================== */
+
 .status {
     margin-top: 20px;
     font-size: 13px;
     color: var(--muted);
 }
 
-/* ---------- MODAL ---------- */
+/* ======================================================
+   MODAL / SETTINGS
+   ====================================================== */
+
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(0,0,0,0.25);
 
     display: flex;
     align-items: center;
@@ -306,7 +339,6 @@ height: 200px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    text-align: center;
 }
 
 .muted {
@@ -326,8 +358,6 @@ height: 200px;
     padding: 12px 14px;
     border: 2px solid var(--border);
     border-radius: 14px;
-    margin-bottom: 5px;
-
 }
 
 .modal-actions {
@@ -335,8 +365,7 @@ height: 200px;
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 15px;
-    margin-bottom: 10px;
+    margin: 15px 0 10px;
 }
 
 .btn {
@@ -356,134 +385,14 @@ height: 200px;
     display: none;
 }
 
-.settings-tabs {
-    display: flex;
-    gap: 8px;
-    margin: 12px 0 16px;
-}
-
-.settings-tab {
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 2px solid var(--border);
-    background: #f0f0f0;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.settings-tab.active {
-    background: #d9d9d9;
-}
-
-.settings-panel {
-    display: none;
-}
-
-.settings-panel.active {
-    display: block;
-}
-
-/* Appearance placeholder */
-.appearance-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-}
-
-/* ===============================
-   CARD — GLOBAL (MOBILE + DESKTOP)
-   =============================== */
-
-.card {
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(0,0,0,0.12);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* Header row */
-.card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-
-/* Source */
-.card-header .badge {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: rgba(0,0,0,0.05);
-    white-space: nowrap;
-}
-
-/* Time — ALWAYS VISIBLE */
-.card-header .time {
-    font-size: 12px;
-    color: #666;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-/* Save star — HARD RESET */
-.card-header .save-btn {
-    position: static !important;
-    inset: auto !important;
-    font-size: 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #ff8a3d;
-    padding: 4px;
-}
-
-/* Image */
-.card-image {
-    width: 100%;
-    border-radius: 16px;
-    overflow: hidden;
-}
-
-.card-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-}
-
-/* Text */
-.title {
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1.25;
-    text-align: center;
-    margin: 0;
-}
-
-.summary {
-    font-size: 14px;
-    line-height: 1.45;
-    color: var(--muted);
-    text-align: center;
-    margin: 0;
-}
-
 /* ======================================================
-   MOBILE ONLY — iSheep (FINAL CLEAN)
+   MOBILE
    ====================================================== */
 
 @media (max-width: 900px) {
 
-    /* ---------- PAGE ---------- */
     body {
         padding: 16px;
-        background-image: url("assets/homepage/LIGHTSIX.jpg");
     }
 
     .shell {
@@ -491,180 +400,64 @@ height: 200px;
         padding: 0 4px;
     }
 
-    /* ---------- NAV ---------- */
-    .nav-pill {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 10;
-        margin-top: -30px
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .site-name {
-
-        font-size: 40px;
-        line-height: 1;
-    }
-
-    .logo-icon {
-        width: 48px;
-        height: 48px;
-    }
-
-    /* Hide desktop UI */
     .tabs,
     .user {
         display: none !important;
     }
 
-    /* ---------- HAMBURGER ---------- */
     .hamburger-btn {
         display: block;
         font-size: 40px;
         background: transparent;
         border: none;
         cursor: pointer;
-        padding: 4px;
         color: #F58220;
     }
 
-    /* ---------- MOBILE MENU ---------- */
-    .mobile-menu {
-        position: absolute;
-        top: 72px;
-        right: 16px;
-        width: 220px;
-        background: rgba(255,255,255,0.97);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 8px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        z-index: 999;
-    }
-
-    .mobile-menu.hidden {
-        display: none;
-    }
-
-    .mobile-item {
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 12px;
-        background: transparent;
-        border: none;
-        text-align: left;
-        cursor: pointer;
-    }
-
-    .mobile-item.active {
-        font-weight: 600;
-        background: rgba(0,0,0,0.08);
-    }
-
-    .mobile-item.settings {
-        color: #ff8a3d;
-        font-weight: 600;
-    }
-
-    .mobile-divider {
-        height: 1px;
-        background: var(--border);
-        margin: 6px 0;
-    }
-
-    /* ---------- GRID ---------- */
     .news-grid {
         grid-template-columns: 1fr;
         gap: 16px;
     }
 
-    /* ---------- CARD ---------- */
-    .card {
-        padding: 2px;
-        border-radius: 20px;
-        border: 1px solid rgba(0,0,0,0.12);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    .nav-pill {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: 8px;
+        padding-left: 16px;
+        padding-right: 16px;
 
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        margin-top: -60px;
+        border-radius: 0;
+    }
+    .logo-icon {
+        width: 50px;
+        flex-shrink: 0;
+        image-rendering: pixelated;
+        margin-top: 10px;
     }
 
-    /* ---------- CARD HEADER ---------- */
-    .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
+    .site-name {
+        font-size: 40px;
+        font-family: Orbitron, sans-serif;
+        letter-spacing: 2px;
+        color: #070707;
+        margin-top: 10px;
     }
-
-    .card-header .badge {
-        font-size: 12px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: rgba(0,0,0,0.05);
-        white-space: nowrap;
+    .hamburger-btn{
+        margin-top: 10px;
     }
+}
 
-    .card-header .time {
-        font-size: 12px;
-        color: #666;
-        font-weight: 500;
-        white-space: nowrap;
-    }
+/* ======================================================
+   TABLET
+   ====================================================== */
 
-    .card-header .save-btn {
-        font-size: 20px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #ff8a3d;
-        padding: 4px;
-    }
-
-
-    /* ---------- IMAGE ---------- */
-    .card-image {
-        width: 100%;
-        height: 200px;
-        border-radius: 16px;
-        overflow: hidden;
-    }
-
-    .card-image img {
-        width: 100%;
-        height: auto;
-        display: block;
-        object-fit: cover;
-    }
-
-    /* ---------- TEXT ---------- */
-    .title {
-        font-size: 18px;
-        font-weight: 800;
-        line-height: 1.25;
-        text-align: center;
-        margin: 0;
-    }
-
-    .summary {
-        font-size: 14px;
-        line-height: 1.45;
-        color: var(--muted);
-        text-align: center;
-        margin: 0;
+@media (max-width: 1024px) and (min-width: 600px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 }
 
@@ -678,47 +471,3 @@ height: 200px;
         display: none;
     }
 }
-
-/* Tablets (iPad mini, small tablets) */
-@media (max-width: 1024px) and (min-width: 600px) {
-    .news-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-}
-
-@media (max-width: 900px) {
-    .nav-pill {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: 8px;
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-}
-
-@media (max-width: 900px) {
-    .nav-pill {
-        position: sticky;
-        top: 0px;
-        z-index: 1000;
-    }
-}
-
-@media (max-width: 900px) {
-    .nav-pill {
-        width: 100vw;
-        margin-left: calc(-50vw + 50%);
-        margin-right: calc(-50vw + 50%);
-        margin-top: -60px;
-        border-radius: 0; /* remove pill rounding */
-    }
-
-}
-
-@media (max-width: 900px) {
-    body {
-        position: relative;
-        background: none;
-    }
-}
-
