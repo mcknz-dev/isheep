@@ -20,16 +20,7 @@ body {
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, Helvetica, Arial;
 
-    background-image:
-            linear-gradient(
-                    rgba(255, 255, 255, 0.47),
-                    rgba(255, 255, 255, 0.6)
-            ),
-            url("assets/homepage/SLMacBook16.png");
 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
     color: var(--text);
 }
 
@@ -721,14 +712,3 @@ height: 200px;
         background: none;
     }
 
-    body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background-image: url("assets/homepage/Light5K.jpg");
-        background-size: cover;
-        background-position: center;
-        z-index: -1;
-        pointer-events: none;
-    }
-}
