@@ -43,13 +43,22 @@ body {
     display: flex;
     align-items: center;
     gap: 18px;
+    position: sticky;
+    z-index: 1000;
+    top: 0;
 
-    width: 100%;
     padding: 14px 20px;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    border-radius: 14px;
+
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+
+    border-radius: 20;
+    margin-top: -40px;
+    margin-bottom: 20px;
+
 
 
 }
@@ -104,8 +113,7 @@ body {
 
 .site-name {
     font-size: 40px; /* ← change this */
-    font-weight: 800;
-    font-family: Orbitron;
+    font-family: Orbitron, sans-serif;
     letter-spacing: 2px;
     color: #070707;
 }
@@ -691,7 +699,7 @@ height: 200px;
 @media (max-width: 900px) {
     .nav-pill {
         position: sticky;
-        top: 0;
+        top: 0px;
         z-index: 1000;
     }
 }
@@ -701,9 +709,10 @@ height: 200px;
         width: 100vw;
         margin-left: calc(-50vw + 50%);
         margin-right: calc(-50vw + 50%);
-
+        margin-top: -60px;
         border-radius: 0; /* remove pill rounding */
     }
+
 }
 
 @media (max-width: 900px) {
@@ -711,4 +720,5 @@ height: 200px;
         position: relative;
         background: none;
     }
+}
 
