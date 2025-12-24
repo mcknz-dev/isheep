@@ -1086,4 +1086,35 @@ body {
 
 }
 
+.modal-actions {
+    position: sticky;      /* keep it pinned if you want */
+    bottom: 0;
+
+    background: transparent;   /* 🔑 removes dark fade */
+    box-shadow: none;          /* 🔑 removes shadow */
+    backdrop-filter: none;     /* 🔑 removes blur */
+
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.mobile-menu {
+    position: fixed;          /* 🔑 THIS IS THE FIX */
+    top: 72px;                /* height of nav bar */
+    right: 16px;
+
+    width: calc(100% - 32px);
+    max-width: 340px;
+
+    z-index: 2000;
+
+    background: #1c1c1c;
+    border-radius: 22px;
+    padding: 20px;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
 
