@@ -1018,7 +1018,7 @@ body {
 
 .mobile-brand {
     margin-top: 14px;
-    padding-top: 12px;
+    padding-top: 20px;
 
     text-align: center;
     font-size: 12px;
@@ -1032,5 +1032,58 @@ body {
     user-select: none;
 }
 
+/* ===============================
+   MODAL HEADER
+   =============================== */
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+/* ===============================
+   CLOSE (X) BUTTON
+   =============================== */
+
+.close-btn {
+    width: 44px;                 /* 👈 big tap target */
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+
+    font-size: 30px;             /* 👈 bigger X */
+    font-weight: 600;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.modal-footer {
+    padding-top: 12px;
+    text-align: center;
+
+    font-size: 12px;
+    color: var(--muted);
+
+}
 
 
