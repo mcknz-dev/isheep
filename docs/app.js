@@ -1,6 +1,8 @@
 import { SITE_CONFIG } from "./config.js";
 
-/* ---------- HELPERS ---------- */
+/* ======================================================
+   HELPERS
+   ====================================================== */
 const $ = (sel) => document.querySelector(sel);
 
 function isToday(dateString) {
@@ -16,31 +18,12 @@ function isToday(dateString) {
     );
 }
 
-/* ---------- APPEARANCE ---------- */
-function loadAppearance(){
-    try {
-        return JSON.parse(localStorage.getItem("appearance")) || {
-            theme: "system",
-            borderColor: "#2b2b2b",
-            columns: 4
-        };
-    } catch {
-        return {
-            theme: "system",
-            borderColor: "#2b2b2b",
-            columns: 4
-        };
-    }
-}
-
 function timeAgo(dateString) {
     if (!dateString) return "—";
-
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "—";
 
     const seconds = Math.floor((Date.now() - date) / 1000);
-
     const units = [
         { label: "y", secs: 31536000 },
         { label: "mo", secs: 2592000 },
@@ -53,15 +36,66 @@ function timeAgo(dateString) {
         const v = Math.floor(seconds / u.secs);
         if (v > 0) return `${v}${u.label} ago`;
     }
-
     return "just now";
 }
 
-function saveAppearance(settings){
+/* ======================================================
+   APPEARANCE
+   ====================================================== */
+function loadAppearance() {
+    try {
+        return JSON.parse(localStorage.getItem("appearance")) || {
+            theme: "system",
+            borderColor: "#2b2b2b",
+            columns: 4
+        };
+    } catch {
+        return { theme: "system", borderColor: "#2b2b2b", columns: 4 };
+    }
+}
+
+function saveAppearance(settings) {
     localStorage.setItem("appearance", JSON.stringify(settings));
 }
 
-/* ---------- READ LATER ---------- */
+function applyAppearance() {
+    const a = loadAppearance();
+    const r = document.documentElement;
+
+    // Reset (so switching from dark -> light/system works)
+    r.style.removeProperty("--bg");
+    r.style.removeProperty("--card");
+    r.style.removeProperty("--text");
+    r.style.removeProperty("--muted");
+
+    function applyAppearance() {
+        const a = loadAppearance();
+        const root = document.documentElement;
+
+        // Clear previous theme
+        root.removeAttribute("data-theme");
+
+        if (a.theme === "dark") {
+            root.setAttribute("data-theme", "dark");
+        }
+
+        if (a.theme === "system") {
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (prefersDark) {
+                root.setAttribute("data-theme", "dark");
+            }
+        }
+
+        root.style.setProperty("--border", a.borderColor);
+        root.style.setProperty("--grid-columns", a.columns);
+    }
+    r.style.setProperty("--border", a.borderColor);
+    r.style.setProperty("--grid-columns", a.columns);
+}
+
+/* ======================================================
+   READ LATER
+   ====================================================== */
 function loadReadLater() {
     try {
         return JSON.parse(localStorage.getItem("readLater")) || [];
@@ -69,6 +103,9 @@ function loadReadLater() {
         return [];
     }
 }
+
+const savedTheme = loadAppearance().theme || "system";
+setTheme(savedTheme);
 
 function saveToReadLater(article) {
     const saved = loadReadLater();
@@ -86,7 +123,9 @@ function isSaved(link) {
     return loadReadLater().some(a => a.link === link);
 }
 
-/* ---------- ELEMENTS ---------- */
+/* ======================================================
+   ELEMENTS
+   ====================================================== */
 const tabsEl = $("#tabs");
 const gridEl = $("#newsGrid");
 const statusEl = $("#status");
@@ -100,37 +139,45 @@ const saveFeedsBtn = $("#saveFeeds");
 const selectAllBtn = $("#selectAll");
 const selectNoneBtn = $("#selectNone");
 
-/* ---------- STATE ---------- */
+const hamburgerBtn = $("#hamburgerBtn");
+const mobileMenu = $("#mobileMenu");
+const mobileSettingsBtn = $("#mobileSettings");
+
+const columnSelect = $("#columnSelect");
+const themePills = $("#themePills");
+const feedsActions = $("#feedsActions");
+
+/* ======================================================
+   STATE
+   ====================================================== */
 let activeCategory = "All";
 let allFeeds = [];
 let enabledFeeds = [];
 let feedChecks = new Map();
 
-/* ---------- INIT ---------- */
+/* ======================================================
+   INIT
+   ====================================================== */
 document.title = SITE_CONFIG.name;
-$(".site-name").textContent = SITE_CONFIG.name;
+const siteNameEl = $(".site-name");
+if (siteNameEl) siteNameEl.textContent = SITE_CONFIG.name;
 
+applyAppearance();
 renderTabs();
 wireModal();
-applyAppearance();
+wireSettingsTabs();
+wireHamburger();
+wireAppearanceControls();
 
 await loadFeedsFromServer();
 enabledFeeds = loadEnabledFeeds();
 await loadAndRenderNews();
 
-/* ---------- SETTINGS TABS ---------- */
-document.querySelectorAll(".settings-tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-        document.querySelectorAll(".settings-tab").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".settings-panel").forEach(p => p.classList.remove("active"));
-
-        tab.classList.add("active");
-        document.getElementById(tab.dataset.tab + "Panel").classList.add("active");
-    });
-});
-
-/* ---------- TOP TABS ---------- */
+/* ======================================================
+   TOP TABS (DESKTOP)
+   ====================================================== */
 function renderTabs() {
+    if (!tabsEl) return;
     tabsEl.innerHTML = "";
 
     SITE_CONFIG.categories.forEach(cat => {
@@ -142,6 +189,12 @@ function renderTabs() {
             activeCategory = cat;
             document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
             btn.classList.add("active");
+
+            // Also sync mobile menu highlight if it exists
+            document.querySelectorAll(".mobile-item[data-category]").forEach(b => {
+                b.classList.toggle("active", b.dataset.category === cat);
+            });
+
             await loadAndRenderNews();
         });
 
@@ -149,21 +202,45 @@ function renderTabs() {
     });
 }
 
-/* ---------- MODAL ---------- */
+/* ======================================================
+   SETTINGS MODAL
+   ====================================================== */
+function openModal() {
+    buildFeedList();
+
+    // Default to Feeds tab when opening (nice + avoids weird states)
+    setSettingsTab("feeds");
+
+    modalBackdrop?.classList.remove("hidden");
+}
+
+function closeModal() {
+    modalBackdrop?.classList.add("hidden");
+}
+
 function wireModal() {
-    openSettingsBtn?.addEventListener("click", openModal);
-    closeSettingsBtn?.addEventListener("click", closeModal);
+    openSettingsBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openModal();
+    });
+
+    closeSettingsBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeModal();
+    });
 
     modalBackdrop?.addEventListener("click", (e) => {
         if (e.target === modalBackdrop) closeModal();
     });
 
     selectAllBtn?.addEventListener("click", () => {
-        feedChecks.forEach(cb => cb.checked = true);
+        feedChecks.forEach(cb => (cb.checked = true));
     });
 
     selectNoneBtn?.addEventListener("click", () => {
-        feedChecks.forEach(cb => cb.checked = false);
+        feedChecks.forEach(cb => (cb.checked = false));
     });
 
     saveFeedsBtn?.addEventListener("click", async () => {
@@ -178,16 +255,127 @@ function wireModal() {
     });
 }
 
-function openModal() {
-    buildFeedList();
-    modalBackdrop.classList.remove("hidden");
+/* ======================================================
+   SETTINGS: 3 TABS (Feeds / Appearance / Contact)
+   ====================================================== */
+function setSettingsTab(tabName) {
+    document.querySelectorAll(".settings-tab").forEach(t => {
+        t.classList.toggle("active", t.dataset.tab === tabName);
+    });
+
+    document.querySelectorAll(".settings-panel").forEach(p => {
+        p.classList.toggle("active", p.id === `${tabName}Panel`);
+    });
+
+    // Only show the bottom buttons on Feeds tab
+    if (feedsActions) {
+        feedsActions.style.display = tabName === "feeds" ? "flex" : "none";
+    }
 }
 
-function closeModal() {
-    modalBackdrop.classList.add("hidden");
+function wireSettingsTabs() {
+    document.querySelectorAll(".settings-tab").forEach(tab => {
+        tab.addEventListener("click", (e) => {
+            e.preventDefault();
+            setSettingsTab(tab.dataset.tab);
+        });
+    });
 }
 
-/* ---------- FEEDS ---------- */
+/* ======================================================
+   HAMBURGER MENU (MOBILE)
+   ====================================================== */
+function wireHamburger() {
+    // Toggle menu
+    hamburgerBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileMenu?.classList.toggle("hidden");
+    });
+
+    // Clicking inside menu should NOT close it
+    mobileMenu?.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    // Click outside closes menu
+    document.addEventListener("click", () => {
+        mobileMenu?.classList.add("hidden");
+    });
+
+    // Settings item in mobile menu
+    mobileSettingsBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileMenu?.classList.add("hidden");
+        openModal();
+    });
+
+    // Category switching in mobile menu
+    document.querySelectorAll(".mobile-item[data-category]").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const category = btn.dataset.category; // ✅ this is what your HTML uses
+            activeCategory = category;
+
+            // Mobile highlight
+            document.querySelectorAll(".mobile-item[data-category]").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            // Desktop tabs highlight (if they exist on the page)
+            document.querySelectorAll(".tab").forEach(t => {
+                t.classList.toggle("active", t.textContent.trim() === category);
+            });
+
+            mobileMenu?.classList.add("hidden");
+            await loadAndRenderNews();
+        });
+    });
+}
+
+/* ======================================================
+   APPEARANCE CONTROLS (Theme pills + desktop columns)
+   ====================================================== */
+function wireAppearanceControls() {
+    // Theme pills
+    if (themePills) {
+        const a = loadAppearance();
+        const buttons = themePills.querySelectorAll("button[data-theme]");
+
+        // Set active pill on load
+        buttons.forEach(b => b.classList.toggle("active", b.dataset.theme === a.theme));
+
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const next = loadAppearance();
+                next.theme = btn.dataset.theme;
+                saveAppearance(next);
+
+                buttons.forEach(b => b.classList.toggle("active", b === btn));
+                applyAppearance();
+            });
+        });
+    }
+
+    // Columns select (desktop-only UI)
+    if (columnSelect) {
+        const a = loadAppearance();
+        columnSelect.value = String(a.columns ?? 4);
+
+        columnSelect.addEventListener("change", async () => {
+            const next = loadAppearance();
+            next.columns = Number(columnSelect.value);
+            saveAppearance(next);
+            applyAppearance();
+            await loadAndRenderNews();
+        });
+    }
+}
+
+/* ======================================================
+   FEEDS
+   ====================================================== */
 function loadEnabledFeeds() {
     try {
         const raw = localStorage.getItem("enabledFeeds");
@@ -195,15 +383,12 @@ function loadEnabledFeeds() {
             const ids = JSON.parse(raw);
             if (Array.isArray(ids) && ids.length) return ids;
         }
+    } catch {}
 
-        // FIRST VISIT → enable ALL feeds
-        const all = allFeeds.map(f => f.id);
-        localStorage.setItem("enabledFeeds", JSON.stringify(all));
-        return all;
-
-    } catch {
-        return allFeeds.map(f => f.id);
-    }
+    // First visit -> enable all
+    const all = allFeeds.map(f => f.id);
+    localStorage.setItem("enabledFeeds", JSON.stringify(all));
+    return all;
 }
 
 async function loadFeedsFromServer() {
@@ -212,6 +397,8 @@ async function loadFeedsFromServer() {
 }
 
 function buildFeedList() {
+    if (!feedListEl) return;
+
     feedListEl.innerHTML = "";
     feedChecks.clear();
 
@@ -244,12 +431,17 @@ function buildFeedList() {
     });
 }
 
-/* ---------- NEWS ---------- */
+/* ======================================================
+   NEWS
+   ====================================================== */
 async function loadAndRenderNews() {
+    if (!gridEl || !statusEl) return;
+
     gridEl.innerHTML = "";
     statusEl.textContent = "Loading…";
 
-    if (activeCategory === "Read Later") {
+    // ✅ Saved (your UI says "Saved" but your data-category uses "Read Later")
+    if (activeCategory === "Read Later" || activeCategory === "Saved") {
         const saved = loadReadLater();
         if (!saved.length) {
             statusEl.textContent = "No saved stories yet.";
@@ -266,9 +458,10 @@ async function loadAndRenderNews() {
 
     let articles = await (await fetch(url)).json();
 
+    // ✅ Today filter
     if (activeCategory === "Today") {
         articles = articles.filter(a =>
-            isToday(a.published || a.isoDate || a.pubDate)
+            isToday(a.published || a.isoDate || a.pubDate || a.date)
         );
     }
 
@@ -281,45 +474,24 @@ async function loadAndRenderNews() {
     articles.forEach(a => gridEl.appendChild(renderCard(a)));
 }
 
-/* ---------- CARD ---------- */
+document.querySelectorAll("#themePills button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll("#themePills button")
+            .forEach(b => b.classList.remove("active"));
+
+        btn.classList.add("active");
+        setTheme(btn.dataset.theme);
+    });
+});
+
+/* ======================================================
+   CARD (KEEP HEADER AT BOTTOM)
+   ====================================================== */
 function renderCard(a) {
     const card = document.createElement("div");
     card.className = "card";
 
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "save-btn";
-    saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
-
-    saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
-        saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
-    };
-
-    const header = document.createElement("div");
-    header.className = "card-header";
-
-    /* Source */
-    const source = document.createElement("div");
-    source.className = "badge";
-    source.textContent = a.source || "Source";
-
-    /* Time */
-    const time = document.createElement("div");
-    time.className = "time";
-    const published =
-        a.published ||
-        a.isoDate ||
-        a.pubDate ||
-        a.date;
-
-    time.textContent = timeAgo(published);
-
-    /* Save */
-    saveBtn.className = "save-btn";
-
-
-
+    // Image
     if (a.image) {
         const imgWrap = document.createElement("div");
         imgWrap.className = "card-image";
@@ -329,92 +501,72 @@ function renderCard(a) {
         imgWrap.appendChild(img);
         card.appendChild(imgWrap);
     }
+
+    // Title
     const title = document.createElement("h3");
     title.className = "title";
     const link = document.createElement("a");
     link.href = a.link;
     link.target = "_blank";
+    link.rel = "noopener noreferrer";
     link.textContent = a.title || "Untitled";
     title.appendChild(link);
     card.appendChild(title);
 
-
-
-
-
+    // Summary
     const summary = document.createElement("p");
     summary.className = "summary";
     summary.textContent = (a.summary || "").slice(0, 220);
     card.appendChild(summary);
 
-    card.appendChild(header);
+    // Header (ALWAYS LAST)
+    const header = document.createElement("div");
+    header.className = "card-header";
+
+    const source = document.createElement("div");
+    source.className = "badge";
+    source.textContent = a.source || "Source";
+
+    const time = document.createElement("div");
+    time.className = "time";
+    time.textContent = timeAgo(a.published || a.isoDate || a.pubDate || a.date);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.className = "save-btn";
+    saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
+    saveBtn.onclick = (e) => {
+        e.stopPropagation();
+        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
+        saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
+    };
+
     header.appendChild(source);
     header.appendChild(time);
     header.appendChild(saveBtn);
 
-
+    card.appendChild(header); // 🔒 DO NOT MOVE
 
     return card;
 }
 
-/* ---------- APPLY APPEARANCE ---------- */
-function applyAppearance(){
-    const a = loadAppearance();
-    const r = document.documentElement;
+function setTheme(theme) {
+    const root = document.documentElement;
 
-    if (a.theme === "dark") {
-        r.style.setProperty("--bg", "#111");
-        r.style.setProperty("--card", "#1a1a1a");
-        r.style.setProperty("--text", "#f5f5f5");
-        r.style.setProperty("--muted", "#aaa");
+    // Remove existing theme
+    root.removeAttribute("data-theme");
+
+    if (theme === "dark") {
+        root.setAttribute("data-theme", "dark");
     }
 
-    r.style.setProperty("--border", a.borderColor);
-    r.style.setProperty("--grid-columns", a.columns);
+    if (theme === "system") {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            root.setAttribute("data-theme", "dark");
+        }
+    }
+
+    const appearance = loadAppearance();
+    appearance.theme = theme;
+    localStorage.setItem("appearance", JSON.stringify(appearance));
 }
 
-const hamburger = document.getElementById('hamburgerBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-const mobileSettings = document.getElementById('mobileSettings');
-const openSettings = document.getElementById('openSettings');
-
-hamburger?.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-});
-
-mobileSettings?.addEventListener('click', () => {
-    mobileMenu.classList.add('hidden');
-    openSettings.click(); // reuse existing settings modal
-});
-
-// Close when clicking outside
-document.addEventListener('click', (e) => {
-    if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
-        mobileMenu.classList.add('hidden');
-    }
-});
-
-// --- Mobile menu category switching ---
-document.querySelectorAll(".mobile-item").forEach(btn => {
-    btn.addEventListener("click", async () => {
-        const label = btn.textContent.trim();
-
-        // Ignore Settings
-        if (label === "Settings") return;
-
-        activeCategory = label;
-
-        // Update desktop tabs state (keeps things in sync)
-        document.querySelectorAll(".tab").forEach(t => {
-            t.classList.toggle("active", t.textContent === label);
-        });
-
-        // Update mobile menu active state
-        document.querySelectorAll(".mobile-item").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        // Close menu + reload
-        mobileMenu.classList.add("hidden");
-        await loadAndRenderNews();
-    });
-});

@@ -4,16 +4,196 @@
 
 :root {
     --bg: #f6f6f6;
-    --pill: #e6e6e6;
     --card: #ffffff;
-    --border: rgba(255, 255, 255, 0.15);
     --text: #111111;
     --muted: #6b6b6b;
-
-    --radius-pill: 999px;
-    --radius-card: 18px;
 }
 
+:root[data-theme="dark"] {
+    --bg: #111111;
+    --card: #1a1a1a;
+    --text: #f5f5f5;
+    --muted: #aaaaaa;
+}
+
+/* ======================================================
+   DARK MODE CARD TUNING
+   ====================================================== */
+
+:root[data-theme="dark"] .card {
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+            0 10px 30px rgba(0,0,0,0.6),
+            0 0 0 1px rgba(255,255,255,0.03);
+}
+
+:root[data-theme="dark"] .card-image {
+    background: #111;
+}
+
+/* Title */
+:root[data-theme="dark"] .title {
+    color: #f2f2f2;
+}
+
+:root[data-theme="dark"] .site-name {
+    color: #f2f2f2;
+}
+
+
+/* Summary block */
+:root[data-theme="dark"] .summary {
+    color: #cfcfcf;
+
+}
+
+/* Card footer (badge + time + star) */
+:root[data-theme="dark"] .card-header {
+    background: #141414;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Source badge */
+:root[data-theme="dark"] .badge {
+    background: rgba(255,255,255,0.08);
+    color: #e0e0e0;
+}
+
+/* Time text */
+:root[data-theme="dark"] .card-header .time {
+    color: #9a9a9a;
+}
+
+/* Save star */
+:root[data-theme="dark"] .save-btn {
+    color: #ff9a4d;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ======================================================
+   DARK MODE — SETTINGS MODAL
+   ====================================================== */
+
+:root[data-theme="dark"] .modal {
+    background: #1a1a1a;
+    color: #f5f5f5;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+            0 20px 50px rgba(0,0,0,0.7),
+            0 0 0 1px rgba(255,255,255,0.04);
+}
+
+:root[data-theme="dark"] .modal-header h3 {
+    color: #f5f5f5;
+}
+
+:root[data-theme="dark"] .modal-header button {
+    color: #f5f5f5;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+}
+
+/* Tabs */
+:root[data-theme="dark"] .settings-tabs {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+:root[data-theme="dark"] .settings-tab {
+    background: rgba(255,255,255,0.06);
+    color: #e5e5e5;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+:root[data-theme="dark"] .settings-tab.active {
+    background: rgba(255,255,255,0.14);
+    color: #ffffff;
+}
+
+/* Panel text */
+:root[data-theme="dark"] .settings-panel {
+    color: #e0e0e0;
+}
+
+:root[data-theme="dark"] .muted {
+    color: #aaaaaa;
+}
+
+/* Feed rows */
+:root[data-theme="dark"] .feed-row {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+}
+
+/* Links */
+:root[data-theme="dark"] .request-link {
+    color: #ff9a4d;
+}
+
+/* Footer buttons */
+:root[data-theme="dark"] .modal-actions {
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+:root[data-theme="dark"] .btn {
+    background: rgba(255,255,255,0.08);
+    color: #f5f5f5;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+:root[data-theme="dark"] .btn.primary {
+    background: #ff9a4d;
+    color: #000;
+}
+
+/* ======================================================
+   DARK MODE — SETTINGS TABS FIX
+   ====================================================== */
+
+:root[data-theme="dark"] .settings-tabs {
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+:root[data-theme="dark"] .settings-tab {
+    background: rgba(255,255,255,0.06);
+    color: #dcdcdc;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+:root[data-theme="dark"] .settings-tab:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+:root[data-theme="dark"] .settings-tab.active {
+    background: rgba(255,255,255,0.18);
+    color: #ffffff;
+    border-color: rgba(255,255,255,0.2);
+}
+/* ===============================
+   DESKTOP NAV TABS (DARK MODE)
+   =============================== */
+
+.nav-pill .tab {
+    color: #ffffff;              /* 👈 make text white */
+    background: transparent;
+    opacity: 0.85;
+}
+
+.nav-pill .tab:hover {
+    opacity: 1;
+}
+
+/* Active tab */
+.nav-pill .tab.active {
+    background: #e5e5e5;         /* light pill */
+    color: #111111;              /* dark text */
+    opacity: 1;
+}
 /* ======================================================
    RESET
    ====================================================== */
@@ -26,7 +206,8 @@ body {
     margin: 0;
     font-family: ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
-    color: var(--text);
+
+
 }
 
 /* ======================================================
@@ -312,77 +493,95 @@ body {
     color: var(--muted);
 }
 
-/* ======================================================
-   MODAL / SETTINGS
-   ====================================================== */
-
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.25);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
+/* ===============================
+   SETTINGS MODAL (CLEAN)
+   =============================== */
 
 .modal {
-    width: min(560px, 100%);
-    background: #ffffff;
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 10px;
-}
-
-.modal-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    max-height: 90vh;
 }
 
-.muted {
-    color: var(--muted);
-}
-
-.feed-list {
-    display: grid;
-    gap: 12px;
-    margin: 16px 0 20px;
-}
-
-.feed-row {
+.settings-tabs {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
-    border: 2px solid var(--border);
-    border-radius: 14px;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
 }
 
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 15px 0 10px;
-}
-
-.btn {
-    padding: 10px 16px;
-    border-radius: var(--radius-pill);
-    border: 2px solid var(--border);
-    background: #f0f0f0;
+.settings-tab {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid #ddd;
+    background: #f5f5f5;
     font-weight: 700;
     cursor: pointer;
 }
 
-.btn.primary {
-    background: #d9d9d9;
+.settings-tab.active {
+    background: #ddd;
 }
 
-.hidden {
+.settings-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 4px;
+}
+
+.settings-panel {
     display: none;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+.request-more {
+    margin-top: 16px;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Appearance */
+.appearance-group {
+    margin-bottom: 20px;
+}
+
+.pill-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.pill-group button {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.pill-group button.active {
+    background: #ddd;
+}
+
+/* Footer */
+.modal-actions {
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+}
+
+/* Desktop-only controls */
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 700px) {
+    .desktop-only {
+        display: none;
+    }
 }
 
 /* ======================================================
@@ -471,3 +670,367 @@ body {
         display: none;
     }
 }
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-backdrop.hidden {
+    display: none;
+}
+
+.modal {
+    background: #fff;
+    border-radius: 20px;
+    width: min(560px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.modal {
+    position: relative;
+}
+
+.settings-tabs {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 80px;
+    right: 16px;
+    z-index: 3000;
+}
+
+/* ======================================================
+   MOBILE MENU (OVERLAY)
+   ====================================================== */
+
+.mobile-menu {
+    position: fixed;
+    top: 90px; /* below nav pill */
+    right: 16px;
+    z-index: 2000;
+
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 12px;
+    min-width: 180px;
+}
+
+.mobile-menu.hidden {
+    display: none;
+}
+/* ======================================================
+   MOBILE MENU — FRIENDLY TABS
+   ====================================================== */
+
+@media (max-width: 900px) {
+
+    .mobile-menu {
+        padding: 12px;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    .mobile-item {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 16px;
+        font-weight: 600;
+
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        transition:
+                background-color 0.2s ease,
+                transform 0.15s ease;
+    }
+
+    .mobile-item + .mobile-item {
+        margin-top: 10px;
+    }
+
+    .mobile-item.active {
+        background: rgba(255,255,255,0.18);
+        border-color: rgba(255,255,255,0.25);
+        color: #fff;
+    }
+
+    .mobile-item:active {
+        transform: scale(0.97);
+    }
+
+    /* Settings button gets slight emphasis */
+    .mobile-item.settings {
+        margin-top: 12px;
+        font-weight: 700;
+        background: rgba(245,130,32,0.18);
+        border-color: rgba(245,130,32,0.4);
+        color: #f58220;
+    }
+}
+
+/* ======================================================
+   MOBILE MENU — DARK MODE, BUTTON STYLE
+   ====================================================== */
+
+@media (max-width: 900px) {
+
+    .mobile-menu {
+        position: absolute;
+        top: 72px;
+        right: 16px;
+
+        width: 240px;
+        padding: 16px;
+
+        background: #1a1a1a;
+        border-radius: 22px;
+
+        box-shadow:
+                0 20px 40px rgba(0,0,0,0.55),
+                inset 0 0 0 1px rgba(255,255,255,0.06);
+
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+
+        z-index: 1000;
+    }
+
+    /* Shared button style */
+    .mobile-item {
+        width: 100%;
+        padding: 16px;
+
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.08);
+
+        background: rgba(255,255,255,0.04);
+        color: #f5f5f5;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        transition:
+                background-color 0.2s ease,
+                transform 0.12s ease,
+                border-color 0.2s ease;
+    }
+
+    /* Active tab */
+    .mobile-item.active {
+        background: rgba(255,255,255,0.18);
+        border-color: rgba(255,255,255,0.3);
+    }
+
+    /* Tap feedback */
+    .mobile-item:active {
+        transform: scale(0.97);
+    }
+
+    /* Divider */
+    .mobile-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.08);
+        margin: 4px 0;
+    }
+
+    /* Settings button — accent */
+    .mobile-item.settings {
+        background: rgba(245,130,32,0.18);
+        border-color: rgba(245,130,32,0.4);
+        color: #f58220;
+        font-weight: 800;
+    }
+}
+@media (max-width: 700px) {
+    .modal {
+        padding: 18px;
+        border-radius: 26px;
+    }
+
+    .modal-header h3 {
+        font-size: 22px;
+    }
+}
+@media (max-width: 700px) {
+    .settings-tabs {
+        gap: 12px;
+    }
+
+    .settings-tab {
+        padding: 10px 18px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+}
+@media (max-width: 700px) {
+
+    .feed-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 14px 12px;
+        margin-bottom: 10px;
+
+        border-radius: 14px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .feed-row strong {
+        font-size: 16px;
+    }
+
+    .feed-row small {
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .feed-row input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        accent-color: #f58220;
+    }
+}
+@media (max-width: 700px) {
+    .modal-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        text-align: center;
+        padding: 16px;
+
+        padding-top: 16px;
+        position: sticky;
+        bottom: 0;
+
+        background: linear-gradient(
+                to top,
+                rgba(0,0,0,0.95),
+                rgba(0,0,0,0.7) 60%,
+                transparent
+        );
+    }
+
+    .modal-actions .btn {
+        padding: 14px 0;
+        font-size: 15px;
+        border-radius: 14px;
+    }
+
+    .modal-actions .btn.primary {
+        grid-column: span 2;
+        font-size: 16px;
+        font-weight: 800;
+    }
+}
+@media (max-width: 700px) {
+    .request-sources {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    .request-link {
+        display: inline-block;
+        margin-top: 6px;
+        font-weight: 700;
+        color: #f58220;
+    }
+}
+
+.modal-actions {
+    position: sticky;
+    bottom: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+
+    padding: 18px 16px 22px;
+    margin: 0 -16px -16px;
+
+    background: linear-gradient(
+            to top,
+            rgba(0,0,0,0.95),
+            rgba(0,0,0,0.75) 60%,
+            transparent
+    );
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 10;
+}
+
+.modal-actions .btn {
+    min-width: 110px;
+    height: 48px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    border-radius: 18px;
+}
+@media (max-width: 700px) {
+    .modal-actions {
+        gap: 16px;
+        margin-top: 30px;
+    }
+
+    .modal-actions .btn {
+        flex: 1;
+        max-width: 140px;
+    }
+}
+
+.mobile-brand {
+    margin-top: 14px;
+    padding-top: 12px;
+
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+
+    color: #F58220;
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+
+    user-select: none;
+}
+
+
+

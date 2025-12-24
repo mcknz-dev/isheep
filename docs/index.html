@@ -8,7 +8,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-JDHLWREGNE');
     </script>
 
@@ -17,40 +16,37 @@
     <title>iSheep</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet" />
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <link rel="icon" type="image/png" href="assets/homepage/Sheep.png">
-    <link rel="stylesheet" href="./styles.css" />
-<link rel="apple-touch-icon" href="assets/homepage/Sheep.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
+    <link rel="icon" type="image/png" href="assets/homepage/Sheep.png">
+    <link rel="apple-touch-icon" href="assets/homepage/Sheep.png">
+
+    <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body>
+
 <div class="shell">
 
     <!-- NAV BAR -->
     <div class="nav-pill">
         <div class="brand">
             <span class="site-name">iSheep</span>
-            <img src="assets/homepage/Sheep.png" class="logo-icon">
+            <img src="assets/homepage/Sheep.png" class="logo-icon" alt="iSheep logo">
         </div>
 
-        <button class="hamburger-btn" id="hamburgerBtn">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
         </button>
 
         <nav class="tabs" id="tabs"></nav>
 
         <div class="user">
-            <button class="icon-btn" id="openSettings">
+            <button class="icon-btn" id="openSettings" aria-label="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
         </div>
-
     </div>
-
 
     <!-- MAIN CONTENT -->
     <main class="main">
@@ -60,44 +56,52 @@
 
 </div>
 
-<!-- SETTINGS MODAL -->
+<!-- SETTINGS MODAL BACKDROP -->
 <div class="modal-backdrop hidden" id="modalBackdrop">
+
     <div class="modal">
 
         <div class="modal-header">
             <h3>Settings</h3>
-            <button id="closeSettings">×</button>
+            <button id="closeSettings" aria-label="Close">×</button>
         </div>
 
         <!-- SETTINGS TABS -->
         <div class="settings-tabs">
             <button class="settings-tab active" data-tab="feeds">Feeds</button>
             <button class="settings-tab" data-tab="appearance">Appearance</button>
+            <button class="settings-tab" data-tab="contact">Contact</button>
         </div>
 
         <!-- FEEDS PANEL -->
         <div class="settings-panel active" id="feedsPanel">
             <p class="muted">Choose which sources you want included.</p>
             <div id="feedList"></div>
+
+            <div class="request-sources">
+                <p class="muted" style="margin-top:14px;">Want more sources?</p>
+                <a
+                        class="request-link"
+                        href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source"
+                >
+                    Request more news sources
+                </a>
+            </div>
         </div>
 
         <!-- APPEARANCE PANEL -->
         <div class="settings-panel" id="appearancePanel">
+
             <div class="appearance-row">
                 <label>Theme</label>
-                <select id="themeSelect">
-                    <option value="system">System</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
+                <div class="pill-group" id="themePills">
+                    <button data-theme="light">Light</button>
+                    <button data-theme="dark">Dark</button>
+                    <button data-theme="system">System</button>
+                </div>
             </div>
 
-            <div class="appearance-row">
-                <label>Border color</label>
-                <input type="color" id="borderColorPicker">
-            </div>
-
-            <div class="appearance-row">
+            <div class="appearance-row desktop-only">
                 <label>Cards per row</label>
                 <select id="columnSelect">
                     <option value="2">2</option>
@@ -105,11 +109,22 @@
                     <option value="4">4</option>
                 </select>
             </div>
-            <p>COMING SOON....</p>
         </div>
 
-        <!-- MODAL ACTIONS -->
-        <div class="modal-actions">
+        <!-- CONTACT PANEL -->
+        <div class="settings-panel" id="contactPanel">
+            <p class="muted">
+                Developed by <strong>mcknz.dev</strong>.
+                <br><br>
+                Please contact me for requests or any other questions.
+            </p>
+            <a class="request-link" href="mailto:hello@mcknz.dev">
+                hello@mcknz.dev
+            </a>
+        </div>
+
+        <!-- MODAL ACTIONS (Feeds only) -->
+        <div class="modal-actions" id="feedsActions">
             <button id="selectAll" class="btn">Select all</button>
             <button id="selectNone" class="btn">Select none</button>
             <button id="saveFeeds" class="btn primary">Save</button>
@@ -118,17 +133,22 @@
     </div>
 </div>
 
+<!-- MOBILE MENU -->
 <div class="mobile-menu hidden" id="mobileMenu">
-    <button class="mobile-item active">All</button>
-    <button class="mobile-item">Today</button>
-    <button class="mobile-item">Explore</button>
-    <button class="mobile-item">Saved</button>
+    <button class="mobile-item active" data-category="All">All</button>
+    <button class="mobile-item" data-category="Today">Today</button>
+    <button class="mobile-item" data-category="Explore">Explore</button>
+    <button class="mobile-item" data-category="Read Later">Saved</button>
 
     <div class="mobile-divider"></div>
 
-    <button class="mobile-item settings" id="mobileSettings">
+    <button class="mobile-item settings" id="mobileSettings" type="button">
         <i class="fa-solid fa-gear"></i> Settings
     </button>
+
+    <a href="https://mcknz.dev" class="mobile-brand" target="_blank">
+        MCKNZ.DEV
+    </a>
 </div>
 
 <script type="module" src="./app.js"></script>
