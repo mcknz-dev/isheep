@@ -1117,4 +1117,175 @@ body {
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
 
+.modal-header h3 {
+    font-size: 28px;
+    font-weight: 800;
+}
+
+#closeSettings {
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.05);
+}
+@media (min-width: 900px) {
+    .settings-tabs {
+        background: #f3f3f3;
+        padding: 6px;
+        border-radius: 999px;
+        width: fit-content;
+        margin-bottom: 24px;
+    }
+
+    .settings-tab {
+        padding: 8px 22px;
+        font-size: 15px;
+    }
+
+    .settings-tab.active {
+        background: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+}
+
+.feed-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f7f7f7;
+    margin-bottom: 10px;
+}
+
+.feed-row:hover {
+    background: #ededed;
+}
+.modal-actions {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+}
+.request-sources {
+    text-align: center;
+    margin: 28px 0 8px;
+}
+
+.request-link {
+    font-weight: 600;
+}
+.modal-backdrop {
+    backdrop-filter: blur(6px);
+}
+
+#appearancePanel {
+    display: none;
+    flex-direction: column;
+    gap: 22px;
+}
+
+#appearancePanel.active {
+    display: flex;
+}
+#themePills {
+    display: flex;
+    gap: 12px;
+}
+#themePills button {
+    flex: 1;
+    padding: 12px 0;
+    border-radius: 999px;
+    font-weight: 700;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: #fff;
+    cursor: pointer;
+}
+#themePills button.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+:root[data-theme="dark"] #themePills button {
+    background: #2a2a2a;
+    border-color: #333;
+    color: #ddd;
+}
+
+:root[data-theme="dark"] #themePills button.active {
+    background: #fff;
+    color: #111;
+}
+/* ===============================
+   MOBILE MENU — LIGHT MODE (DEFAULT)
+   =============================== */
+
+.mobile-menu {
+    background: #ffffff;
+    color: #111;
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+
+.mobile-item {
+    background: #f2f2f2;
+    color: #111;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.mobile-item.active {
+    background: #e0e0e0;
+    font-weight: 700;
+}
+
+.mobile-item.settings {
+    background: #f58220;
+    color: #111;
+    border: none;
+}
+
+/* Footer */
+.mobile-menu .brand-footer {
+    color: #666;
+}
+/* ===============================
+   MOBILE MENU — DARK MODE
+   =============================== */
+
+:root[data-theme="dark"] .mobile-menu {
+    background: #1a1a1a;
+    color: #f5f5f5;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+
+:root[data-theme="dark"] .mobile-item {
+    background: #242424;
+    color: #f5f5f5;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+:root[data-theme="dark"] .mobile-item.active {
+    background: #3a3a3a;
+}
+
+:root[data-theme="dark"] .mobile-item.settings {
+    background: #3a2412;
+    color: #f58220;
+    border: 1px solid rgba(245,130,32,0.4);
+}
+
+:root[data-theme="dark"] .brand-footer {
+    color: #aaa;
+}
