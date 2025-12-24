@@ -1090,7 +1090,7 @@ body {
     position: sticky;      /* keep it pinned if you want */
     bottom: 0;
 
-    background: transparent;   /* 🔑 removes dark fade */
+    background: rgba(255, 255, 255, 0.79);   /* 🔑 removes dark fade */
     box-shadow: none;          /* 🔑 removes shadow */
     backdrop-filter: none;     /* 🔑 removes blur */
 
@@ -1246,7 +1246,7 @@ body {
 }
 
 .mobile-item.active {
-    background: #e0e0e0;
+    background: rgba(39, 39, 39, 0.68);
     font-weight: 700;
 }
 
@@ -1505,3 +1505,4 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 10px 26px rgba(0,0,0,0.45);
 }
+
