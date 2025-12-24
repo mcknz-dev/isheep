@@ -1289,3 +1289,219 @@ body {
 :root[data-theme="dark"] .brand-footer {
     color: #aaa;
 }
+
+/* ===============================
+   CONTACT PANEL
+   =============================== */
+
+
+/* Button */
+.contact-button {
+    display: inline-block;
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: #f58220;
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.contact-button:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+/* Footer */
+.contact-footer {
+    margin-top: 22px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* =========================
+   CONTACT PANEL
+========================= */
+
+
+.contact-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+}
+
+.contact-email a {
+    color: #f58220;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.contact-email a:hover {
+    text-decoration: underline;
+}
+
+/* Buy Me a Coffee button */
+.coffee-button img {
+    height: 48px;
+    width: auto;
+    border-radius: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.coffee-button:hover img {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+/* Dark mode polish */
+:root[data-theme="dark"] .coffee-button img {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+}
+
+
+/* DESKTOP TABS — LIGHT MODE */
+:root:not([data-theme="dark"]) .tabs .tab {
+    color: #000;
+    opacity: 1;
+}
+
+/* Active tab (optional clarity) */
+:root:not([data-theme="dark"]) .tabs .tab.active {
+    color: #000;
+    background: #eaeaea;
+}
+
+.settings-panel {
+    display: none;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+#contactPanel {
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    text-align: center;
+    padding: 8px 6px 12px;
+}
+
+/* ===============================
+   CONTACT PANEL – FINAL POLISH
+   =============================== */
+
+#contactPanel {
+    display: none; /* controlled by .active */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    padding: 24px 20px 12px;
+}
+
+/* Show only when active */
+.settings-panel.active#contactPanel {
+    display: flex;
+}
+
+/* Brand line */
+.contact-brand {
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.contact-brand strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+/* Description */
+.contact-text {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 280px;
+    line-height: 1.5;
+}
+
+/* Email */
+.contact-email {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f58220;
+    text-decoration: none;
+}
+
+.contact-email:hover {
+    text-decoration: underline;
+}
+
+/* Buy Me a Coffee */
+.coffee-button img {
+    max-width: 220px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* Support text */
+.contact-support {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* Footer */
+.contact-footer {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.8;
+}
+
+/* ===============================
+   DARK MODE TWEAKS
+   =============================== */
+
+:root[data-theme="dark"] #contactPanel {
+    color: #f5f5f5;
+}
+
+:root[data-theme="dark"] .contact-email {
+    color: #f58220;
+}
+
+/* ===============================
+   MOBILE FRIENDLY
+   =============================== */
+
+@media (max-width: 600px) {
+    #contactPanel {
+        padding-bottom: 20px;
+    }
+
+    .coffee-button img {
+        max-width: 200px;
+    }
+}
+
+/* ===============================
+   MOBILE – BUY ME A COFFEE
+   =============================== */
+
+.mobile-coffee {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0 12px;
+}
+
+.mobile-coffee img {
+    width: 100%;
+    max-width: 240px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mobile-coffee:hover img {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+}
