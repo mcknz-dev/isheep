@@ -159,6 +159,7 @@ wireSubscribe();
 wireNewsletterModal();
 wireSearch();
 wirePullToRefresh();
+wireWWDCCountdown();
 
 await loadFeedsFromServer();
 enabledFeeds = loadEnabledFeeds();
@@ -511,7 +512,12 @@ async function loadAndRenderNews() {
         }
         gridEl.innerHTML = "";
         statusEl.textContent = `${saved.length} saved stories`;
-        saved.forEach(a => gridEl.appendChild(renderCard(a)));
+        saved.forEach((a, i) => {
+            const card = renderCard(a);
+            card.style.animationDelay = `${i * 40}ms`;
+            card.classList.add("card-fadein");
+            gridEl.appendChild(card);
+        });
         return;
     }
 
@@ -536,7 +542,12 @@ async function loadAndRenderNews() {
 
     gridEl.innerHTML = "";
     statusEl.textContent = `${articles.length} stories`;
-    articles.forEach(a => gridEl.appendChild(renderCard(a)));
+    articles.forEach((a, i) => {
+        const card = renderCard(a);
+        card.style.animationDelay = `${i * 40}ms`;
+        card.classList.add("card-fadein");
+        gridEl.appendChild(card);
+    });
 }
 
 document.querySelectorAll("#themePills button").forEach(btn => {
@@ -937,4 +948,38 @@ function wirePullToRefresh() {
             removeIndicator();
         }
     });
+}
+
+/* ======================================================
+   WWDC COUNTDOWN
+   ====================================================== */
+function wireWWDCCountdown() {
+    const el = $("#wwdcCountdown");
+    if (!el) return;
+
+    // Update when Apple announces — change this date
+    const WWDC = new Date("2026-06-08T10:00:00-07:00");
+
+    function update() {
+        const now = new Date();
+        const diff = WWDC - now;
+
+        if (diff <= 0) {
+            el.innerHTML = `<span class="wwdc-live">🎉 WWDC is live!</span>`;
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+        if (days > 0) {
+            el.innerHTML = `<span class="wwdc-text">WWDC <span class="wwdc-number">${days}</span> DAY${days !== 1 ? "S" : ""} AWAY!</span>`;
+        } else {
+            el.innerHTML = `<span class="wwdc-text">WWDC <span class="wwdc-number">${hours}h ${mins}m</span> AWAY!</span>`;
+        }
+    }
+
+    update();
+    setInterval(update, 60000); // update every minute
 }
