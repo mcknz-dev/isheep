@@ -42,6 +42,7 @@
         <nav class="tabs" id="tabs"></nav>
 
         <div class="user">
+            <button class="newsletter-btn" id="openNewsletter">Newsletter</button>
             <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
                 <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
             </button>
@@ -140,6 +141,19 @@
                 </a>
             </div>
 
+            <div class="subscribe-section">
+                <p class="subscribe-heading">📬 Weekly Digest</p>
+                <p class="subscribe-sub">Get the best Apple news every week.</p>
+                <input type="text" id="subFirstName" placeholder="First name (optional)" class="subscribe-input" />
+                <input type="email" id="subEmail" placeholder="your@email.com" class="subscribe-input" />
+                <label class="subscribe-consent">
+                    <input type="checkbox" id="subConsent" />
+                    <span>I agree to receive the iSheep weekly digest</span>
+                </label>
+                <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
+                <p class="subscribe-status" id="subscribeStatus"></p>
+            </div>
+
             <a
                 class="about-coffee"
                 href="https://www.buymeacoffee.com/mcknz.dev"
@@ -162,6 +176,29 @@
             <button id="saveFeeds" class="btn primary">Save</button>
         </div>
 
+    </div>
+</div>
+
+<!-- NEWSLETTER MODAL -->
+<div class="modal-backdrop hidden" id="newsletterBackdrop">
+    <div class="modal newsletter-modal">
+        <div class="modal-header">
+            <h3>Newsletter</h3>
+            <button id="closeNewsletter" aria-label="Close">×</button>
+        </div>
+
+        <div class="newsletter-body">
+            <p class="newsletter-desc">Get the best Apple news delivered to your inbox every week.</p>
+
+            <input type="text" id="nlFirstName" placeholder="First name (optional)" class="subscribe-input" />
+            <input type="email" id="nlEmail" placeholder="your@email.com" class="subscribe-input" />
+            <label class="subscribe-consent">
+                <input type="checkbox" id="nlConsent" />
+                <span>I agree to receive the iSheep weekly digest</span>
+            </label>
+            <button class="subscribe-btn" id="nlSubmitBtn">Subscribe</button>
+            <p class="subscribe-status" id="nlStatus"></p>
+        </div>
     </div>
 </div>
 
