@@ -239,7 +239,6 @@ body {
     align-items: center;
     gap: 8px;
     padding: 12px;
-    margin-top: auto;
 }
 
 .badge {
@@ -287,7 +286,7 @@ body {
     font-weight: 800;
     line-height: 1.25;
     text-align: center;
-    margin: 0;
+    margin: 10px;
     padding: 0 14px;
 }
 
