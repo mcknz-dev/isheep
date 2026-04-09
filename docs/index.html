@@ -23,6 +23,29 @@
 
     <link rel="stylesheet" href="./styles.css" />
     <link rel="manifest" href="./manifest.json" />
+
+    <!-- SEO -->
+    <meta name="description" content="iSheep is your Apple news hub — all the latest from 9to5Mac, MacRumors, AppleInsider, Cult of Mac and more in one clean feed." />
+    <meta name="keywords" content="Apple news, Mac news, iPhone news, iPad news, Apple aggregator, iSheep, Apple rumors" />
+    <meta name="author" content="mcknz.dev" />
+    <link rel="canonical" href="https://isheep.news/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://isheep.news/" />
+    <meta property="og:title" content="iSheep — Your Apple News Hub" />
+    <meta property="og:description" content="All the best Apple news from 9to5Mac, MacRumors, AppleInsider and more — in one clean, minimal feed." />
+    <meta property="og:image" content="https://isheep.news/assets/homepage/Sheep.png" />
+    <meta property="og:site_name" content="iSheep" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@isheepnews" />
+    <meta name="twitter:title" content="iSheep — Your Apple News Hub" />
+    <meta name="twitter:description" content="All the best Apple news from 9to5Mac, MacRumors, AppleInsider and more — in one clean, minimal feed." />
+    <meta name="twitter:image" content="https://isheep.news/assets/homepage/Sheep.png" />
+
+    <!-- PWA -->
     <meta name="theme-color" content="#f58220" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -46,7 +69,9 @@
 
         <nav class="tabs" id="tabs"></nav>
 
-        <div class="wwdc-countdown" id="wwdcCountdown"></div>
+        <div class="nav-center">
+            <div class="wwdc-countdown" id="wwdcCountdown"></div>
+        </div>
 
         <div class="search-wrap" id="searchWrap">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -67,6 +92,8 @@
 
     <!-- MAIN CONTENT -->
     <main class="main">
+        <!-- Mobile WWDC banner — scrolls with content -->
+        <a href="https://developer.apple.com/wwdc26/" target="_blank" rel="noopener noreferrer" class="mobile-wwdc-banner" id="mobileWwdcBanner"></a>
         <div class="news-grid" id="newsGrid"></div>
         <div class="status" id="status"></div>
     </main>
@@ -229,12 +256,15 @@
     <div class="mobile-section">
         <button class="mobile-row active" data-category="All">All</button>
         <button class="mobile-row" data-category="Today">Today</button>
-        <button class="mobile-row" data-category="Explore">Explore</button>
         <button class="mobile-row" data-category="Read Later">Saved</button>
     </div>
 
     <!-- ACTIONS -->
     <div class="mobile-section">
+        <button class="mobile-row" id="mobileDarkToggle">
+            <span id="mobileDarkLabel">Dark Mode</span>
+            <i class="fa-solid fa-moon mobile-row-icon" id="mobileDarkIcon"></i>
+        </button>
         <button class="mobile-row" id="mobileNewsletter">
             <span>Newsletter</span>
             <span class="mobile-row-badge">Subscribe</span>

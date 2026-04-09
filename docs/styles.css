@@ -1199,7 +1199,7 @@ body {
 }
 
 .newsletter-btn:hover {
-    background: #f58220;
+    background: #111;
     color: #fff;
 }
 
@@ -1209,8 +1209,7 @@ body {
 }
 
 :root[data-theme="dark"] .newsletter-btn:hover {
-    background: #f58220;
-    color: #fff;
+    background: rgba(255,255,255,0.15);
 }
 
 /* Hide newsletter btn on mobile — accessible via settings Contact tab */
@@ -1467,16 +1466,17 @@ body {
 
 .new-badge {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #f58220;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(90deg, #61bb46, #fdb827, #f5821f, #e03a3e, #963d97, #009ddc);
     color: #fff;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 1px;
-    padding: 4px 8px;
+    letter-spacing: 2px;
+    padding: 6px 14px;
     border-radius: 999px;
     pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 /* ==========================================================================
@@ -1549,46 +1549,239 @@ body {
    WWDC COUNTDOWN
    ========================================================================== */
 
-.wwdc-countdown {
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: rgba(0,0,0,0.05);
-    border-radius: 999px;
-    padding: 7px 14px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    pointer-events: none;
 }
 
-.wwdc-text {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    text-transform: uppercase;
+.nav-center .wwdc-countdown {
+    pointer-events: all;
 }
 
-.wwdc-number {
-    font-size: 13px;
-    font-weight: 800;
-    color: #f58220;
-}
-
-.wwdc-live {
-    font-size: 12px;
-    font-weight: 700;
-    color: #f58220;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Hide on smaller desktop to avoid overcrowding */
 @media (max-width: 1100px) {
-    .wwdc-countdown {
+    .nav-center {
         display: none;
     }
 }
 
-:root[data-theme="dark"] .wwdc-countdown {
-    background: rgba(255,255,255,0.07);
+.wwdc-countdown {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #000;
+    border-radius: 999px;
+    padding: 10px 24px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+    justify-content: center;
+}
+
+/* Glow emanating from the "26" position */
+.wwdc-countdown::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 68px;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 40%, transparent 70%);
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+/* "WWDC" — dim white, lit slightly by the glow */
+.wwdc-label-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    position: relative;
+    text-shadow: 0 0 8px rgba(255,255,255,0.2);
+}
+
+/* "26" — bright glowing white, the hero */
+.wwdc-year {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0;
+    color: #ffffff;
+    position: relative;
+    text-shadow:
+        0 0 4px #fff,
+        0 0 12px rgba(255,255,255,0.7),
+        0 0 28px rgba(255,255,255,0.3);
+    margin-left: 1px;
+}
+
+/* Divider dot */
+.wwdc-days-text {
+    margin-left: 10px;
+}
+
+/* "60 DAYS AWAY" — plain muted, no glow */
+.wwdc-days-text {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    position: relative;
+}
+
+.wwdc-live {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px #fff, 0 0 20px rgba(255,255,255,0.5);
+}
+
+/* Hide on smaller desktop */
+@media (max-width: 1100px) {
+    .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.nav-center .wwdc-countdown {
+    pointer-events: all;
+}
+
+@media (max-width: 1100px) {
+    .nav-center {
+        display: none;
+    }
+}
+
+.wwdc-countdown {
+        display: none;
+    }
+}
+
+:root[data-theme="dark"] .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.nav-center .wwdc-countdown {
+    pointer-events: all;
+}
+
+@media (max-width: 1100px) {
+    .nav-center {
+        display: none;
+    }
+}
+
+.wwdc-countdown {
+    background: #000;
+}
+
+/* ==========================================================================
+   DEALS TAB
+   ========================================================================== */
+
+.deal-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+:root[data-theme="dark"] .deal-badge {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+.deal-price {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+}
+
+:root[data-theme="dark"] .deal-price {
+    color: #f5f5f5;
+}
+
+.deal-shop-btn {
+    display: inline-block;
+    background: #f58220;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    margin-left: auto;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+}
+
+.deal-shop-btn:hover {
+    opacity: 0.85;
+}
+
+/* ==========================================================================
+   MOBILE WWDC BANNER
+   ========================================================================== */
+
+.mobile-wwdc-banner {
+    display: none;
+    width: 100%;
+    background: #000;
+    border-radius: 18px;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.mobile-wwdc-banner::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 60px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .mobile-wwdc-banner {
+        display: flex;
+    }
 }

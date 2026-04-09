@@ -1,4 +1,5 @@
 import { SITE_CONFIG } from "./config.js";
+import { DEALS } from "./deals.js";
 
 /* ======================================================
    HELPERS
@@ -303,6 +304,31 @@ function wireHamburger() {
         openModal();
     });
 
+    // Dark mode toggle in mobile menu
+    const mobileDarkBtn = $("#mobileDarkToggle");
+    const mobileDarkIcon = $("#mobileDarkIcon");
+    const mobileDarkLabel = $("#mobileDarkLabel");
+
+    function updateMobileDarkBtn() {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        if (mobileDarkIcon) mobileDarkIcon.className = isDark ? "fa-solid fa-sun mobile-row-icon" : "fa-solid fa-moon mobile-row-icon";
+        if (mobileDarkLabel) mobileDarkLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+    }
+
+    updateMobileDarkBtn();
+
+    mobileDarkBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        const next = { ...loadAppearance(), theme: isDark ? "light" : "dark" };
+        saveAppearance(next);
+        applyAppearance();
+        updateMobileDarkBtn();
+        // sync nav toggle icon
+        const navIcon = $("#themeToggleIcon");
+        if (navIcon) navIcon.className = !isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    });
+
     // Newsletter in mobile menu
     const mobileNewsletterBtn = $("#mobileNewsletter");
     mobileNewsletterBtn?.addEventListener("click", (e) => {
@@ -472,6 +498,70 @@ function isNew(dateString) {
     return (Date.now() - d.getTime()) < 60 * 60 * 1000; // within 1 hour
 }
 
+function renderDealCard(deal) {
+    const card = document.createElement("div");
+    card.className = "card deal-card";
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+        window.open(deal.link, "_blank", "noopener,noreferrer");
+    });
+
+    // Image
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "card-image";
+    const img = document.createElement("img");
+    img.src = deal.image;
+    img.loading = "lazy";
+    img.onerror = () => { imgWrap.style.display = "none"; };
+    imgWrap.appendChild(img);
+
+    // Badge
+    const badge = document.createElement("span");
+    badge.className = "deal-badge";
+    badge.textContent = deal.badge;
+    imgWrap.appendChild(badge);
+
+    card.appendChild(imgWrap);
+
+    // Body
+    const body = document.createElement("div");
+    body.className = "card-body";
+
+    const title = document.createElement("h3");
+    title.className = "title";
+    title.textContent = deal.title;
+    body.appendChild(title);
+
+    const summary = document.createElement("p");
+    summary.className = "summary";
+    summary.textContent = deal.summary;
+    body.appendChild(summary);
+
+    card.appendChild(body);
+
+    // Footer
+    const footer = document.createElement("div");
+    footer.className = "card-header";
+
+    const price = document.createElement("div");
+    price.className = "deal-price";
+    price.textContent = deal.price;
+
+    const shopBtn = document.createElement("a");
+    shopBtn.className = "deal-shop-btn";
+    shopBtn.href = deal.link;
+    shopBtn.target = "_blank";
+    shopBtn.rel = "noopener noreferrer";
+    shopBtn.textContent = "Shop on Amazon →";
+    shopBtn.addEventListener("click", (e) => e.stopPropagation());
+
+    footer.appendChild(price);
+    footer.appendChild(shopBtn);
+    card.appendChild(footer);
+
+    return card;
+}
+
 function renderSkeletons() {
     const cols = loadAppearance().columns ?? 4;
     const count = window.innerWidth < 600 ? 4 : cols * 2;
@@ -501,6 +591,20 @@ async function loadAndRenderNews() {
 
     gridEl.innerHTML = "";
     statusEl.textContent = "";
+
+    // Deals tab
+    if (activeCategory === "Deals") {
+        gridEl.innerHTML = "";
+        statusEl.textContent = `${DEALS.length} deals`;
+        DEALS.forEach((deal, i) => {
+            const card = renderDealCard(deal);
+            card.style.animationDelay = `${i * 40}ms`;
+            card.classList.add("card-fadein");
+            gridEl.appendChild(card);
+        });
+        return;
+    }
+
     renderSkeletons();
 
     // ✅ Saved (your UI says "Saved" but your data-category uses "Read Later")
@@ -957,8 +1061,16 @@ function wireWWDCCountdown() {
     const el = $("#wwdcCountdown");
     if (!el) return;
 
-    // Update when Apple announces — change this date
-    const WWDC = new Date("2026-06-08T10:00:00-07:00");
+    // WWDC26 — June 8, 2026 at 1:00 PM EDT (UTC-4, summer time)
+    const WWDC = new Date("2026-06-08T13:00:00-04:00");
+
+    // Make countdown clickable
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => {
+        window.open("https://developer.apple.com/wwdc26/", "_blank", "noopener,noreferrer");
+    });
+
+    const mobileBanner = $("#mobileWwdcBanner");
 
     function update() {
         const now = new Date();
@@ -966,6 +1078,7 @@ function wireWWDCCountdown() {
 
         if (diff <= 0) {
             el.innerHTML = `<span class="wwdc-live">🎉 WWDC is live!</span>`;
+            if (mobileBanner) mobileBanner.innerHTML = `<span class="wwdc-live">🎉 WWDC is live!</span>`;
             return;
         }
 
@@ -973,11 +1086,17 @@ function wireWWDCCountdown() {
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-        if (days > 0) {
-            el.innerHTML = `<span class="wwdc-text">WWDC <span class="wwdc-number">${days}</span> DAY${days !== 1 ? "S" : ""} AWAY!</span>`;
-        } else {
-            el.innerHTML = `<span class="wwdc-text">WWDC <span class="wwdc-number">${hours}h ${mins}m</span> AWAY!</span>`;
-        }
+        const timeStr = days > 0
+            ? `${days} DAY${days !== 1 ? "S" : ""} AWAY`
+            : `${hours}h ${mins}m AWAY`;
+
+        const inner = `
+            <span class="wwdc-label-text">WWDC</span><span class="wwdc-year">26</span>
+            <span class="wwdc-days-text">${timeStr}</span>
+        `;
+
+        el.innerHTML = inner;
+        if (mobileBanner) mobileBanner.innerHTML = inner;
     }
 
     update();
