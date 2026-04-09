@@ -157,6 +157,8 @@ wireAppearanceControls();
 wireThemeToggle();
 wireSubscribe();
 wireNewsletterModal();
+wireSearch();
+wirePullToRefresh();
 
 await loadFeedsFromServer();
 enabledFeeds = loadEnabledFeeds();
@@ -462,11 +464,43 @@ function buildFeedList() {
 /* ======================================================
    NEWS
    ====================================================== */
+function isNew(dateString) {
+    if (!dateString) return false;
+    const d = new Date(dateString);
+    if (isNaN(d)) return false;
+    return (Date.now() - d.getTime()) < 60 * 60 * 1000; // within 1 hour
+}
+
+function renderSkeletons() {
+    const cols = loadAppearance().columns ?? 4;
+    const count = window.innerWidth < 600 ? 4 : cols * 2;
+    gridEl.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+        const card = document.createElement("div");
+        card.className = "card skeleton-card";
+        card.innerHTML = `
+            <div class="skeleton skeleton-image"></div>
+            <div class="card-body" style="padding: 16px; gap: 10px;">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-title" style="width: 75%;"></div>
+                <div class="skeleton skeleton-line"></div>
+                <div class="skeleton skeleton-line" style="width: 60%;"></div>
+            </div>
+            <div class="card-header">
+                <div class="skeleton skeleton-badge"></div>
+                <div class="skeleton skeleton-time"></div>
+            </div>
+        `;
+        gridEl.appendChild(card);
+    }
+}
+
 async function loadAndRenderNews() {
     if (!gridEl || !statusEl) return;
 
     gridEl.innerHTML = "";
-    statusEl.textContent = "Loading…";
+    statusEl.textContent = "";
+    renderSkeletons();
 
     // ✅ Saved (your UI says "Saved" but your data-category uses "Read Later")
     if (activeCategory === "Read Later" || activeCategory === "Saved") {
@@ -475,6 +509,7 @@ async function loadAndRenderNews() {
             statusEl.textContent = "No saved stories yet.";
             return;
         }
+        gridEl.innerHTML = "";
         statusEl.textContent = `${saved.length} saved stories`;
         saved.forEach(a => gridEl.appendChild(renderCard(a)));
         return;
@@ -494,10 +529,12 @@ async function loadAndRenderNews() {
     }
 
     if (!articles.length) {
+        gridEl.innerHTML = "";
         statusEl.textContent = "No articles found.";
         return;
     }
 
+    gridEl.innerHTML = "";
     statusEl.textContent = `${articles.length} stories`;
     articles.forEach(a => gridEl.appendChild(renderCard(a)));
 }
@@ -519,6 +556,12 @@ function renderCard(a) {
     const card = document.createElement("div");
     card.className = "card";
 
+    // Card click — open article
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+        window.open(a.link, "_blank", "noopener,noreferrer");
+    });
+
     // Image
     if (a.image) {
         const imgWrap = document.createElement("div");
@@ -527,6 +570,16 @@ function renderCard(a) {
         img.src = a.image;
         img.loading = "lazy";
         imgWrap.appendChild(img);
+
+        // NEW badge
+        const articleDate = a.published || a.isoDate || a.pubDate || a.date;
+        if (isNew(articleDate)) {
+            const badge = document.createElement("span");
+            badge.className = "new-badge";
+            badge.textContent = "NEW";
+            imgWrap.appendChild(badge);
+        }
+
         card.appendChild(imgWrap);
     }
 
@@ -563,14 +616,39 @@ function renderCard(a) {
     saveBtn.className = "save-btn";
     saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
     saveBtn.onclick = (e) => {
+        e.preventDefault();
         e.stopPropagation();
         isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
         saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
     };
 
+    // Share button
+    const shareBtn = document.createElement("button");
+    shareBtn.className = "share-btn";
+    shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
+    shareBtn.setAttribute("aria-label", "Share");
+    shareBtn.onclick = async (e) => {
+        e.stopPropagation();
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: a.title,
+                    url: a.link
+                });
+            } catch {}
+        } else {
+            await navigator.clipboard.writeText(a.link);
+            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => {
+                shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
+            }, 1500);
+        }
+    };
+
     header.appendChild(source);
     header.appendChild(time);
     header.appendChild(saveBtn);
+    header.appendChild(shareBtn);
 
     card.appendChild(header); // 🔒 DO NOT MOVE
 
@@ -731,6 +809,132 @@ function wireNewsletterModal() {
             status.style.color = "#e53e3e";
             submitBtn.textContent = "Subscribe";
             submitBtn.disabled = false;
+        }
+    });
+}
+
+/* ======================================================
+   SEARCH
+   ====================================================== */
+let searchQuery = "";
+
+function wireSearch() {
+    // Desktop search
+    const input = $("#searchInput");
+    const clear = $("#searchClear");
+
+    if (input) {
+        input.addEventListener("input", () => {
+            searchQuery = input.value.trim().toLowerCase();
+            clear?.classList.toggle("hidden", !searchQuery);
+            // Sync mobile input
+            const mobileInput = $("#mobileSearchInput");
+            if (mobileInput) mobileInput.value = input.value;
+            filterCards();
+        });
+
+        clear?.addEventListener("click", () => {
+            input.value = "";
+            searchQuery = "";
+            clear.classList.add("hidden");
+            filterCards();
+            input.focus();
+        });
+    }
+
+    // Mobile search
+    const mobileInput = $("#mobileSearchInput");
+    const mobileClear = $("#mobileSearchClear");
+
+    if (mobileInput) {
+        mobileInput.addEventListener("input", () => {
+            searchQuery = mobileInput.value.trim().toLowerCase();
+            mobileClear?.classList.toggle("hidden", !searchQuery);
+            // Sync desktop input
+            if (input) input.value = mobileInput.value;
+            filterCards();
+            // Close menu and show results
+            if (searchQuery) {
+                $("#mobileMenu")?.classList.add("hidden");
+            }
+        });
+
+        mobileClear?.addEventListener("click", () => {
+            mobileInput.value = "";
+            searchQuery = "";
+            mobileClear.classList.add("hidden");
+            if (input) input.value = "";
+            filterCards();
+        });
+    }
+}
+
+function filterCards() {
+    const cards = gridEl?.querySelectorAll(".card:not(.skeleton-card)");
+    if (!cards) return;
+    let visible = 0;
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const match = !searchQuery || text.includes(searchQuery);
+        card.style.display = match ? "" : "none";
+        if (match) visible++;
+    });
+    if (statusEl) {
+        statusEl.textContent = searchQuery
+            ? `${visible} result${visible !== 1 ? "s" : ""} for "${searchQuery}"`
+            : `${cards.length} stories`;
+    }
+}
+
+/* ======================================================
+   PULL TO REFRESH
+   ====================================================== */
+function wirePullToRefresh() {
+    // Desktop only — mobile uses touch
+    if (window.innerWidth > 900) return;
+
+    let startY = 0;
+    let pulling = false;
+    let indicator = null;
+
+    function createIndicator() {
+        indicator = document.createElement("div");
+        indicator.className = "pull-indicator";
+        indicator.innerHTML = '<i class="fa-solid fa-rotate"></i>';
+        document.body.appendChild(indicator);
+    }
+
+    function removeIndicator() {
+        indicator?.remove();
+        indicator = null;
+    }
+
+    document.addEventListener("touchstart", (e) => {
+        if (window.scrollY === 0) {
+            startY = e.touches[0].clientY;
+            pulling = true;
+        }
+    }, { passive: true });
+
+    document.addEventListener("touchmove", (e) => {
+        if (!pulling) return;
+        const dy = e.touches[0].clientY - startY;
+        if (dy > 60) {
+            if (!indicator) createIndicator();
+            indicator.classList.add("visible");
+        }
+    }, { passive: true });
+
+    document.addEventListener("touchend", async (e) => {
+        if (!pulling) return;
+        pulling = false;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (dy > 60 && indicator) {
+            indicator.classList.add("spinning");
+            await loadAndRenderNews();
+            removeIndicator();
+        } else {
+            removeIndicator();
         }
     });
 }

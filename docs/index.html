@@ -22,6 +22,11 @@
     <link rel="apple-touch-icon" href="assets/homepage/Sheep.png">
 
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#f58220" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="iSheep" />
 </head>
 
 <body>
@@ -40,6 +45,12 @@
         </button>
 
         <nav class="tabs" id="tabs"></nav>
+
+        <div class="search-wrap" id="searchWrap">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search news…" />
+            <button class="search-clear hidden" id="searchClear">×</button>
+        </div>
 
         <div class="user">
             <button class="newsletter-btn" id="openNewsletter">Newsletter</button>
@@ -204,6 +215,13 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu hidden" id="mobileMenu">
+
+    <!-- SEARCH -->
+    <div class="mobile-search-wrap">
+        <i class="fa-solid fa-magnifying-glass mobile-search-icon"></i>
+        <input type="text" class="mobile-search-input" id="mobileSearchInput" placeholder="Search news…" />
+        <button class="search-clear hidden" id="mobileSearchClear">×</button>
+    </div>
 
     <!-- NAV ITEMS -->
     <div class="mobile-section">
