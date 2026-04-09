@@ -204,36 +204,30 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu hidden" id="mobileMenu">
-    <button class="mobile-item active" data-category="All">All</button>
-    <button class="mobile-item" data-category="Today">Today</button>
-    <button class="mobile-item" data-category="Explore">Explore</button>
-    <button class="mobile-item" data-category="Read Later">Saved</button>
 
-    <div class="mobile-divider"></div>
-
-    <button class="mobile-item settings" id="mobileSettings" type="button">
-        <i class="fa-solid fa-gear"></i> Settings
-    </button>
-
-    <a
-            class="mobile-coffee"
-            href="https://www.buymeacoffee.com/mcknz.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-    >
-        <img
-                src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=mcknz.dev&button_colour=AAAAAAFF&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"
-                alt="Buy me a coffee"
-        />
-    </a>
-
-    <a href="https://mcknz.dev" class="mobile-brand" target="_blank">
-        MCKNZ.DEV
-    </a>
-
-    <div class="modal-footer">
-        © 2026 iSheep.news All rights reserved.
+    <!-- NAV ITEMS -->
+    <div class="mobile-section">
+        <button class="mobile-row active" data-category="All">All</button>
+        <button class="mobile-row" data-category="Today">Today</button>
+        <button class="mobile-row" data-category="Explore">Explore</button>
+        <button class="mobile-row" data-category="Read Later">Saved</button>
     </div>
+
+    <!-- ACTIONS -->
+    <div class="mobile-section">
+        <button class="mobile-row" id="mobileNewsletter">
+            <span>Newsletter</span>
+            <span class="mobile-row-badge">Subscribe</span>
+        </button>
+        <button class="mobile-row" id="mobileSettings" type="button">
+            <span>Settings</span>
+            <i class="fa-solid fa-gear mobile-row-icon"></i>
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <p class="mobile-footer">© 2026 iSheep.news</p>
+
 </div>
 
 <script type="module" src="./app.js"></script>

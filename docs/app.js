@@ -300,6 +300,15 @@ function wireHamburger() {
         openModal();
     });
 
+    // Newsletter in mobile menu
+    const mobileNewsletterBtn = $("#mobileNewsletter");
+    mobileNewsletterBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileMenu?.classList.add("hidden");
+        $("#newsletterBackdrop")?.classList.remove("hidden");
+    });
+
     // Category switching in mobile menu
     document.querySelectorAll(".mobile-item[data-category]").forEach(btn => {
         btn.addEventListener("click", async (e) => {
