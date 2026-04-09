@@ -1438,15 +1438,17 @@ body {
 }
 
 /* Disable hover/scale animation on touch devices */
-@media (hover: none) {
-    .card:hover {
-        transform: none;
-        box-shadow: 0 6px 8px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04);
+@media (hover: none), (max-width: 900px) {
+    .card:hover,
+    :root[data-theme="dark"] .card:hover {
+        transform: none !important;
+        box-shadow: 0 6px 8px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04) !important;
     }
 
-    .card:active {
-        transform: scale(0.97);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 20px rgba(0,0,0,0.08);
+    .card:active,
+    :root[data-theme="dark"] .card:active {
+        transform: scale(0.97) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 20px rgba(0,0,0,0.08) !important;
     }
 }
 
