@@ -60,37 +60,23 @@ function saveAppearance(settings) {
 
 function applyAppearance() {
     const a = loadAppearance();
-    const r = document.documentElement;
+    const root = document.documentElement;
 
-    // Reset (so switching from dark -> light/system works)
-    r.style.removeProperty("--bg");
-    r.style.removeProperty("--card");
-    r.style.removeProperty("--text");
-    r.style.removeProperty("--muted");
+    // Clear previous theme
+    root.removeAttribute("data-theme");
 
-    function applyAppearance() {
-        const a = loadAppearance();
-        const root = document.documentElement;
+    if (a.theme === "dark") {
+        root.setAttribute("data-theme", "dark");
+    }
 
-        // Clear previous theme
-        root.removeAttribute("data-theme");
-
-        if (a.theme === "dark") {
+    if (a.theme === "system") {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (prefersDark) {
             root.setAttribute("data-theme", "dark");
         }
-
-        if (a.theme === "system") {
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            if (prefersDark) {
-                root.setAttribute("data-theme", "dark");
-            }
-        }
-
-        root.style.setProperty("--border", a.borderColor);
-        root.style.setProperty("--grid-columns", a.columns);
     }
-    r.style.setProperty("--border", a.borderColor);
-    r.style.setProperty("--grid-columns", a.columns);
+
+    root.style.setProperty("--grid-columns", a.columns ?? 4);
 }
 
 /* ======================================================

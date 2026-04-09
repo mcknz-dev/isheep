@@ -50,7 +50,7 @@ body {
 /* 4-column grid by default */
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--grid-columns, 4), 1fr);
     gap: 24px;
 }
 
@@ -223,7 +223,15 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    gap: 0;
+}
+
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
+    padding-top: 12px;
 }
 
 .card-header {
@@ -231,6 +239,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 12px;
+    margin-top: auto;
 }
 
 .badge {
@@ -261,8 +270,9 @@ body {
 
 .card-image {
     width: 100%;
-    height: 200px;
+    height: 220px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .card-image img {
@@ -297,6 +307,7 @@ body {
     text-align: center;
     margin: 0;
     padding: 0 16px 16px;
+    flex: 1;
 }
 
 /* --- Dark Mode Card Overrides --- */
@@ -479,10 +490,30 @@ body {
     background: #ededed;
 }
 
-/* Appearance (Theme Pills) */
+/* Appearance Panel */
 #appearancePanel {
     flex-direction: column;
-    gap: 22px;
+    gap: 0;
+}
+
+.appearance-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 4px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    gap: 16px;
+}
+
+.appearance-row:last-child {
+    border-bottom: none;
+}
+
+.appearance-row label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
 }
 
 .appearance-group {
@@ -491,23 +522,42 @@ body {
 
 #themePills {
     display: flex;
-    gap: 12px;
+    gap: 6px;
+    background: rgba(0,0,0,0.05);
+    padding: 4px;
+    border-radius: 12px;
 }
 
 #themePills button {
     flex: 1;
-    padding: 12px 0;
-    border-radius: 999px;
-    font-weight: 700;
-    border: 1px solid rgba(0,0,0,0.12);
-    background: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    background: transparent;
     cursor: pointer;
+    color: var(--muted);
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
 }
 
 #themePills button.active {
-    background: #111;
-    color: #fff;
-    border-color: #111;
+    background: #fff;
+    color: #111;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+
+#columnSelect {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(0,0,0,0.04);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    min-width: 80px;
 }
 
 /* Footer / Actions */
@@ -601,16 +651,29 @@ body {
     color: #e0e0e0;
 }
 
+:root[data-theme="dark"] #themePills {
+    background: rgba(255,255,255,0.06);
+}
+
 :root[data-theme="dark"] #themePills button {
-    background: #2a2a2a;
-    border-color: #333;
-    color: #ddd;
+    color: #aaa;
 }
 
 :root[data-theme="dark"] #themePills button.active {
     background: #fff;
     color: #111;
 }
+
+:root[data-theme="dark"] #columnSelect {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+    color: #f5f5f5;
+}
+
+:root[data-theme="dark"] .appearance-row {
+    border-bottom-color: rgba(255,255,255,0.06);
+}
+
 
 :root[data-theme="dark"] .modal-actions {
     background: #1a1a1a; /* Override transparent/white */
@@ -629,77 +692,147 @@ body {
 }
 
 /* ==========================================================================
-   7. CONTACT PANEL
+   7. CONTACT / ABOUT PANEL
    ========================================================================== */
 
 #contactPanel {
     display: none;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 20px;
-    padding: 24px 20px 12px;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 4px 16px;
 }
 
 .settings-panel.active#contactPanel {
     display: flex;
 }
 
-.contact-brand {
-    font-size: 15px;
-    color: var(--muted);
+/* Hero */
+.about-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 20px 20px;
+    text-align: center;
 }
 
-.contact-brand strong {
-    color: var(--text);
+.about-logo {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+}
+
+.about-wordmark {
+    font-family: Orbitron, sans-serif;
+    font-size: 28px;
     font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text);
 }
 
-.contact-text {
+.about-tagline {
     font-size: 14px;
     color: var(--muted);
-    max-width: 280px;
-    line-height: 1.5;
+    margin: 0;
 }
 
-.contact-email {
-    font-size: 18px;
-    font-weight: 700;
-    color: #f58220;
-    text-decoration: none;
+/* Divider */
+.about-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.07);
+    margin: 0 4px 8px;
 }
 
-.contact-email:hover {
-    text-decoration: underline;
+/* Link rows */
+.about-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
 }
 
-.coffee-button img {
-    max-width: 220px;
+.about-link-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
     border-radius: 14px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: rgba(0,0,0,0.03);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+    transition: background 0.15s ease;
 }
 
-.coffee-button:hover img {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+.about-link-row:hover {
+    background: rgba(0,0,0,0.07);
 }
 
-.contact-support {
-    font-size: 13px;
+.about-link-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.about-link-label {
+    flex: 1;
+}
+
+.about-link-arrow {
     color: var(--muted);
+    font-size: 18px;
+    font-weight: 300;
+}
+
+/* Coffee button */
+.about-coffee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #f58220;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.about-coffee:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
 .contact-footer {
-    margin-top: 10px;
+    text-align: center;
     font-size: 12px;
     color: var(--muted);
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
-/* Dark Mode Contact Overrides */
+/* Dark mode */
 :root[data-theme="dark"] #contactPanel { color: #f5f5f5; }
-:root[data-theme="dark"] .coffee-button img { box-shadow: 0 4px 14px rgba(0,0,0,0.6); }
+
+:root[data-theme="dark"] .about-wordmark { color: #f5f5f5; }
+
+:root[data-theme="dark"] .about-divider {
+    background: rgba(255,255,255,0.07);
+}
+
+:root[data-theme="dark"] .about-link-row {
+    background: rgba(255,255,255,0.04);
+    color: #f5f5f5;
+}
+
+:root[data-theme="dark"] .about-link-row:hover {
+    background: rgba(255,255,255,0.09);
+}
 
 /* ==========================================================================
    8. MOBILE MENU (OVERLAY)
