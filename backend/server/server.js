@@ -181,9 +181,8 @@ app.post("/api/subscribe", async (req, res) => {
             audienceId: RESEND_AUDIENCE_ID
         });
 
-
         // Send confirmation email
-        const greeting = firstName ? `Happy Sunday, ${firstName}!` : "Happy Sunday!";
+        const greeting = firstName ? `Hi ${firstName},` : "Hi there,";
         const { data: subData } = await supabase
             .from("subscribers")
             .select("unsubscribe_token")
@@ -198,38 +197,40 @@ app.post("/api/subscribe", async (req, res) => {
             html: `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+</head>
 <body style="margin:0;padding:0;background:#f2f2f2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
 
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f2f2f2;padding:40px 16px;">
     <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:20px;overflow:hidden;">
 
         <!-- HEADER -->
-        <tr><td style="background:#ffffff;border-radius:20px 20px 0 0;padding:36px 40px 24px;text-align:center;">
-          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="64" height="64" style="display:block;margin:0 auto 12px;image-rendering:pixelated;" />
-          <div style="font-size:32px;font-weight:900;letter-spacing:3px;color:#111111;font-family:Georgia,serif;">iSheep</div>
-          <div style="font-size:13px;color:#aaaaaa;margin-top:6px;">Your Apple news, all in one place.</div>
+        <tr><td style="padding:40px 40px 32px;text-align:center;">
+          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="82" height="72" style="display:block;margin:0 auto 16px;image-rendering:pixelated;" />
+          <div style="font-size:30px;font-weight:700;letter-spacing:3px;color:#111111;font-family:'Orbitron',Georgia,sans-serif;">iSheep</div>
+          <div style="font-size:13px;color:#aaaaaa;margin-top:8px;">Your Apple news, all in one place.</div>
         </td></tr>
 
-        <!-- ORANGE ACCENT BAR -->
-        <tr><td style="background:#f58220;height:3px;"></td></tr>
+        <!-- DIVIDER -->
+        <tr><td style="padding:0 40px;"><div style="border-top:1px solid #eeeeee;"></div></td></tr>
 
         <!-- BODY -->
-        <tr><td style="background:#ffffff;padding:36px 40px 32px;">
+        <tr><td style="padding:36px 40px 40px;">
 
-          <h1 style="font-size:24px;font-weight:800;color:#111111;margin:0 0 16px;">${greeting} 🎉</h1>
+          <h1 style="font-size:24px;font-weight:800;color:#111111;margin:0 0 16px;">Welcome aboard! 🎉</h1>
 
-          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 20px;">
-            You're now on the iSheep weekly digest — the best Apple news, curated and delivered to your inbox every week. No noise, just the good stuff.
+          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 12px;">
+            You're now subscribed to the iSheep weekly digest — the best Apple news, curated and delivered straight to your inbox.
           </p>
 
           <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 32px;">
-            While you wait for the first edition, go catch up on what's happening in Apple world right now.
+            We'll be in touch soon. In the meantime, go see what's happening in Apple world today.
           </p>
 
           <!-- CTA BUTTON -->
-          <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:40px;">
+          <table cellpadding="0" cellspacing="0" width="100%">
             <tr><td align="center">
               <table cellpadding="0" cellspacing="0">
                 <tr><td style="background:#f58220;border-radius:12px;">
@@ -241,41 +242,11 @@ app.post("/api/subscribe", async (req, res) => {
             </td></tr>
           </table>
 
-          <!-- DIVIDER -->
-          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
-            <tr><td style="border-top:1px solid #eeeeee;"></td></tr>
-          </table>
-
-          <!-- WHAT TO EXPECT -->
-          <p style="font-size:13px;font-weight:700;color:#111;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;">What to expect</p>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-              <td style="padding:10px 14px;background:#f7f7f7;border-radius:10px;margin-bottom:8px;">
-                <span style="font-size:18px;">📱</span>
-                <span style="font-size:14px;color:#333;margin-left:8px;">Top Apple news of the week</span>
-              </td>
-            </tr>
-            <tr><td style="height:8px;"></td></tr>
-            <tr>
-              <td style="padding:10px 14px;background:#f7f7f7;border-radius:10px;">
-                <span style="font-size:18px;">🔍</span>
-                <span style="font-size:14px;color:#333;margin-left:8px;">Curated — no fluff, no clickbait</span>
-              </td>
-            </tr>
-            <tr><td style="height:8px;"></td></tr>
-            <tr>
-              <td style="padding:10px 14px;background:#f7f7f7;border-radius:10px;">
-                <span style="font-size:18px;">📬</span>
-                <span style="font-size:14px;color:#333;margin-left:8px;">Once a week, every week</span>
-              </td>
-            </tr>
-          </table>
-
         </td></tr>
 
         <!-- FOOTER -->
-        <tr><td style="background:#f7f7f7;border-radius:0 0 20px 20px;padding:24px 40px;text-align:center;">
-          <p style="font-size:12px;color:#999999;margin:0 0 8px;">
+        <tr><td style="background:#f7f7f7;padding:24px 40px;text-align:center;border-top:1px solid #eeeeee;">
+          <p style="font-size:12px;color:#999999;margin:0 0 6px;">
             Sent by <a href="https://isheep.news" style="color:#f58220;text-decoration:none;font-weight:600;">iSheep.news</a> · Built by <a href="https://mcknz.dev" style="color:#f58220;text-decoration:none;font-weight:600;">mcknz.dev</a>
           </p>
           <p style="font-size:12px;color:#bbbbbb;margin:0;">
