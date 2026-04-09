@@ -155,6 +155,8 @@ wireSettingsTabs();
 wireHamburger();
 wireAppearanceControls();
 wireThemeToggle();
+wireSubscribe();
+wireNewsletterModal();
 
 await loadFeedsFromServer();
 enabledFeeds = loadEnabledFeeds();
@@ -587,3 +589,139 @@ function setTheme(theme) {
     localStorage.setItem("appearance", JSON.stringify(appearance));
 }
 
+
+/* ======================================================
+   NEWSLETTER SUBSCRIBE
+   ====================================================== */
+function wireSubscribe() {
+    const btn = $("#subscribeBtn");
+    const status = $("#subscribeStatus");
+    if (!btn) return;
+
+    btn.addEventListener("click", async () => {
+        const email = $("#subEmail")?.value.trim();
+        const firstName = $("#subFirstName")?.value.trim();
+        const consent = $("#subConsent")?.checked;
+
+        if (!email) {
+            status.textContent = "Please enter your email.";
+            status.style.color = "#e53e3e";
+            return;
+        }
+        if (!consent) {
+            status.textContent = "Please agree to receive emails.";
+            status.style.color = "#e53e3e";
+            return;
+        }
+
+        btn.textContent = "Subscribing…";
+        btn.disabled = true;
+        status.textContent = "";
+
+        try {
+            const res = await fetch(`${SITE_CONFIG.apiBase}/api/subscribe`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, firstName })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                status.textContent = "🎉 You're subscribed! Check your inbox.";
+                status.style.color = "#f58220";
+                btn.textContent = "Subscribed!";
+                $("#subEmail").value = "";
+                $("#subFirstName").value = "";
+                $("#subConsent").checked = false;
+            } else if (res.status === 409) {
+                status.textContent = "You're already subscribed!";
+                status.style.color = "#f58220";
+                btn.textContent = "Subscribe";
+                btn.disabled = false;
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (err) {
+            status.textContent = err.message || "Something went wrong. Try again.";
+            status.style.color = "#e53e3e";
+            btn.textContent = "Subscribe";
+            btn.disabled = false;
+        }
+    });
+}
+
+/* ======================================================
+   NEWSLETTER MODAL
+   ====================================================== */
+function wireNewsletterModal() {
+    const openBtn = $("#openNewsletter");
+    const backdrop = $("#newsletterBackdrop");
+    const closeBtn = $("#closeNewsletter");
+    const submitBtn = $("#nlSubmitBtn");
+    const status = $("#nlStatus");
+
+    openBtn?.addEventListener("click", () => {
+        backdrop?.classList.remove("hidden");
+    });
+
+    closeBtn?.addEventListener("click", () => {
+        backdrop?.classList.add("hidden");
+    });
+
+    backdrop?.addEventListener("click", (e) => {
+        if (e.target === backdrop) backdrop.classList.add("hidden");
+    });
+
+    submitBtn?.addEventListener("click", async () => {
+        const email = $("#nlEmail")?.value.trim();
+        const firstName = $("#nlFirstName")?.value.trim();
+        const consent = $("#nlConsent")?.checked;
+
+        if (!email) {
+            status.textContent = "Please enter your email.";
+            status.style.color = "#e53e3e";
+            return;
+        }
+        if (!consent) {
+            status.textContent = "Please agree to receive emails.";
+            status.style.color = "#e53e3e";
+            return;
+        }
+
+        submitBtn.textContent = "Subscribing…";
+        submitBtn.disabled = true;
+        status.textContent = "";
+
+        try {
+            const res = await fetch(`${SITE_CONFIG.apiBase}/api/subscribe`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, firstName })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                status.textContent = "🎉 You're subscribed! Check your inbox.";
+                status.style.color = "#f58220";
+                submitBtn.textContent = "Subscribed!";
+                $("#nlEmail").value = "";
+                $("#nlFirstName").value = "";
+                $("#nlConsent").checked = false;
+            } else if (res.status === 409) {
+                status.textContent = "You're already subscribed!";
+                status.style.color = "#f58220";
+                submitBtn.textContent = "Subscribe";
+                submitBtn.disabled = false;
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (err) {
+            status.textContent = err.message || "Something went wrong. Try again.";
+            status.style.color = "#e53e3e";
+            submitBtn.textContent = "Subscribe";
+            submitBtn.disabled = false;
+        }
+    });
+}
