@@ -208,7 +208,7 @@ app.post("/api/subscribe", async (req, res) => {
 
         <!-- HEADER -->
         <tr><td style="padding:40px 40px 32px;text-align:center;">
-          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="82" height="72" style="display:block;margin:0 auto 16px;image-rendering:pixelated;" />
+          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="82" height="82" style="display:block;margin:0 auto 16px;image-rendering:pixelated;" />
           <div style="font-size:30px;font-weight:700;letter-spacing:3px;color:#111111;font-family:'Orbitron',Georgia,sans-serif;">iSheep</div>
           <div style="font-size:13px;color:#aaaaaa;margin-top:8px;">Your Apple news, all in one place.</div>
         </td></tr>
