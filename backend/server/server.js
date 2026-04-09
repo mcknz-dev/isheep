@@ -181,30 +181,114 @@ app.post("/api/subscribe", async (req, res) => {
             audienceId: RESEND_AUDIENCE_ID
         });
 
+
         // Send confirmation email
-        const greeting = firstName ? `Hi ${firstName}` : "Hi there";
+        const greeting = firstName ? `Happy Sunday, ${firstName}!` : "Happy Sunday!";
+        const { data: subData } = await supabase
+            .from("subscribers")
+            .select("unsubscribe_token")
+            .eq("email", email)
+            .single();
+        const unsubToken = subData?.unsubscribe_token ?? "";
+
         await resend.emails.send({
             from: "iSheep <hello@isheep.news>",
             to: email,
-            subject: "🐑 You're subscribed to iSheep!",
+            subject: "🐑 You're in! Welcome to iSheep",
             html: `
-                <div style="font-family: system-ui, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 24px; background: #ffffff;">
-                    <div style="text-align: center; margin-bottom: 32px;">
-                        <h1 style="font-size: 32px; font-weight: 800; letter-spacing: 2px; margin: 0; color: #111;">iSheep</h1>
-                        <p style="color: #888; margin: 8px 0 0; font-size: 14px;">Your Apple news, all in one place.</p>
-                    </div>
-                    <h2 style="font-size: 22px; font-weight: 700; color: #111; margin-bottom: 12px;">${greeting}, welcome aboard! 🎉</h2>
-                    <p style="color: #444; line-height: 1.6; margin-bottom: 24px;">
-                        You're now subscribed to the iSheep weekly digest. Every week you'll get the best Apple news delivered straight to your inbox.
-                    </p>
-                    <a href="https://isheep.news" style="display: inline-block; background: #f58220; color: #fff; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 12px; font-size: 15px;">
-                        Read today's news →
-                    </a>
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 40px 0 24px;" />
-                    <p style="color: #aaa; font-size: 12px; text-align: center;">
-                        © 2026 iSheep.news — <a href="https://isheep.onrender.com/api/unsubscribe?token=TOKEN_PLACEHOLDER" style="color: #aaa;">Unsubscribe</a>
-                    </p>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f2f2f2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f2f2f2;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+
+        <!-- HEADER -->
+        <tr><td style="background:#ffffff;border-radius:20px 20px 0 0;padding:36px 40px 24px;text-align:center;">
+          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="64" height="64" style="display:block;margin:0 auto 12px;image-rendering:pixelated;" />
+          <div style="font-size:32px;font-weight:900;letter-spacing:3px;color:#111111;font-family:Georgia,serif;">iSheep</div>
+          <div style="font-size:13px;color:#aaaaaa;margin-top:6px;">Your Apple news, all in one place.</div>
+        </td></tr>
+
+        <!-- ORANGE ACCENT BAR -->
+        <tr><td style="background:#f58220;height:3px;"></td></tr>
+
+        <!-- BODY -->
+        <tr><td style="background:#ffffff;padding:36px 40px 32px;">
+
+          <h1 style="font-size:24px;font-weight:800;color:#111111;margin:0 0 16px;">${greeting} 🎉</h1>
+
+          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 20px;">
+            You're now on the iSheep weekly digest — the best Apple news, curated and delivered to your inbox every week. No noise, just the good stuff.
+          </p>
+
+          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 32px;">
+            While you wait for the first edition, go catch up on what's happening in Apple world right now.
+          </p>
+
+          <!-- CTA BUTTON -->
+          <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:40px;">
+            <tr><td align="center">
+              <table cellpadding="0" cellspacing="0">
+                <tr><td style="background:#f58220;border-radius:12px;">
+                  <a href="https://isheep.news" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;">
+                    Read today's news →
+                  </a>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+
+          <!-- DIVIDER -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+            <tr><td style="border-top:1px solid #eeeeee;"></td></tr>
+          </table>
+
+          <!-- WHAT TO EXPECT -->
+          <p style="font-size:13px;font-weight:700;color:#111;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;">What to expect</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="padding:10px 14px;background:#f7f7f7;border-radius:10px;margin-bottom:8px;">
+                <span style="font-size:18px;">📱</span>
+                <span style="font-size:14px;color:#333;margin-left:8px;">Top Apple news of the week</span>
+              </td>
+            </tr>
+            <tr><td style="height:8px;"></td></tr>
+            <tr>
+              <td style="padding:10px 14px;background:#f7f7f7;border-radius:10px;">
+                <span style="font-size:18px;">🔍</span>
+                <span style="font-size:14px;color:#333;margin-left:8px;">Curated — no fluff, no clickbait</span>
+              </td>
+            </tr>
+            <tr><td style="height:8px;"></td></tr>
+            <tr>
+              <td style="padding:10px 14px;background:#f7f7f7;border-radius:10px;">
+                <span style="font-size:18px;">📬</span>
+                <span style="font-size:14px;color:#333;margin-left:8px;">Once a week, every week</span>
+              </td>
+            </tr>
+          </table>
+
+        </td></tr>
+
+        <!-- FOOTER -->
+        <tr><td style="background:#f7f7f7;border-radius:0 0 20px 20px;padding:24px 40px;text-align:center;">
+          <p style="font-size:12px;color:#999999;margin:0 0 8px;">
+            Sent by <a href="https://isheep.news" style="color:#f58220;text-decoration:none;font-weight:600;">iSheep.news</a> · Built by <a href="https://mcknz.dev" style="color:#f58220;text-decoration:none;font-weight:600;">mcknz.dev</a>
+          </p>
+          <p style="font-size:12px;color:#bbbbbb;margin:0;">
+            <a href="https://isheep.onrender.com/api/unsubscribe?token=${unsubToken}" style="color:#bbbbbb;">Unsubscribe</a> · © 2026 iSheep.news
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+
+</body>
+</html>
             `
         });
 
