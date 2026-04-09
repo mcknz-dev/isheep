@@ -219,10 +219,12 @@ app.post("/api/subscribe", async (req, res) => {
         <!-- BODY -->
         <tr><td style="padding:36px 40px 40px;">
 
-          <h1 style="font-size:24px;font-weight:800;color:#111111;margin:0 0 16px;">Welcome aboard! 🎉</h1>
+          <h1 style="font-size:24px;font-weight:800;color:#111111;margin:0 0 16px;text-align:center;">
+  Welcome aboard${firstName ? `, ${firstName}` : ""}! 🎉
+</h1>
 
           <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 12px;">
-            You're now subscribed to the iSheep weekly digest — the best Apple news, curated and delivered straight to your inbox.
+            You're now subscribed to the iSheep weekly digest!
           </p>
 
           <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 32px;">
@@ -247,7 +249,7 @@ app.post("/api/subscribe", async (req, res) => {
         <!-- FOOTER -->
         <tr><td style="background:#f7f7f7;padding:24px 40px;text-align:center;border-top:1px solid #eeeeee;">
           <p style="font-size:12px;color:#999999;margin:0 0 6px;">
-            Sent by <a href="https://isheep.news" style="color:#f58220;text-decoration:none;font-weight:600;">iSheep.news</a> · Built by <a href="https://mcknz.dev" style="color:#f58220;text-decoration:none;font-weight:600;">mcknz.dev</a>
+            Sent by <a href="https://isheep.news" style="color:#f58220;text-decoration:none;font-weight:600;">iSheep.news</a> · Powered by <a href="https://mcknz.dev" style="color:#f58220;text-decoration:none;font-weight:600;">mcknz.dev</a>
           </p>
           <p style="font-size:12px;color:#bbbbbb;margin:0;">
             <a href="https://isheep.onrender.com/api/unsubscribe?token=${unsubToken}" style="color:#bbbbbb;">Unsubscribe</a> · © 2026 iSheep.news
