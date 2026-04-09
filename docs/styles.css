@@ -1305,22 +1305,21 @@ body {
 .search-wrap {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: rgba(0,0,0,0.05);
     border-radius: 999px;
     padding: 8px 14px;
-    flex: 1;
-    max-width: 280px;
-    transition: background 0.15s ease, max-width 0.2s ease;
+    max-width: 220px;
+    transition: background 0.2s ease, max-width 0.2s ease;
 }
 
 .search-wrap:focus-within {
     background: rgba(0,0,0,0.08);
-    max-width: 360px;
+    max-width: 320px;
 }
 
 .search-icon {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--muted);
     flex-shrink: 0;
 }
@@ -1332,6 +1331,7 @@ body {
     color: var(--text);
     outline: none;
     width: 100%;
+    min-width: 0;
     font-family: inherit;
 }
 
@@ -1343,18 +1343,23 @@ body {
     background: none;
     border: none;
     color: var(--muted);
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
     padding: 0;
     line-height: 1;
     flex-shrink: 0;
+    opacity: 0.6;
+}
+
+.search-clear:hover {
+    opacity: 1;
 }
 
 .search-clear.hidden {
     display: none;
 }
 
-/* Hide search on mobile — too cramped */
+/* Hide search on mobile */
 @media (max-width: 900px) {
     .search-wrap {
         display: none;
