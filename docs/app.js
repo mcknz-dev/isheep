@@ -154,6 +154,7 @@ wireModal();
 wireSettingsTabs();
 wireHamburger();
 wireAppearanceControls();
+wireThemeToggle();
 
 await loadFeedsFromServer();
 enabledFeeds = loadEnabledFeeds();
@@ -357,6 +358,36 @@ function wireAppearanceControls() {
             await loadAndRenderNews();
         });
     }
+}
+
+/* ======================================================
+   THEME TOGGLE (NAV BAR)
+   ====================================================== */
+function wireThemeToggle() {
+    const btn = $("#themeToggle");
+    const icon = $("#themeToggleIcon");
+    if (!btn || !icon) return;
+
+    function updateIcon() {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    }
+
+    updateIcon();
+
+    btn.addEventListener("click", () => {
+        const current = loadAppearance();
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        const next = { ...current, theme: isDark ? "light" : "dark" };
+        saveAppearance(next);
+        applyAppearance();
+        updateIcon();
+
+        // Keep the settings panel pills in sync
+        document.querySelectorAll("#themePills button").forEach(b => {
+            b.classList.toggle("active", b.dataset.theme === next.theme);
+        });
+    });
 }
 
 /* ======================================================
