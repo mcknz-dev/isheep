@@ -181,6 +181,7 @@ app.post("/api/subscribe", async (req, res) => {
             audienceId: RESEND_AUDIENCE_ID
         });
 
+
         // Send confirmation email
         const greeting = firstName ? `Happy Sunday, ${firstName}!` : "Happy Sunday!";
         const { data: subData } = await supabase
