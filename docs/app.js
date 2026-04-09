@@ -1,5 +1,4 @@
 import { SITE_CONFIG } from "./config.js";
-import { DEALS } from "./deals.js";
 
 /* ======================================================
    HELPERS
@@ -591,19 +590,6 @@ async function loadAndRenderNews() {
 
     gridEl.innerHTML = "";
     statusEl.textContent = "";
-
-    // Deals tab
-    if (activeCategory === "Deals") {
-        gridEl.innerHTML = "";
-        statusEl.textContent = `${DEALS.length} deals`;
-        DEALS.forEach((deal, i) => {
-            const card = renderDealCard(deal);
-            card.style.animationDelay = `${i * 40}ms`;
-            card.classList.add("card-fadein");
-            gridEl.appendChild(card);
-        });
-        return;
-    }
 
     renderSkeletons();
 
