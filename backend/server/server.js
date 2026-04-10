@@ -263,6 +263,7 @@ app.post("/api/subscribe", async (req, res) => {
 
 </body>
 </html>
+
             `
         });
 
