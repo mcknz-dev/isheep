@@ -268,10 +268,14 @@ function wireSettingsTabs() {
    ====================================================== */
 function wireHamburger() {
     // Toggle menu
+    let menuOpenedAt = 0;
+
     hamburgerBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
+        const isHidden = mobileMenu?.classList.contains("hidden");
         mobileMenu?.classList.toggle("hidden");
+        if (isHidden) menuOpenedAt = Date.now();
     });
 
     // Clicking inside menu should NOT close it
@@ -279,8 +283,9 @@ function wireHamburger() {
         e.stopPropagation();
     });
 
-    // Click outside closes menu
+    // Click outside closes menu — but ignore the tap that opened it
     document.addEventListener("click", () => {
+        if (Date.now() - menuOpenedAt < 300) return;
         mobileMenu?.classList.add("hidden");
     });
 
