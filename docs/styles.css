@@ -972,7 +972,13 @@ body {
 }
 
 /* Desktop (1025px+) */
-@media (min-width: 1025px) {
+@media (min-width: 1025px) and (max-width: 1400px) {
+    .news-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1401px) {
     .news-grid {
         grid-template-columns: repeat(var(--grid-columns, 4), 1fr);
     }
@@ -1013,6 +1019,8 @@ body {
     margin-right: -8px;
     min-width: 44px;
     min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .desktop-only {
@@ -1832,7 +1840,7 @@ body {
 
 @media (max-width: 600px) {
     .mobile-wwdc-banner {
-        display: flex;
+        display: none;
     }
 }
 
