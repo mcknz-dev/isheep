@@ -1599,13 +1599,12 @@ body {
 
 /* "WWDC" — dim white, lit slightly by the glow */
 .wwdc-label-text {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
     color: rgba(255,255,255,0.75);
     text-transform: uppercase;
     position: relative;
-    text-shadow: 0 0 8px rgba(255,255,255,0.2);
 }
 
 /* "26" — bright glowing white, the hero */
@@ -1629,8 +1628,8 @@ body {
 
 /* "60 DAYS AWAY" — plain muted, no glow */
 .wwdc-days-text {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 900;
     letter-spacing: 1px;
     color: rgba(255,255,255,0.7);
     text-transform: uppercase;
@@ -1784,4 +1783,18 @@ body {
     .mobile-wwdc-banner {
         display: flex;
     }
+}
+
+.mobile-wwdc-banner,
+.mobile-wwdc-banner .wwdc-label-text,
+.mobile-wwdc-banner .wwdc-days-text {
+    color: rgba(255,255,255,0.7);
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.mobile-wwdc-banner .wwdc-year {
+    color: #fff;
+    font-weight: 900;
+    margin-left: -5px;
 }

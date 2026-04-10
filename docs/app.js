@@ -1082,7 +1082,7 @@ function wireWWDCCountdown() {
         `;
 
         el.innerHTML = inner;
-        if (mobileBanner) mobileBanner.innerHTML = inner;
+        if (mobileBanner) mobileBanner.innerHTML = `<span class="wwdc-label-text">WWDC</span><span class="wwdc-year">26</span><span class="wwdc-days-text">${timeStr}</span>`;
     }
 
     update();
