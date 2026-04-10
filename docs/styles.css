@@ -995,12 +995,12 @@ body {
     /* Show Hamburger */
     .hamburger-btn {
         display: block;
-        font-size: 40px;
+        font-size: 24px;
         background: transparent;
         border: none;
         cursor: pointer;
         color: #F58220;
-        margin-top: 10px;
+        margin-top: 0;
     }
 
     /* Stack Grid */
@@ -1020,14 +1020,33 @@ body {
         margin-right: calc(-50vw + 50%);
         margin-top: -60px;
         border-radius: 0;
+        display: grid;
+        grid-template-columns: 44px 1fr 44px;
+        align-items: center;
+    }
+
+    /* Center brand in middle column */
+    .brand {
+        grid-column: 2;
+        justify-self: center;
+        align-items: center;
+        margin-top: 8px;
+        margin-bottom: 4px;
+    }
+
+    /* Hamburger in third column */
+    .hamburger-btn {
+        grid-column: 3;
+        justify-self: end;
+        align-self: center;
     }
 
     .logo-icon {
-        margin-top: 10px;
+        margin-top: 0;
     }
 
     .site-name {
-        margin-top: 10px;
+        margin-top: 0;
     }
 }
 
