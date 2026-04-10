@@ -138,6 +138,7 @@ const feedsActions = $("#feedsActions");
    ====================================================== */
 let activeCategory = "All";
 let allFeeds = [];
+let menuOpenedAt = 0;
 let enabledFeeds = [];
 let feedChecks = new Map();
 let isListView = false;
@@ -268,8 +269,6 @@ function wireSettingsTabs() {
    ====================================================== */
 function wireHamburger() {
     // Toggle menu
-    let menuOpenedAt = 0;
-
     function toggleMenu(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -337,10 +336,15 @@ function wireHamburger() {
     const mobileDarkIcon = $("#mobileDarkIcon");
     const mobileDarkLabel = $("#mobileDarkLabel");
 
+    // Dark mode toggle in mobile nav bar
+    const mobileNavThemeBtn = $("#mobileThemeToggle");
+    const mobileNavThemeIcon = $("#mobileThemeIcon");
+
     function updateAllDarkBtns() {
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         if (mobileDarkIcon) mobileDarkIcon.className = isDark ? "fa-solid fa-sun mobile-row-icon" : "fa-solid fa-moon mobile-row-icon";
         if (mobileDarkLabel) mobileDarkLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+        if (mobileNavThemeIcon) mobileNavThemeIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
         const navIcon = $("#themeToggleIcon");
         if (navIcon) navIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
     }
@@ -357,6 +361,8 @@ function wireHamburger() {
     };
 
     mobileDarkBtn?.addEventListener("click", toggleDark);
+    mobileNavThemeBtn?.addEventListener("touchend", (e) => { e.preventDefault(); e.stopPropagation(); toggleDark(e); }, { passive: false });
+    mobileNavThemeBtn?.addEventListener("click", toggleDark);
 
     // Newsletter in mobile menu
     const mobileNewsletterBtn = $("#mobileNewsletter");
@@ -364,6 +370,18 @@ function wireHamburger() {
         e.preventDefault();
         e.stopPropagation();
         mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
+        $("#newsletterBackdrop")?.classList.remove("hidden");
+    });
+
+    // Newsletter in mobile nav bar
+    const mobileNavNewsletterBtn = $("#mobileNewsletterBtn");
+    mobileNavNewsletterBtn?.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        $("#newsletterBackdrop")?.classList.remove("hidden");
+    }, { passive: false });
+    mobileNavNewsletterBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
         $("#newsletterBackdrop")?.classList.remove("hidden");
     });
 
@@ -1152,21 +1170,35 @@ function wireWWDCCountdown() {
    MOBILE LIST VIEW TOGGLE
    ====================================================== */
 function wireViewToggle() {
-    const btn = $("#mobileViewToggle");
-    if (!btn) return;
+    // Nav bar button
+    const navBtn = $("#mobileViewToggle");
+    // Menu row button (different element, same action)
+    const menuRowBtn = $("#mobileViewToggleRow");
 
     viewMode = localStorage.getItem("viewMode") || "grid";
     isListView = false;
     applyViewMode();
 
-    btn.addEventListener("click", (e) => {
+    function doToggle(e) {
+        e.preventDefault();
         e.stopPropagation();
         viewMode = viewMode === "grid" ? "tiles" : "grid";
         localStorage.setItem("viewMode", viewMode);
-        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
+        mobileMenu?.classList.add("hidden");
+        hamburgerBtn?.classList.remove("open");
         applyViewMode();
         loadAndRenderNews();
-    });
+    }
+
+    if (navBtn) {
+        navBtn.addEventListener("touchend", doToggle, { passive: false });
+        navBtn.addEventListener("click", doToggle);
+    }
+
+    if (menuRowBtn) {
+        menuRowBtn.addEventListener("touchend", doToggle, { passive: false });
+        menuRowBtn.addEventListener("click", doToggle);
+    }
 }
 
 function applyViewMode() {
