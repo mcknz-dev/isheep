@@ -1384,7 +1384,7 @@ function wireFirstVisitPopup() {
     // Show after a short delay so page loads first
     setTimeout(() => {
         backdrop.classList.remove("hidden");
-    }, 2500);
+    }, 8000);
 
     const close = () => {
         backdrop.classList.add("hidden");
