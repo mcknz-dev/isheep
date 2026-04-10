@@ -58,12 +58,22 @@
 
     <!-- NAV BAR -->
     <div class="nav-pill">
-        <div class="brand mobile-brand-center">
+        <div class="brand">
             <span class="site-name">iSheep</span>
             <img src="assets/homepage/Sheep.png" class="logo-icon" alt="iSheep logo">
         </div>
 
-        <div class="mobile-nav-actions"></div>
+        <div class="mobile-nav-actions">
+            <button class="mobile-icon-btn" id="mobileNewsletterBtn" aria-label="Newsletter">
+                <i class="fa-solid fa-envelope"></i>
+            </button>
+            <button class="mobile-icon-btn" id="mobileThemeToggle" aria-label="Toggle theme">
+                <i class="fa-solid fa-moon" id="mobileThemeIcon"></i>
+            </button>
+            <button class="mobile-icon-btn" id="hamburgerBtn" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
 
         <nav class="tabs" id="tabs"></nav>
 
@@ -192,7 +202,7 @@
             <span id="mobileDarkLabel">Dark Mode</span>
             <i class="fa-solid fa-moon mobile-row-icon" id="mobileDarkIcon"></i>
         </button>
-        <button class="mobile-row" id="mobileViewToggle">
+        <button class="mobile-row" id="mobileViewToggleRow">
             <span id="mobileViewLabel">Compact View</span>
             <i class="fa-solid fa-grip mobile-row-icon" id="mobileViewIcon"></i>
         </button>
