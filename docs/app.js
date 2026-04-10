@@ -140,6 +140,9 @@ let activeCategory = "All";
 let allFeeds = [];
 let enabledFeeds = [];
 let feedChecks = new Map();
+let isListView = false;
+// viewMode: "grid" | "tiles"
+let viewMode = "grid";
 
 /* ======================================================
    INIT
@@ -160,6 +163,8 @@ wireNewsletterModal();
 wireSearch();
 wirePullToRefresh();
 wireWWDCCountdown();
+wireViewToggle();
+wireFirstVisitPopup();
 
 await loadFeedsFromServer();
 enabledFeeds = loadEnabledFeeds();
@@ -645,9 +650,15 @@ async function loadAndRenderNews() {
     }
 
     gridEl.innerHTML = "";
+    applyViewMode();
     statusEl.textContent = `${articles.length} stories`;
     articles.forEach((a, i) => {
-        const card = renderCard(a);
+        let card;
+        if (window.innerWidth <= 900 && viewMode === "tiles") {
+            card = renderSmallTileCard(a);
+        } else {
+            card = renderCard(a);
+        }
         card.style.animationDelay = `${i * 40}ms`;
         card.classList.add("card-fadein");
         gridEl.appendChild(card);
@@ -677,26 +688,49 @@ function renderCard(a) {
         window.open(a.link, "_blank", "noopener,noreferrer");
     });
 
-    // Image
-    if (a.image) {
-        const imgWrap = document.createElement("div");
-        imgWrap.className = "card-image";
-        const img = document.createElement("img");
-        img.src = a.image;
-        img.loading = "lazy";
-        imgWrap.appendChild(img);
+    // Image — always render the block, fallback to source-letter placeholder
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "card-image";
 
-        // NEW badge
-        const articleDate = a.published || a.isoDate || a.pubDate || a.date;
-        if (isNew(articleDate)) {
-            const badge = document.createElement("span");
-            badge.className = "new-badge";
-            badge.textContent = "NEW";
-            imgWrap.appendChild(badge);
-        }
+    const articleDate = a.published || a.isoDate || a.pubDate || a.date;
 
-        card.appendChild(imgWrap);
+    // Try YouTube thumbnail from link if no image
+    function getYtThumb(url) {
+        if (!url) return null;
+        const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        return m ? `https://img.youtube.com/vi/${m[1]}/mqdefault.jpg` : null;
     }
+
+    const imgSrc = a.image || getYtThumb(a.link);
+
+    if (imgSrc) {
+        const img = document.createElement("img");
+        img.src = imgSrc;
+        img.loading = "lazy";
+        img.onerror = () => {
+            img.remove();
+            const ph = document.createElement("div");
+            ph.className = "card-image-placeholder";
+            ph.textContent = (a.source || "?")[0].toUpperCase();
+            imgWrap.appendChild(ph);
+        };
+        imgWrap.appendChild(img);
+    } else {
+        const ph = document.createElement("div");
+        ph.className = "card-image-placeholder";
+        ph.textContent = (a.source || "?")[0].toUpperCase();
+        imgWrap.appendChild(ph);
+    }
+
+    // NEW badge
+    if (isNew(articleDate)) {
+        const badge = document.createElement("span");
+        badge.className = "new-badge";
+        badge.textContent = "NEW";
+        imgWrap.appendChild(badge);
+    }
+
+    card.appendChild(imgWrap);
 
     // Title
     const title = document.createElement("h3");
@@ -1101,4 +1135,309 @@ function wireWWDCCountdown() {
 
     update();
     setInterval(update, 60000); // update every minute
+}
+
+/* ======================================================
+   MOBILE LIST VIEW TOGGLE
+   ====================================================== */
+function wireViewToggle() {
+    const btn = $("#mobileViewToggle");
+    if (!btn) return;
+
+    viewMode = localStorage.getItem("viewMode") || "grid";
+    isListView = false;
+    applyViewMode();
+
+    btn.addEventListener("click", () => {
+        viewMode = viewMode === "grid" ? "tiles" : "grid";
+        localStorage.setItem("viewMode", viewMode);
+        applyViewMode();
+        const cards = gridEl?.querySelectorAll(".card:not(.skeleton-card)");
+        if (cards?.length) loadAndRenderNews();
+    });
+}
+
+function applyViewMode() {
+    const icon = $("#mobileViewIcon");
+    const grid = gridEl;
+    if (!grid) return;
+
+    grid.classList.remove("list-view", "small-tiles-view");
+
+    if (viewMode === "tiles") {
+        grid.classList.add("small-tiles-view");
+        if (icon) icon.className = "fa-solid fa-table-cells-large";
+    } else {
+        if (icon) icon.className = "fa-solid fa-list";
+    }
+}
+
+function renderCompactCard(a) {
+    const card = document.createElement("div");
+    card.className = "card compact-card";
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+        window.open(a.link, "_blank", "noopener,noreferrer");
+    });
+
+    // NEW badge
+    const articleDate = a.published || a.isoDate || a.pubDate || a.date;
+    if (isNew(articleDate)) {
+        const badge = document.createElement("span");
+        badge.className = "new-badge compact-new";
+        badge.textContent = "NEW";
+        card.appendChild(badge);
+    }
+
+    // Main row: thumbnail + content
+    const row = document.createElement("div");
+    row.className = "compact-row";
+
+    // Thumbnail
+    if (a.image) {
+        const img = document.createElement("img");
+        img.src = a.image;
+        img.className = "compact-thumb";
+        img.loading = "lazy";
+        row.appendChild(img);
+    }
+
+    // Text content
+    const text = document.createElement("div");
+    text.className = "compact-text";
+
+    const source = document.createElement("div");
+    source.className = "compact-source";
+    source.textContent = a.source || "Source";
+    text.appendChild(source);
+
+    const title = document.createElement("div");
+    title.className = "compact-title";
+    title.textContent = a.title || "Untitled";
+    text.appendChild(title);
+
+    // Footer: time + actions
+    const footer = document.createElement("div");
+    footer.className = "compact-footer";
+
+    const time = document.createElement("span");
+    time.className = "compact-time";
+    time.textContent = timeAgo(articleDate);
+    footer.appendChild(time);
+
+    const actions = document.createElement("div");
+    actions.className = "compact-actions";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.className = "compact-action-btn";
+    saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+    saveBtn.onclick = (e) => {
+        e.stopPropagation();
+        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
+        saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+    };
+
+    const shareBtn = document.createElement("button");
+    shareBtn.className = "compact-action-btn";
+    shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
+    shareBtn.onclick = async (e) => {
+        e.stopPropagation();
+        if (navigator.share) {
+            try { await navigator.share({ title: a.title, url: a.link }); } catch {}
+        } else {
+            await navigator.clipboard.writeText(a.link);
+            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => { shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }, 1500);
+        }
+    };
+
+    actions.appendChild(saveBtn);
+    actions.appendChild(shareBtn);
+    footer.appendChild(actions);
+    text.appendChild(footer);
+
+    row.appendChild(text);
+    card.appendChild(row);
+
+    return card;
+}
+
+/* ======================================================
+   SMALL TILE CARD — 2-col Apple News style (mobile)
+   ====================================================== */
+function renderSmallTileCard(a) {
+    const card = document.createElement("div");
+    card.className = "card small-tile-card";
+    card.addEventListener("click", () => {
+        window.open(a.link, "_blank", "noopener,noreferrer");
+    });
+
+    const articleDate = a.published || a.isoDate || a.pubDate || a.date;
+
+    // NEW badge
+    if (isNew(articleDate)) {
+        const badge = document.createElement("span");
+        badge.className = "small-tile-new";
+        badge.textContent = "NEW";
+        card.appendChild(badge);
+    }
+
+    // Image or placeholder — with YouTube thumbnail extraction
+    function getYoutubeThumbnail(url) {
+        if (!url) return null;
+        const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        return m ? `https://img.youtube.com/vi/${m[1]}/mqdefault.jpg` : null;
+    }
+
+    const ytThumb = getYoutubeThumbnail(a.link);
+    const imgSrc = a.image || ytThumb;
+
+    if (imgSrc) {
+        const img = document.createElement("img");
+        img.src = imgSrc;
+        img.className = "small-tile-img";
+        img.loading = "lazy";
+        img.onerror = () => {
+            // If YouTube thumb also fails, or image 404s — show letter placeholder
+            const ph = document.createElement("div");
+            ph.className = "small-tile-img-placeholder";
+            ph.textContent = (a.source || "?")[0].toUpperCase();
+            img.replaceWith(ph);
+        };
+        card.appendChild(img);
+    } else {
+        const ph = document.createElement("div");
+        ph.className = "small-tile-img-placeholder";
+        ph.textContent = (a.source || "?")[0].toUpperCase();
+        card.appendChild(ph);
+    }
+
+    // Body
+    const body = document.createElement("div");
+    body.className = "small-tile-body";
+
+    const source = document.createElement("div");
+    source.className = "small-tile-source";
+    source.textContent = a.source || "Source";
+    body.appendChild(source);
+
+    const title = document.createElement("div");
+    title.className = "small-tile-title";
+    title.textContent = a.title || "Untitled";
+    body.appendChild(title);
+
+    // Footer
+    const footer = document.createElement("div");
+    footer.className = "small-tile-footer";
+
+    const time = document.createElement("span");
+    time.className = "small-tile-time";
+    time.textContent = timeAgo(articleDate);
+    footer.appendChild(time);
+
+    const actions = document.createElement("div");
+    actions.className = "small-tile-actions";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.className = "small-tile-btn";
+    saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+    saveBtn.onclick = (e) => {
+        e.stopPropagation();
+        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
+        saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+    };
+
+    const shareBtn = document.createElement("button");
+    shareBtn.className = "small-tile-btn";
+    shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
+    shareBtn.onclick = async (e) => {
+        e.stopPropagation();
+        if (navigator.share) {
+            try { await navigator.share({ title: a.title, url: a.link }); } catch {}
+        } else {
+            await navigator.clipboard.writeText(a.link);
+            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => { shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }, 1500);
+        }
+    };
+
+    actions.appendChild(saveBtn);
+    actions.appendChild(shareBtn);
+    footer.appendChild(actions);
+    body.appendChild(footer);
+    card.appendChild(body);
+
+    return card;
+}
+
+/* ======================================================
+   FIRST VISIT NEWSLETTER POPUP
+   ====================================================== */
+function wireFirstVisitPopup() {
+    const backdrop = $("#firstVisitBackdrop");
+    if (!backdrop) return;
+
+    // Only show once — check flag
+    const seen = localStorage.getItem("fv_newsletter_seen");
+    if (seen) return;
+
+    // Show after a short delay so page loads first
+    setTimeout(() => {
+        backdrop.classList.remove("hidden");
+    }, 2500);
+
+    const close = () => {
+        backdrop.classList.add("hidden");
+        localStorage.setItem("fv_newsletter_seen", "1");
+    };
+
+    $("#fvClose")?.addEventListener("click", close);
+    $("#fvSkip")?.addEventListener("click", close);
+    backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) close();
+    });
+
+    $("#fvSubmit")?.addEventListener("click", async () => {
+        const email = $("#fvEmail")?.value.trim();
+        const firstName = $("#fvFirstName")?.value.trim();
+        const consent = $("#fvConsent")?.checked;
+        const status = $("#fvStatus");
+        const btn = $("#fvSubmit");
+
+        if (!email) { status.textContent = "Please enter your email."; status.style.color = "#e53e3e"; return; }
+        if (!consent) { status.textContent = "Please check the box to agree."; status.style.color = "#e53e3e"; return; }
+
+        btn.textContent = "Subscribing…";
+        btn.disabled = true;
+        status.textContent = "";
+
+        try {
+            const res = await fetch(`${SITE_CONFIG.apiBase}/api/subscribe`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, firstName })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                status.textContent = "🎉 You're in! Check your inbox.";
+                status.style.color = "#f58220";
+                btn.textContent = "Subscribed!";
+                setTimeout(close, 2000);
+            } else if (res.status === 409) {
+                status.textContent = "Already subscribed!";
+                status.style.color = "#f58220";
+                btn.textContent = "Subscribe";
+                btn.disabled = false;
+                setTimeout(close, 1500);
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (err) {
+            status.textContent = err.message || "Something went wrong.";
+            status.style.color = "#e53e3e";
+            btn.textContent = "Subscribe";
+            btn.disabled = false;
+        }
+    });
 }

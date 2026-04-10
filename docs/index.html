@@ -67,6 +67,9 @@
             <button class="mobile-icon-btn" id="mobileNewsletterBtn" aria-label="Newsletter">
                 <i class="fa-solid fa-envelope"></i>
             </button>
+            <button class="mobile-icon-btn" id="mobileViewToggle" aria-label="Toggle view">
+                <i class="fa-solid fa-list" id="mobileViewIcon"></i>
+            </button>
             <button class="mobile-icon-btn" id="mobileThemeToggle" aria-label="Toggle theme">
                 <i class="fa-solid fa-moon" id="mobileThemeIcon"></i>
             </button>
@@ -172,9 +175,9 @@
             <div class="about-divider"></div>
 
             <div class="about-links">
-                <a href="mailto:hello@mcknz.dev" class="about-link-row">
+                <a href="/cdn-cgi/l/email-protection#99f1fcf5f5f6d9f4faf2f7e3b7fdfcef" class="about-link-row">
                     <span class="about-link-icon">✉️</span>
-                    <span class="about-link-label">hello@mcknz.dev</span>
+                    <span class="about-link-label"><span class="__cf_email__" data-cfemail="452d2029292a0528262e2b3f6b212033">[email&#160;protected]</span></span>
                     <span class="about-link-arrow">›</span>
                 </a>
                 <a href="https://mcknz.dev" target="_blank" rel="noopener noreferrer" class="about-link-row">
@@ -182,7 +185,7 @@
                     <span class="about-link-label">mcknz.dev</span>
                     <span class="about-link-arrow">›</span>
                 </a>
-                <a href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source" class="about-link-row">
+                <a href="/cdn-cgi/l/email-protection#ddb5b8b1b1b29db0beb6b3a7f3b9b8abe2aea8bfb7b8bea9e0b48eb5b8b8adf8efedf0f8efed8fb8aca8b8aea9f8efedbcf8efedb3b8aaaef8efedaeb2a8afbeb8" class="about-link-row">
                     <span class="about-link-icon">📰</span>
                     <span class="about-link-label">Request a news source</span>
                     <span class="about-link-arrow">›</span>
@@ -296,6 +299,36 @@
     <!-- FOOTER -->
     <p class="mobile-footer">© 2026 iSheep.news</p>
 
+</div>
+
+<!-- FIRST VISIT NEWSLETTER POPUP -->
+<div class="fv-backdrop hidden" id="firstVisitBackdrop">
+    <div class="fv-card">
+        <button class="fv-close" id="fvClose" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <img src="assets/homepage/Sheep.png" class="fv-logo" alt="iSheep" />
+        <h2 class="fv-title"><span class="fv-brand">iSheep</span> Weekly</h2>
+        <p class="fv-desc">The best Apple news, straight to your inbox every week. No fluff.</p>
+
+        <div class="fv-fields">
+            <input type="text" id="fvFirstName" placeholder="First name (optional)" class="fv-input" />
+            <input type="email" id="fvEmail" placeholder="your@email.com" class="fv-input" />
+        </div>
+
+        <label class="fv-consent">
+            <input type="checkbox" id="fvConsent" />
+            <span>I agree to receive the iSheep weekly digest</span>
+        </label>
+
+        <button class="fv-submit" id="fvSubmit">
+            Subscribe <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <p class="fv-status" id="fvStatus"></p>
+
+        <button class="fv-skip" id="fvSkip">Maybe later</button>
+    </div>
 </div>
 
 <script type="module" src="./app.js"></script>
