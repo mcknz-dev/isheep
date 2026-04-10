@@ -58,21 +58,12 @@
 
     <!-- NAV BAR -->
     <div class="nav-pill">
-        <div class="brand">
+        <div class="brand mobile-brand-center">
             <span class="site-name">iSheep</span>
             <img src="assets/homepage/Sheep.png" class="logo-icon" alt="iSheep logo">
         </div>
 
         <div class="mobile-nav-actions">
-            <button class="mobile-icon-btn" id="mobileNewsletterBtn" aria-label="Newsletter">
-                <i class="fa-solid fa-envelope"></i>
-            </button>
-            <button class="mobile-icon-btn" id="mobileViewToggle" aria-label="Toggle view">
-                <i class="fa-solid fa-list" id="mobileViewIcon"></i>
-            </button>
-            <button class="mobile-icon-btn" id="mobileThemeToggle" aria-label="Toggle theme">
-                <i class="fa-solid fa-moon" id="mobileThemeIcon"></i>
-            </button>
             <button class="mobile-icon-btn" id="hamburgerBtn" aria-label="Menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -117,15 +108,8 @@
     <div class="modal">
 
         <div class="modal-header">
-            <h3>Settings</h3>
+            <h3>Feeds</h3>
             <button id="closeSettings" aria-label="Close">×</button>
-        </div>
-
-        <!-- SETTINGS TABS -->
-        <div class="settings-tabs">
-            <button class="settings-tab active" data-tab="feeds">Feeds</button>
-            <button class="settings-tab" data-tab="appearance">Appearance</button>
-            <button class="settings-tab" data-tab="contact">Contact</button>
         </div>
 
         <!-- FEEDS PANEL -->
@@ -135,92 +119,13 @@
 
             <div class="request-sources">
                 <p class="muted" style="margin-top:14px;">Want more sources?</p>
-                <a class="request-link" href="/cdn-cgi/l/email-protection#85ede0e9e9eac5e8e6eeebffabe1e0f3baf6f0e7efe0e6f1b8ecd6ede0e0f5a0b7b5a8a0b7b5d7e0f4f0e0f6f1a0b7b5e4a0b7b5ebe0f2f6a0b7b5f6eaf0f7e6e0">
+                <a class="request-link" href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source">
                     Request more news sources
                 </a>
             </div>
         </div>
 
-        <!-- APPEARANCE PANEL -->
-        <div class="settings-panel" id="appearancePanel">
-
-            <div class="appearance-row">
-                <label>Theme</label>
-                <div class="pill-group" id="themePills">
-                    <button data-theme="light">Light</button>
-                    <button data-theme="dark">Dark</button>
-                    <button data-theme="system">System</button>
-                </div>
-            </div>
-
-            <div class="appearance-row desktop-only">
-                <label>Cards per row</label>
-                <select id="columnSelect">
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- CONTACT PANEL -->
-        <div class="settings-panel" id="contactPanel">
-
-            <div class="about-hero">
-                <img src="assets/homepage/Sheep.png" class="about-logo" alt="iSheep logo" />
-                <div class="about-wordmark">iSheep</div>
-                <p class="about-tagline">Your Apple news, all in one place.</p>
-            </div>
-
-            <div class="about-divider"></div>
-
-            <div class="about-links">
-                <a href="/cdn-cgi/l/email-protection#99f1fcf5f5f6d9f4faf2f7e3b7fdfcef" class="about-link-row">
-                    <span class="about-link-icon">✉️</span>
-                    <span class="about-link-label"><span class="__cf_email__" data-cfemail="452d2029292a0528262e2b3f6b212033">[email&#160;protected]</span></span>
-                    <span class="about-link-arrow">›</span>
-                </a>
-                <a href="https://mcknz.dev" target="_blank" rel="noopener noreferrer" class="about-link-row">
-                    <span class="about-link-icon">🌐</span>
-                    <span class="about-link-label">mcknz.dev</span>
-                    <span class="about-link-arrow">›</span>
-                </a>
-                <a href="/cdn-cgi/l/email-protection#ddb5b8b1b1b29db0beb6b3a7f3b9b8abe2aea8bfb7b8bea9e0b48eb5b8b8adf8efedf0f8efed8fb8aca8b8aea9f8efedbcf8efedb3b8aaaef8efedaeb2a8afbeb8" class="about-link-row">
-                    <span class="about-link-icon">📰</span>
-                    <span class="about-link-label">Request a news source</span>
-                    <span class="about-link-arrow">›</span>
-                </a>
-            </div>
-
-            <div class="subscribe-section">
-                <p class="subscribe-heading">📬 Weekly Digest</p>
-                <p class="subscribe-sub">Get the best Apple news every week.</p>
-                <input type="text" id="subFirstName" placeholder="First name (optional)" class="subscribe-input" />
-                <input type="email" id="subEmail" placeholder="your@email.com" class="subscribe-input" />
-                <label class="subscribe-consent">
-                    <input type="checkbox" id="subConsent" />
-                    <span>I agree to receive the iSheep weekly digest</span>
-                </label>
-                <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
-                <p class="subscribe-status" id="subscribeStatus"></p>
-            </div>
-
-            <a
-                class="about-coffee"
-                href="https://www.buymeacoffee.com/mcknz.dev"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                ☕ Buy me a coffee
-            </a>
-
-            <div class="contact-footer">
-                © 2026 iSheep.news — All rights reserved.
-            </div>
-
-        </div>
-
-        <!-- MODAL ACTIONS (Feeds only) -->
+        <!-- MODAL ACTIONS -->
         <div class="modal-actions" id="feedsActions">
             <button id="selectAll" class="btn">Select all</button>
             <button id="selectNone" class="btn">Select none</button>
@@ -286,13 +191,21 @@
             <span id="mobileDarkLabel">Dark Mode</span>
             <i class="fa-solid fa-moon mobile-row-icon" id="mobileDarkIcon"></i>
         </button>
+        <button class="mobile-row" id="mobileViewToggle">
+            <span id="mobileViewLabel">Compact View</span>
+            <i class="fa-solid fa-grip mobile-row-icon" id="mobileViewIcon"></i>
+        </button>
         <button class="mobile-row" id="mobileNewsletter">
             <span>Newsletter</span>
             <span class="mobile-row-badge">Subscribe</span>
         </button>
         <button class="mobile-row" id="mobileSettings" type="button">
-            <span>Settings</span>
-            <i class="fa-solid fa-gear mobile-row-icon"></i>
+            <span>Feeds</span>
+            <i class="fa-solid fa-rss mobile-row-icon"></i>
+        </button>
+        <button class="mobile-row" id="mobileContact" type="button">
+            <span>Contact</span>
+            <i class="fa-solid fa-envelope mobile-row-icon"></i>
         </button>
     </div>
 
@@ -301,32 +214,67 @@
 
 </div>
 
+<!-- CONTACT MODAL -->
+<div class="fv-backdrop hidden" id="contactBackdrop">
+    <div class="fv-card">
+        <button class="fv-close" id="closeContact" aria-label="Close" style="z-index:2;background:rgba(255,255,255,0.25);color:#fff;">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="contact-modal-header">
+            <img src="assets/homepage/Sheep.png" alt="iSheep" />
+            <h2>iSheep</h2>
+            <p>Your Apple news, all in one place.</p>
+        </div>
+
+        <div class="about-links" style="width:100%;padding:0 20px;box-sizing:border-box;">
+            <a href="mailto:hello@mcknz.dev" class="about-link-row">
+                <span class="about-link-icon">✉️</span>
+                <span class="about-link-label">hello@mcknz.dev</span>
+                <span class="about-link-arrow">›</span>
+            </a>
+            <a href="https://mcknz.dev" target="_blank" rel="noopener noreferrer" class="about-link-row">
+                <span class="about-link-icon">🌐</span>
+                <span class="about-link-label">mcknz.dev</span>
+                <span class="about-link-arrow">›</span>
+            </a>
+            <a href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source" class="about-link-row">
+                <span class="about-link-icon">📰</span>
+                <span class="about-link-label">Request a news source</span>
+                <span class="about-link-arrow">›</span>
+            </a>
+            <a href="https://www.buymeacoffee.com/mcknz.dev" target="_blank" rel="noopener noreferrer" class="about-link-row">
+                <span class="about-link-icon">☕</span>
+                <span class="about-link-label">Buy me a coffee</span>
+                <span class="about-link-arrow">›</span>
+            </a>
+        </div>
+
+        <p class="contact-modal-footer">© 2026 iSheep.news — All rights reserved.</p>
+    </div>
+</div>
+
 <!-- FIRST VISIT NEWSLETTER POPUP -->
 <div class="fv-backdrop hidden" id="firstVisitBackdrop">
     <div class="fv-card">
         <button class="fv-close" id="fvClose" aria-label="Close">
             <i class="fa-solid fa-xmark"></i>
         </button>
-
         <img src="assets/homepage/Sheep.png" class="fv-logo" alt="iSheep" />
         <h2 class="fv-title"><span class="fv-brand">iSheep</span> Weekly</h2>
         <p class="fv-desc">The best Apple news, straight to your inbox every week. No fluff.</p>
-
         <div class="fv-fields">
             <input type="text" id="fvFirstName" placeholder="First name (optional)" class="fv-input" />
             <input type="email" id="fvEmail" placeholder="your@email.com" class="fv-input" />
         </div>
-
         <label class="fv-consent">
             <input type="checkbox" id="fvConsent" />
             <span>I agree to receive the iSheep weekly digest</span>
         </label>
-
         <button class="fv-submit" id="fvSubmit">
             Subscribe <i class="fa-solid fa-arrow-right"></i>
         </button>
         <p class="fv-status" id="fvStatus"></p>
-
         <button class="fv-skip" id="fvSkip">Maybe later</button>
     </div>
 </div>

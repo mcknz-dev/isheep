@@ -253,30 +253,14 @@ function wireModal() {
 }
 
 /* ======================================================
-   SETTINGS: 3 TABS (Feeds / Appearance / Contact)
+   SETTINGS: FEEDS ONLY
    ====================================================== */
-function setSettingsTab(tabName) {
-    document.querySelectorAll(".settings-tab").forEach(t => {
-        t.classList.toggle("active", t.dataset.tab === tabName);
-    });
-
-    document.querySelectorAll(".settings-panel").forEach(p => {
-        p.classList.toggle("active", p.id === `${tabName}Panel`);
-    });
-
-    // Only show the bottom buttons on Feeds tab
-    if (feedsActions) {
-        feedsActions.style.display = tabName === "feeds" ? "flex" : "none";
-    }
+function setSettingsTab() {
+    if (feedsActions) feedsActions.style.display = "flex";
 }
 
 function wireSettingsTabs() {
-    document.querySelectorAll(".settings-tab").forEach(tab => {
-        tab.addEventListener("click", (e) => {
-            e.preventDefault();
-            setSettingsTab(tab.dataset.tab);
-        });
-    });
+    // No tabs anymore — feeds panel is always active
 }
 
 /* ======================================================
@@ -300,7 +284,7 @@ function wireHamburger() {
         mobileMenu?.classList.add("hidden");
     });
 
-    // Settings item in mobile menu
+    // Settings (Feeds) item in mobile menu
     mobileSettingsBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -308,20 +292,34 @@ function wireHamburger() {
         openModal();
     });
 
+    // Contact item in mobile menu
+    const mobileContactBtn = $("#mobileContact");
+    mobileContactBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileMenu?.classList.add("hidden");
+        $("#contactBackdrop")?.classList.remove("hidden");
+    });
+
+    $("#closeContact")?.addEventListener("click", () => {
+        $("#contactBackdrop")?.classList.add("hidden");
+    });
+
+    $("#contactBackdrop")?.addEventListener("click", (e) => {
+        if (e.target === $("#contactBackdrop")) {
+            $("#contactBackdrop")?.classList.add("hidden");
+        }
+    });
+
     // Dark mode toggle in mobile menu
     const mobileDarkBtn = $("#mobileDarkToggle");
     const mobileDarkIcon = $("#mobileDarkIcon");
     const mobileDarkLabel = $("#mobileDarkLabel");
 
-    // Dark mode toggle in mobile nav bar
-    const mobileNavThemeBtn = $("#mobileThemeToggle");
-    const mobileNavThemeIcon = $("#mobileThemeIcon");
-
     function updateAllDarkBtns() {
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         if (mobileDarkIcon) mobileDarkIcon.className = isDark ? "fa-solid fa-sun mobile-row-icon" : "fa-solid fa-moon mobile-row-icon";
         if (mobileDarkLabel) mobileDarkLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
-        if (mobileNavThemeIcon) mobileNavThemeIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
         const navIcon = $("#themeToggleIcon");
         if (navIcon) navIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
     }
@@ -338,7 +336,6 @@ function wireHamburger() {
     };
 
     mobileDarkBtn?.addEventListener("click", toggleDark);
-    mobileNavThemeBtn?.addEventListener("click", toggleDark);
 
     // Newsletter in mobile menu
     const mobileNewsletterBtn = $("#mobileNewsletter");
@@ -346,13 +343,6 @@ function wireHamburger() {
         e.preventDefault();
         e.stopPropagation();
         mobileMenu?.classList.add("hidden");
-        $("#newsletterBackdrop")?.classList.remove("hidden");
-    });
-
-    // Newsletter in mobile nav bar
-    const mobileNavNewsletterBtn = $("#mobileNewsletterBtn");
-    mobileNavNewsletterBtn?.addEventListener("click", (e) => {
-        e.stopPropagation();
         $("#newsletterBackdrop")?.classList.remove("hidden");
     });
 
@@ -1148,17 +1138,19 @@ function wireViewToggle() {
     isListView = false;
     applyViewMode();
 
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         viewMode = viewMode === "grid" ? "tiles" : "grid";
         localStorage.setItem("viewMode", viewMode);
+        mobileMenu?.classList.add("hidden");
         applyViewMode();
-        const cards = gridEl?.querySelectorAll(".card:not(.skeleton-card)");
-        if (cards?.length) loadAndRenderNews();
+        loadAndRenderNews();
     });
 }
 
 function applyViewMode() {
     const icon = $("#mobileViewIcon");
+    const label = $("#mobileViewLabel");
     const grid = gridEl;
     if (!grid) return;
 
@@ -1166,9 +1158,11 @@ function applyViewMode() {
 
     if (viewMode === "tiles") {
         grid.classList.add("small-tiles-view");
-        if (icon) icon.className = "fa-solid fa-grip";
+        if (icon) icon.className = "fa-solid fa-grip mobile-row-icon";
+        if (label) label.textContent = "Standard View";
     } else {
-        if (icon) icon.className = "fa-solid fa-grip";
+        if (icon) icon.className = "fa-solid fa-grip mobile-row-icon";
+        if (label) label.textContent = "Compact View";
     }
 }
 

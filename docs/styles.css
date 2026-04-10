@@ -1067,6 +1067,7 @@ body {
         margin-right: calc(-50vw + 50%);
         margin-top: -60px;
         border-radius: 0;
+        justify-content: flex-end;
     }
 
     .logo-icon {
@@ -2569,3 +2570,92 @@ body {
 :root[data-theme="dark"] .fv-consent { color: rgba(255,255,255,0.4); }
 :root[data-theme="dark"] .fv-skip { color: rgba(255,255,255,0.25); }
 :root[data-theme="dark"] .fv-skip:hover { color: rgba(255,255,255,0.5); }
+
+/* ==========================================================================
+   MOBILE CENTRED LOGO
+   ========================================================================== */
+@media (max-width: 600px) {
+    .mobile-brand-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* ==========================================================================
+   CONTACT MODAL — orange accents
+   ========================================================================== */
+#contactBackdrop .fv-card {
+    padding-top: 0;
+    overflow: hidden;
+}
+
+#contactBackdrop .contact-modal-header {
+    background: #f58220;
+    width: 100%;
+    padding: 28px 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+#contactBackdrop .contact-modal-header img {
+    width: 56px;
+    height: 56px;
+}
+
+#contactBackdrop .contact-modal-header h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+#contactBackdrop .contact-modal-header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    margin: 0;
+}
+
+#contactBackdrop .about-link-row {
+    border-radius: 10px;
+    margin-bottom: 4px;
+}
+
+#contactBackdrop .about-link-row:hover {
+    background: rgba(245,130,32,0.08);
+}
+
+#contactBackdrop .about-link-arrow {
+    color: #f58220;
+    font-size: 18px;
+}
+
+#contactBackdrop .about-link-icon {
+    font-size: 18px;
+}
+
+#contactBackdrop .about-link-label {
+    color: var(--text, #111);
+    font-weight: 600;
+}
+
+#contactBackdrop .contact-modal-footer {
+    font-size: 12px;
+    color: #bbb;
+    margin: 8px 0 4px;
+    padding: 0 28px 20px;
+    text-align: center;
+}
+
+:root[data-theme="dark"] #contactBackdrop .contact-modal-header {
+    background: #d4701a;
+}
+
+:root[data-theme="dark"] #contactBackdrop .about-link-label {
+    color: #f5f5f5;
+}
