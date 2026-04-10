@@ -1610,7 +1610,7 @@ body {
 /* "26" — bright glowing white, the hero */
 .wwdc-year {
     font-size: 16px;
-    font-weight: 900;
+    font-weight: 750;
     letter-spacing: 0;
     color: #ffffff;
     position: relative;
@@ -1628,8 +1628,8 @@ body {
 
 /* "60 DAYS AWAY" — plain muted, no glow */
 .wwdc-days-text {
-    font-size: 13px;
-    font-weight: 900;
+    font-size: 16px;
+    font-weight: 700;
     letter-spacing: 1px;
     color: rgba(255,255,255,0.7);
     text-transform: uppercase;
@@ -1754,13 +1754,13 @@ body {
     display: none;
     width: 100%;
     background: #000;
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 14px 20px;
     margin-bottom: 16px;
     text-decoration: none;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 30px;
     border: 1px solid rgba(255,255,255,0.1);
     position: relative;
     overflow: hidden;
@@ -1791,10 +1791,11 @@ body {
     color: rgba(255,255,255,0.7);
     font-weight: 900;
     text-decoration: none;
+    font-size: 16px;
 }
 
 .mobile-wwdc-banner .wwdc-year {
     color: #fff;
-    font-weight: 900;
-    margin-left: -5px;
+    font-weight: 700;
+    margin-left: -29px;
 }
