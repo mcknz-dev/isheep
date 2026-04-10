@@ -1003,13 +1003,16 @@ body {
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 8px;
+    padding: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 22px;
     color: #f58220;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-right: -8px;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .desktop-only {
@@ -1802,7 +1805,7 @@ body {
     display: none;
     width: 100%;
     background: #000;
-    border-radius: 20px;
+    border-radius: 14px;
     padding: 14px 20px;
     margin-bottom: 16px;
     text-decoration: none;
