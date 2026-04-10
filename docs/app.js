@@ -270,21 +270,34 @@ function wireHamburger() {
     // Toggle menu
     let menuOpenedAt = 0;
 
-    hamburgerBtn?.addEventListener("click", (e) => {
+    function toggleMenu(e) {
         e.preventDefault();
         e.stopPropagation();
         const isHidden = mobileMenu?.classList.contains("hidden");
         mobileMenu?.classList.toggle("hidden");
         if (isHidden) menuOpenedAt = Date.now();
+    }
+
+    // Use touchend for instant response on mobile, click as fallback for desktop
+    hamburgerBtn?.addEventListener("touchend", toggleMenu, { passive: false });
+    hamburgerBtn?.addEventListener("click", (e) => {
+        // Only fire click if it wasn't already handled by touchend
+        if (Date.now() - menuOpenedAt > 500) toggleMenu(e);
     });
 
     // Clicking inside menu should NOT close it
-    mobileMenu?.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
+    mobileMenu?.addEventListener("touchend", (e) => e.stopPropagation());
+    mobileMenu?.addEventListener("click", (e) => e.stopPropagation());
 
-    // Click outside closes menu — but ignore the tap that opened it
-    document.addEventListener("click", () => {
+    // Touch/click outside closes menu — ignore the tap that opened it
+    document.addEventListener("touchend", (e) => {
+        if (Date.now() - menuOpenedAt < 300) return;
+        if (!mobileMenu?.contains(e.target) && e.target !== hamburgerBtn) {
+            mobileMenu?.classList.add("hidden");
+        }
+    }, { passive: true });
+
+    document.addEventListener("click", (e) => {
         if (Date.now() - menuOpenedAt < 300) return;
         mobileMenu?.classList.add("hidden");
     });
@@ -1161,14 +1174,13 @@ function applyViewMode() {
 
     grid.classList.remove("list-view", "small-tiles-view");
 
-    if (viewMode === "tiles") {
+    // Only apply tile view on mobile
+    if (viewMode === "tiles" && window.innerWidth <= 600) {
         grid.classList.add("small-tiles-view");
-        if (icon) icon.className = "fa-solid fa-grip mobile-row-icon";
-        if (label) label.textContent = "Standard View";
-    } else {
-        if (icon) icon.className = "fa-solid fa-grip mobile-row-icon";
-        if (label) label.textContent = "Compact View";
     }
+
+    if (icon) icon.className = "fa-solid fa-grip mobile-row-icon";
+    if (label) label.textContent = viewMode === "tiles" ? "Standard View" : "Compact View";
 }
 
 function renderCompactCard(a) {
