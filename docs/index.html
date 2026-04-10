@@ -63,9 +63,17 @@
             <img src="assets/homepage/Sheep.png" class="logo-icon" alt="iSheep logo">
         </div>
 
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+        <div class="mobile-nav-actions">
+            <button class="mobile-icon-btn" id="mobileNewsletterBtn" aria-label="Newsletter">
+                <i class="fa-solid fa-envelope"></i>
+            </button>
+            <button class="mobile-icon-btn" id="mobileThemeToggle" aria-label="Toggle theme">
+                <i class="fa-solid fa-moon" id="mobileThemeIcon"></i>
+            </button>
+            <button class="mobile-icon-btn" id="hamburgerBtn" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
 
         <nav class="tabs" id="tabs"></nav>
 
@@ -220,25 +228,35 @@
 </div>
 
 <!-- NEWSLETTER MODAL -->
-<div class="modal-backdrop hidden" id="newsletterBackdrop">
-    <div class="modal newsletter-modal">
-        <div class="modal-header">
-            <h3>Newsletter</h3>
-            <button id="closeNewsletter" aria-label="Close">×</button>
+<div class="nl-backdrop hidden" id="newsletterBackdrop">
+    <div class="nl-glass">
+
+        <div class="nl-header">
+            <button class="nl-close" id="closeNewsletter" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
 
-        <div class="newsletter-body">
-            <p class="newsletter-desc">Get the best Apple news delivered to your inbox every week.</p>
+        <h2 class="nl-title"><span class="nl-title-brand">iSheep</span> <span class="nl-title-weekly">Weekly</span></h2>
+        <p class="nl-desc">The best Apple news, straight to your inbox every week.</p>
 
-            <input type="text" id="nlFirstName" placeholder="First name (optional)" class="subscribe-input" />
-            <input type="email" id="nlEmail" placeholder="your@email.com" class="subscribe-input" />
-            <label class="subscribe-consent">
-                <input type="checkbox" id="nlConsent" />
-                <span>I agree to receive the iSheep weekly digest</span>
-            </label>
-            <button class="subscribe-btn" id="nlSubmitBtn">Subscribe</button>
-            <p class="subscribe-status" id="nlStatus"></p>
+        <div class="nl-fields">
+            <input type="text" id="nlFirstName" placeholder="First name (optional)" class="nl-input" />
+            <input type="email" id="nlEmail" placeholder="your@email.com" class="nl-input" />
         </div>
+
+        <label class="nl-consent">
+            <input type="checkbox" id="nlConsent" />
+            <span>I agree to receive the iSheep weekly digest</span>
+        </label>
+
+        <button class="nl-submit" id="nlSubmitBtn">
+            <span>Subscribe</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <p class="nl-status" id="nlStatus"></p>
+
     </div>
 </div>
 

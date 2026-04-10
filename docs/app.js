@@ -308,25 +308,32 @@ function wireHamburger() {
     const mobileDarkIcon = $("#mobileDarkIcon");
     const mobileDarkLabel = $("#mobileDarkLabel");
 
-    function updateMobileDarkBtn() {
+    // Dark mode toggle in mobile nav bar
+    const mobileNavThemeBtn = $("#mobileThemeToggle");
+    const mobileNavThemeIcon = $("#mobileThemeIcon");
+
+    function updateAllDarkBtns() {
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         if (mobileDarkIcon) mobileDarkIcon.className = isDark ? "fa-solid fa-sun mobile-row-icon" : "fa-solid fa-moon mobile-row-icon";
         if (mobileDarkLabel) mobileDarkLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+        if (mobileNavThemeIcon) mobileNavThemeIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+        const navIcon = $("#themeToggleIcon");
+        if (navIcon) navIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
     }
 
-    updateMobileDarkBtn();
+    updateAllDarkBtns();
 
-    mobileDarkBtn?.addEventListener("click", (e) => {
+    const toggleDark = (e) => {
         e.stopPropagation();
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         const next = { ...loadAppearance(), theme: isDark ? "light" : "dark" };
         saveAppearance(next);
         applyAppearance();
-        updateMobileDarkBtn();
-        // sync nav toggle icon
-        const navIcon = $("#themeToggleIcon");
-        if (navIcon) navIcon.className = !isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    });
+        updateAllDarkBtns();
+    };
+
+    mobileDarkBtn?.addEventListener("click", toggleDark);
+    mobileNavThemeBtn?.addEventListener("click", toggleDark);
 
     // Newsletter in mobile menu
     const mobileNewsletterBtn = $("#mobileNewsletter");
@@ -334,6 +341,13 @@ function wireHamburger() {
         e.preventDefault();
         e.stopPropagation();
         mobileMenu?.classList.add("hidden");
+        $("#newsletterBackdrop")?.classList.remove("hidden");
+    });
+
+    // Newsletter in mobile nav bar
+    const mobileNavNewsletterBtn = $("#mobileNewsletterBtn");
+    mobileNavNewsletterBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
         $("#newsletterBackdrop")?.classList.remove("hidden");
     });
 
