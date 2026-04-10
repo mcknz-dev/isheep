@@ -654,7 +654,7 @@ async function loadAndRenderNews() {
     statusEl.textContent = `${articles.length} stories`;
     articles.forEach((a, i) => {
         let card;
-        if (window.innerWidth <= 900 && viewMode === "tiles") {
+        if (window.innerWidth <= 600 && viewMode === "tiles") {
             card = renderSmallTileCard(a);
         } else {
             card = renderCard(a);
@@ -1040,7 +1040,7 @@ function filterCards() {
    ====================================================== */
 function wirePullToRefresh() {
     // Desktop only — mobile uses touch
-    if (window.innerWidth > 900) return;
+    if (window.innerWidth > 600) return;
 
     let startY = 0;
     let pulling = false;
@@ -1166,9 +1166,9 @@ function applyViewMode() {
 
     if (viewMode === "tiles") {
         grid.classList.add("small-tiles-view");
-        if (icon) icon.className = "fa-solid fa-table-cells-large";
+        if (icon) icon.className = "fa-solid fa-grip";
     } else {
-        if (icon) icon.className = "fa-solid fa-list";
+        if (icon) icon.className = "fa-solid fa-grip";
     }
 }
 
