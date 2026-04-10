@@ -855,23 +855,31 @@ body {
 
 .mobile-menu {
     position: fixed;
-    top: 72px;
-    right: 12px;
-    width: calc(100% - 24px);
-    max-width: 320px;
-    z-index: 2000;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 168px);
+    right: 16px;
+    width: calc(100% - 32px);
+    max-width: 300px;
+    z-index: 1999;
 
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-radius: 18px;
     padding: 8px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.16), 0 1px 2px rgba(0,0,0,0.06);
     border: 1px solid rgba(0,0,0,0.06);
 
     display: flex;
     flex-direction: column;
     gap: 4px;
+
+    transform-origin: bottom right;
+    animation: fabMenuIn 0.2s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+}
+
+@keyframes fabMenuIn {
+    from { opacity: 0; transform: scale(0.9) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .mobile-menu.hidden {
@@ -1070,7 +1078,7 @@ body {
     /* Nav Pill Adjustments */
     .nav-pill {
         padding-top: env(safe-area-inset-top);
-        padding-bottom: 8px;
+        padding-bottom: 0;
         padding-left: 16px;
         padding-right: 16px;
         width: 100vw;
@@ -1078,15 +1086,23 @@ body {
         margin-right: calc(-50vw + 50%);
         margin-top: -60px;
         border-radius: 0;
-        justify-content: flex-end;
+        justify-content: center;
+        min-height: 64px;
     }
 
     .logo-icon {
-        margin-top: 10px;
+        margin-top: 0;
     }
 
     .site-name {
-        margin-top: 10px;
+        margin-top: 0;
+    }
+
+    .mobile-brand-center {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 
@@ -2583,17 +2599,6 @@ body {
 :root[data-theme="dark"] .fv-skip:hover { color: rgba(255,255,255,0.5); }
 
 /* ==========================================================================
-   MOBILE CENTRED LOGO
-   ========================================================================== */
-@media (max-width: 600px) {
-    .mobile-brand-center {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-/* ==========================================================================
    CONTACT MODAL — orange accents
    ========================================================================== */
 #contactBackdrop .fv-card {
@@ -2669,4 +2674,57 @@ body {
 
 :root[data-theme="dark"] #contactBackdrop .about-link-label {
     color: #f5f5f5;
+}
+
+/* ==========================================================================
+   FAB — Floating Action Button (mobile only)
+   ========================================================================== */
+.fab {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: env(safe-area-inset-bottom, 16px);
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
+        right: 24px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #f58220;
+        border: none;
+        cursor: pointer;
+        z-index: 2000;
+        box-shadow: 0 4px 20px rgba(245,130,32,0.45), 0 2px 8px rgba(0,0,0,0.15);
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .fab:active {
+        transform: scale(0.92);
+        box-shadow: 0 2px 10px rgba(245,130,32,0.35);
+    }
+
+    .fab.open {
+        transform: rotate(90deg);
+    }
+
+    .fab.open:active {
+        transform: rotate(90deg) scale(0.92);
+    }
+
+    .fab-icon {
+        font-size: 22px;
+        color: #fff;
+        transition: transform 0.2s ease;
+    }
+}
+
+:root[data-theme="dark"] .fab {
+    box-shadow: 0 4px 20px rgba(245,130,32,0.35), 0 2px 8px rgba(0,0,0,0.4);
 }

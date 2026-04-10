@@ -275,6 +275,7 @@ function wireHamburger() {
         e.stopPropagation();
         const isHidden = mobileMenu?.classList.contains("hidden");
         mobileMenu?.classList.toggle("hidden");
+        hamburgerBtn?.classList.toggle("open", isHidden);
         if (isHidden) menuOpenedAt = Date.now();
     }
 
@@ -293,20 +294,22 @@ function wireHamburger() {
     document.addEventListener("touchend", (e) => {
         if (Date.now() - menuOpenedAt < 300) return;
         if (!mobileMenu?.contains(e.target) && e.target !== hamburgerBtn) {
-            mobileMenu?.classList.add("hidden");
+            mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
+            hamburgerBtn?.classList.remove("open");
         }
     }, { passive: true });
 
     document.addEventListener("click", (e) => {
         if (Date.now() - menuOpenedAt < 300) return;
-        mobileMenu?.classList.add("hidden");
+        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
+        hamburgerBtn?.classList.remove("open");
     });
 
     // Settings (Feeds) item in mobile menu
     mobileSettingsBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        mobileMenu?.classList.add("hidden");
+        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
         openModal();
     });
 
@@ -315,7 +318,7 @@ function wireHamburger() {
     mobileContactBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        mobileMenu?.classList.add("hidden");
+        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
         $("#contactBackdrop")?.classList.remove("hidden");
     });
 
@@ -360,7 +363,7 @@ function wireHamburger() {
     mobileNewsletterBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        mobileMenu?.classList.add("hidden");
+        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
         $("#newsletterBackdrop")?.classList.remove("hidden");
     });
 
@@ -381,7 +384,7 @@ function wireHamburger() {
                 t.classList.toggle("active", t.textContent.trim() === category);
             });
 
-            mobileMenu?.classList.add("hidden");
+            mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
             await loadAndRenderNews();
         });
     });
@@ -1160,7 +1163,7 @@ function wireViewToggle() {
         e.stopPropagation();
         viewMode = viewMode === "grid" ? "tiles" : "grid";
         localStorage.setItem("viewMode", viewMode);
-        mobileMenu?.classList.add("hidden");
+        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
         applyViewMode();
         loadAndRenderNews();
     });
