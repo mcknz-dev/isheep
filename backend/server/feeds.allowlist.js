@@ -39,6 +39,11 @@ export const FEED_ALLOWLIST = [
         name: "Apple Developer",
         url: "https://developer.apple.com/news/rss/news.rss",
 
-    }
+    },
+    {
+        id: "macworld",
+        name: "Macworld",
+        url: "https://www.macworld.com/feed",
+    },
 
 ];
