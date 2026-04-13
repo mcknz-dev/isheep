@@ -225,6 +225,8 @@ app.post("/api/subscribe", async (req, res) => {
           <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 12px;">
             You're now subscribed to <strong>iSheep Weekly</strong> — your Sunday catch-up for everything Apple. Every week I'll send you the biggest stories from the past week, what was released, and a note from me.
           </p>
+          <br>
+          <br>
 
         
 
