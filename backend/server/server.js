@@ -206,38 +206,34 @@ app.post("/api/subscribe", async (req, res) => {
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:540px;">
 
-        <!-- HEADER -->
-        <tr><td style="background:#111111;border-radius:20px 20px 0 0;padding:44px 40px 36px;text-align:center;">
-          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="88" height="88" style="display:block;margin:0 auto 20px;image-rendering:pixelated;" />
-          <div style="font-family:'Orbitron',Georgia,sans-serif;font-size:34px;font-weight:700;letter-spacing:4px;color:#ffffff;">iSheep</div>
-          <div style="margin-top:6px;">
-            <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:400;letter-spacing:2px;color:#f58220;text-transform:uppercase;">Weekly</span>
-          </div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:10px;letter-spacing:1px;text-transform:uppercase;">Your Apple news, all in one place</div>
+        <!-- HEADER — white, clean -->
+        <tr><td style="background:#ffffff;border-radius:20px 20px 0 0;padding:40px 40px 28px;text-align:center;border-bottom:1px solid #eeeeee;">
+          <img src="https://isheep.news/assets/homepage/Sheep.png" alt="iSheep" width="72" height="72" style="display:block;margin:0 auto 16px;image-rendering:pixelated;" />
+          <div style="font-family:'Orbitron',Georgia,sans-serif;font-size:30px;font-weight:700;letter-spacing:4px;color:#111111;line-height:1;">iSheep</div>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:3px;color:#f58220;text-transform:uppercase;margin-top:6px;">Weekly</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#aaaaaa;margin-top:12px;letter-spacing:1.5px;text-transform:uppercase;">Your Apple news, all in one place</div>
         </td></tr>
 
         <!-- ORANGE ACCENT BAR -->
-        <tr><td style="background:#f58220;height:3px;"></td></tr>
+        <tr><td style="background:#f58220;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
 
         <!-- BODY -->
-        <tr><td style="background:#ffffff;padding:40px 40px 36px;border-radius:0;">
+        <tr><td style="background:#ffffff;padding:36px 40px 32px;">
 
-          <h1 style="font-size:24px;font-weight:800;color:#111111;margin:0 0 16px;">Welcome aboard${firstName ? `, ${firstName}` : ""}! 🎉</h1>
+          <h1 style="font-size:22px;font-weight:800;color:#111111;margin:0 0 14px;">Welcome aboard${firstName ? `, ${firstName}` : ""}! 🎉</h1>
 
-          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 14px;">
-            You're now subscribed to the <strong>iSheep Weekly</strong> — a weekly recap of the biggest Apple stories, delivered straight to your inbox every week.
+          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 12px;">
+            You're now subscribed to <strong>iSheep Weekly</strong> — your Sunday catch-up for everything Apple. Every week I'll send you the biggest stories from the past week, what was released, and a note from me.
           </p>
 
-          <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 32px;">
-            Every issue covers the week's top news from across the Apple world.
-          </p>
+        
 
           <!-- CTA BUTTON -->
           <table cellpadding="0" cellspacing="0" width="100%">
             <tr><td align="center">
               <table cellpadding="0" cellspacing="0">
-                <tr><td style="background:#f58220;border-radius:14px;box-shadow:0 4px 16px rgba(245,130,32,0.35);">
-                  <a href="https://isheep.news" style="display:inline-block;padding:15px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;">
+                <tr><td style="background:#f58220;border-radius:12px;box-shadow:0 4px 16px rgba(245,130,32,0.35);">
+                  <a href="https://isheep.news" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;">
                     Read today's news →
                   </a>
                 </td></tr>
@@ -263,7 +259,6 @@ app.post("/api/subscribe", async (req, res) => {
 
 </body>
 </html>
-
             `
         });
 
