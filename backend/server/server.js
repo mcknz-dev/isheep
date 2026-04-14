@@ -223,7 +223,7 @@ app.post("/api/subscribe", async (req, res) => {
           <h1 style="font-size:22px;font-weight:800;color:#111111;margin:0 0 14px;">Welcome aboard${firstName ? `, ${firstName}` : ""}! 🎉</h1>
 
           <p style="font-size:15px;line-height:1.7;color:#444444;margin:0 0 12px;">
-            You're now subscribed to <strong>iSheep Weekly</strong>. Every Sunday, catch up on hand-picked Apple news, stories, and releases from the past week. See you then!
+            You're now subscribed to <strong>iSheep Weekly</strong>. Every Sunday, catch up on hand-picked Apple news, updates, and releases from the past week. See you then!
           </p>
           <br>
         
