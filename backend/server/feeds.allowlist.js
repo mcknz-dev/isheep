@@ -45,5 +45,10 @@ export const FEED_ALLOWLIST = [
         name: "Macworld",
         url: "https://www.macworld.com/feed",
     },
+    {
+        id: "homekitnews",
+        name: "HomeKit News",
+        url: "https://homekitnews.com/feed",
+    },
 
 ];
