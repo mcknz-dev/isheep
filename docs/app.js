@@ -163,7 +163,6 @@ wireSubscribe();
 wireNewsletterModal();
 wireSearch();
 wirePullToRefresh();
-wireWWDCCountdown();
 wireViewToggle();
 wireFirstVisitPopup();
 
