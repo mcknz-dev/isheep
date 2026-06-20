@@ -101,9 +101,15 @@ body {
 .site-name {
     font-size: 40px;
     font-family: Inter, sans-serif;
-    letter-spacing: 2px;
-    color: #070707;
+    letter-spacing: 1px;
 }
+
+.rainbow-logo .l1 { color: #61bb46; } /* green */
+.rainbow-logo .l2 { color: #fdb827; } /* yellow */
+.rainbow-logo .l3 { color: #f5821f; } /* orange */
+.rainbow-logo .l4 { color: #e03a3e; } /* red */
+.rainbow-logo .l5 { color: #963d97; } /* purple */
+.rainbow-logo .l6 { color: #009ddc; } /* blue */
 
 /* --- Desktop Tabs --- */
 .tabs {
@@ -2548,3 +2554,9 @@ body {
     display: none !important;
 }
 
+.rainbow-logo .l1 { color: #61bb46; } /* green */
+.rainbow-logo .l2 { color: #fdb827; } /* yellow */
+.rainbow-logo .l3 { color: #f5821f; } /* orange */
+.rainbow-logo .l4 { color: #e03a3e; } /* red */
+.rainbow-logo .l5 { color: #963d97; } /* purple */
+.rainbow-logo .l6 { color: #009ddc; } /* blue */
