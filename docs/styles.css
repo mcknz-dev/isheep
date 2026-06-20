@@ -100,7 +100,7 @@ body {
 
 .site-name {
     font-size: 40px;
-    font-family: Orbitron, sans-serif;
+    font-family: Inter, sans-serif;
     letter-spacing: 2px;
     color: #070707;
 }
@@ -2547,3 +2547,4 @@ body {
 :root[data-theme="dark"] .fab {
     display: none !important;
 }
+
