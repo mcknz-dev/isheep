@@ -2423,17 +2423,25 @@ body {
     color: #f5f5f5;
 }
 
-.logo-letter {
-    font-size: 40px;
-    font-family: Inter, sans-serif;
-    letter-spacing: -7px;
-    font-weight: 100;
+
+/* ==========================================
+   LOGO
+========================================== */
+
+.site-name {
+    font-size: 44px;
+    font-weight: 300;
+    line-height: 1.1;
+
+    letter-spacing: 1px;
+
     display: inline-block;
+
+    padding-right: 6px; /* prevents p clipping */
 }
 
 .rainbow-logo {
-    display: inline-block;
-    background-image: linear-gradient(
+    background: linear-gradient(
             90deg,
             #61BB46,
             #FDB827,
@@ -2442,94 +2450,97 @@ body {
             #963D97,
             #009DDC
     );
-    background-size: 100%;
-    background-repeat: repeat;
 
     -webkit-background-clip: text;
     background-clip: text;
+
     color: transparent;
     -webkit-text-fill-color: transparent;
 }
 
-@media (max-width: 600px) {
 
-    .nav-pill {
-        margin-top: 8px;      /* instead of 30-40px */
-        margin-bottom: 12px;
-
-        padding: 8px 20px;    /* was probably 12-16px */
-
-        min-height: 72px;     /* instead of 90-100px */
-        border-radius: 999px;
-
-        width: calc(100% - 24px);
-    }
-
-    .site-name {
-        font-size: 40px;
-        line-height: 1;
-    }
-
-    .mobile-icon-btn {
-        margin-top: 0;
-        padding: 6px;
-        font-size: 28px;
-    }
-}
-
-.mobile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin: 8px 12px 12px;
-}
-
-.logo-pill,
-.actions-pill {
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    border-radius: 999px;
-
-    box-shadow:
-            0 2px 8px rgba(0,0,0,0.05),
-            inset 0 1px 0 rgba(255,255,255,0.4);
-}
-
-.logo-pill {
-    padding: 12px 24px;
-}
-
-.actions-pill {
-    padding: 10px 16px;
-
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.mobile-header {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
+/* ==========================================
+   MOBILE HEADER
+========================================== */
 
 .mobile-header {
     position: fixed;
-    top: 8px;
+
+    top: 12px;
     left: 12px;
     right: 12px;
+
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
     z-index: 9999;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,0.72);
+
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    box-shadow:
+            0 6px 20px rgba(0,0,0,0.06);
 }
 
-.logo-pill {
-    padding: 6px 18px;
+
+/* ==========================================
+   BRAND
+========================================== */
+
+.brand {
+    display: flex;
+    align-items: center;
+
+    min-width: 0;
 }
 
-.actions-pill {
-    padding: 6px 12px;
+
+/* ==========================================
+   ACTION BUTTONS
+========================================== */
+
+.mobile-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex-shrink: 0;
 }
+
+.mobile-icon-btn {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: none;
+
+    padding: 0;
+    margin: 0;
+
+    font-size: 28px;
+    cursor: pointer;
+}
+
+
+/* ==========================================
+   FEED OFFSET
+========================================== */
+
 .main {
-    padding-top: 35px;
+    padding-top: 50px;
 }
