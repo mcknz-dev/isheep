@@ -81,7 +81,7 @@ body {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-    margin-top: -40px;
+
     margin-bottom: 20px;
 }
 
@@ -102,14 +102,9 @@ body {
     font-size: 40px;
     font-family: Inter, sans-serif;
     letter-spacing: 1px;
+    color: inherit;
 }
 
-.rainbow-logo .l1 { color: #61bb46; } /* green */
-.rainbow-logo .l2 { color: #fdb827; } /* yellow */
-.rainbow-logo .l3 { color: #f5821f; } /* orange */
-.rainbow-logo .l4 { color: #e03a3e; } /* red */
-.rainbow-logo .l5 { color: #963d97; } /* purple */
-.rainbow-logo .l6 { color: #009ddc; } /* blue */
 
 /* --- Desktop Tabs --- */
 .tabs {
@@ -156,58 +151,7 @@ body {
     opacity: 1;
 }
 
-/* --- User Profile Area --- */
-.user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    white-space: nowrap;
-}
 
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    background: #070707;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.avatar img {
-    width: 130%;
-    object-fit: cover;
-    image-rendering: pixelated;
-}
-
-.icon-btn {
-    border: none;
-    background: transparent;
-    padding: 2px;
-    cursor: pointer;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.icon-btn i {
-    font-size: 18px;
-    color: #F58220;
-}
-
-.icon-btn:hover i {
-    transform: rotate(180deg);
-    transition: transform 0.15s ease;
-}
 
 /* --- Dark Mode Brand Overrides --- */
 :root[data-theme="dark"] .site-name {
@@ -1093,7 +1037,7 @@ body {
         width: 100vw;
         margin-left: calc(-50vw + 50%);
         margin-right: calc(-50vw + 50%);
-        margin-top: -60px;
+
         border-radius: 0;
         justify-content: space-between;
     }
@@ -1103,7 +1047,10 @@ body {
     }
 
     .site-name {
-        margin-top: 10px;
+        font-size: 40px;
+        font-family: Inter, sans-serif;
+        letter-spacing: 1px;
+        color: inherit;
     }
 }
 
@@ -1673,74 +1620,7 @@ body {
 
 
 
-/* ==========================================================================
-   DEALS TAB
-   ========================================================================== */
 
-.deal-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: #111;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    text-transform: uppercase;
-    pointer-events: none;
-}
-
-:root[data-theme="dark"] .deal-badge {
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-}
-
-.deal-price {
-    font-size: 20px;
-    font-weight: 800;
-    color: #111;
-}
-
-:root[data-theme="dark"] .deal-price {
-    color: #f5f5f5;
-}
-
-.deal-shop-btn {
-    display: inline-block;
-    background: #f58220;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 999px;
-    margin-left: auto;
-    transition: opacity 0.15s ease;
-    white-space: nowrap;
-}
-
-.deal-shop-btn:hover {
-    opacity: 0.85;
-}
-
-
-
-
-
-@media (max-width: 600px) {
-    .mobile-wwdc-banner {
-        display: none;
-    }
-}
-
-
-.mobile-wwdc-banner .wwdc-year {
-    color: #fff;
-    font-weight: 900;
-    margin-left: -29px;
-}
 
 /* ==========================================================================
    COMPACT / LIST VIEW (mobile only)
@@ -2243,7 +2123,7 @@ body {
 
 /* ==========================================================================
    FIRST VISIT NEWSLETTER POPUP
-   ========================================================================== */
+   ========================================================================== 
 
 .fv-backdrop {
     position: fixed;
@@ -2543,20 +2423,113 @@ body {
     color: #f5f5f5;
 }
 
-/* ==========================================================================
-   FAB — Floating Action Button (mobile only)
-   ========================================================================== */
-.fab {
-    display: none !important;
+.logo-letter {
+    font-size: 40px;
+    font-family: Inter, sans-serif;
+    letter-spacing: -7px;
+    font-weight: 100;
+    display: inline-block;
 }
 
-:root[data-theme="dark"] .fab {
-    display: none !important;
+.rainbow-logo {
+    display: inline-block;
+    background-image: linear-gradient(
+            90deg,
+            #61BB46,
+            #FDB827,
+            #F5821F,
+            #E03A3E,
+            #963D97,
+            #009DDC
+    );
+    background-size: 100%;
+    background-repeat: repeat;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
-.rainbow-logo .l1 { color: #61bb46; } /* green */
-.rainbow-logo .l2 { color: #fdb827; } /* yellow */
-.rainbow-logo .l3 { color: #f5821f; } /* orange */
-.rainbow-logo .l4 { color: #e03a3e; } /* red */
-.rainbow-logo .l5 { color: #963d97; } /* purple */
-.rainbow-logo .l6 { color: #009ddc; } /* blue */
+@media (max-width: 600px) {
+
+    .nav-pill {
+        margin-top: 8px;      /* instead of 30-40px */
+        margin-bottom: 12px;
+
+        padding: 8px 20px;    /* was probably 12-16px */
+
+        min-height: 72px;     /* instead of 90-100px */
+        border-radius: 999px;
+
+        width: calc(100% - 24px);
+    }
+
+    .site-name {
+        font-size: 40px;
+        line-height: 1;
+    }
+
+    .mobile-icon-btn {
+        margin-top: 0;
+        padding: 6px;
+        font-size: 28px;
+    }
+}
+
+.mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 8px 12px 12px;
+}
+
+.logo-pill,
+.actions-pill {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border-radius: 999px;
+
+    box-shadow:
+            0 2px 8px rgba(0,0,0,0.05),
+            inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.logo-pill {
+    padding: 12px 24px;
+}
+
+.actions-pill {
+    padding: 10px 16px;
+
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.mobile-header {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.mobile-header {
+    position: fixed;
+    top: 8px;
+    left: 12px;
+    right: 12px;
+    z-index: 9999;
+}
+
+.logo-pill {
+    padding: 6px 18px;
+}
+
+.actions-pill {
+    padding: 6px 12px;
+}
+.main {
+    padding-top: 35px;
+}
