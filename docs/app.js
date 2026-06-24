@@ -1116,54 +1116,6 @@ function wirePullToRefresh() {
     });
 }
 
-/* ======================================================
-   WWDC COUNTDOWN
-   ====================================================== */
-function wireWWDCCountdown() {
-    const el = $("#wwdcCountdown");
-    if (!el) return;
-
-    // WWDC26 — June 8, 2026 at 1:00 PM EDT (UTC-4, summer time)
-    const WWDC = new Date("2026-06-08T13:00:00-04:00");
-
-    // Make countdown clickable
-    el.style.cursor = "pointer";
-    el.addEventListener("click", () => {
-        window.open("https://developer.apple.com/wwdc26/", "_blank", "noopener,noreferrer");
-    });
-
-    const mobileBanner = $("#mobileWwdcBanner");
-
-    function update() {
-        const now = new Date();
-        const diff = WWDC - now;
-
-        if (diff <= 0) {
-            el.innerHTML = `<span class="wwdc-live">🎉 WWDC is live!</span>`;
-            if (mobileBanner) mobileBanner.innerHTML = `<span class="wwdc-live">🎉 WWDC is live!</span>`;
-            return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-        const timeStr = days > 0
-            ? `${days} DAY${days !== 1 ? "S" : ""} AWAY`
-            : `${hours}h ${mins}m AWAY`;
-
-        const inner = `
-            <span class="wwdc-label-text">WWDC</span><span class="wwdc-year">26</span>
-            <span class="wwdc-days-text">${timeStr}</span>
-        `;
-
-        el.innerHTML = inner;
-        if (mobileBanner) mobileBanner.innerHTML = `<span class="wwdc-label-text">WWDC</span><span class="wwdc-year">26</span><span class="wwdc-days-text">${timeStr}</span>`;
-    }
-
-    update();
-    setInterval(update, 60000); // update every minute
-}
 
 /* ======================================================
    MOBILE LIST VIEW TOGGLE
@@ -1174,7 +1126,7 @@ function wireViewToggle() {
     // Menu row button (different element, same action)
     const menuRowBtn = $("#mobileViewToggleRow");
 
-    viewMode = localStorage.getItem("viewMode") || "grid";
+    viewMode = localStorage.getItem("viewMode") || "tiles";
     isListView = false;
     applyViewMode();
 
