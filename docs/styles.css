@@ -1285,13 +1285,7 @@ body {
     background: rgba(255,255,255,0.06);
 }
 
-/* Disable hover/scale animation on touch devices */
-@media (hover: none), (max-width: 600px) {
-    .card:hover,
-    :root[data-theme="dark"] .card:hover {
-        transform: none !important;
-        box-shadow: 0 6px 8px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04) !important;
-    }
+
 
     .card:active,
     :root[data-theme="dark"] .card:active {
@@ -1655,7 +1649,7 @@ body {
     position: absolute;
     top: 8px;
     left: 8px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -1724,7 +1718,7 @@ body {
 }
 
 #contactBackdrop .contact-modal-header {
-    background: #f58220;
+   
     width: 100%;
     padding: 28px 28px 20px;
     display: flex;
@@ -1740,17 +1734,19 @@ body {
 }
 
 #contactBackdrop .contact-modal-header h2 {
-    font-family: 'Orbitron', sans-serif;
+    
+    font-family: Inter, sans-serif;
     font-size: 22px;
-    font-weight: 700;
-    color: #fff;
+    font-weight: 300;
+    color: #000000;
+    
     margin: 0;
     letter-spacing: 2px;
 }
 
 #contactBackdrop .contact-modal-header p {
     font-size: 13px;
-    color: rgba(255,255,255,0.8);
+    color: rgb(0, 0, 0);
     margin: 0;
 }
 
@@ -1875,7 +1871,7 @@ body {
     background: rgba(255,255,255,0.14);
 
     backdrop-filter:
-            blur(6px)
+            blur(3px)
             saturate(180%);
 
     border: 1px solid rgba(255,255,255,0.35);
@@ -1911,7 +1907,7 @@ body {
 .mobile-icon-btn {
     width: 20px;
     height: 20px;
- 
+
 
     display: flex;
     align-items: center;
@@ -1963,7 +1959,7 @@ body {
 
 .hero-logo {
     margin-top: -8px;
-    
+
 }
 .floating-controls {
     top: 22px;
