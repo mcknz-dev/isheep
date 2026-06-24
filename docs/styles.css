@@ -1028,8 +1028,8 @@ body {
 
     .site-name {
         font-size: 40px;
-        font-family: Inter, sans-serif;
-        letter-spacing: 1px;
+        font-family: Orbitron, serif;
+        
         color: inherit;
     }
 }
@@ -1971,10 +1971,11 @@ body {
 
 .site-name {
     font-size: 50px;
+    letter-spacing: 3px;
 }
 
 /* ==========================================
-   CONTACT MODAL
+   CONTACT MODALmk
 ========================================== */
 
 .fv-backdrop {
@@ -2046,6 +2047,7 @@ body {
 }
 .hero-logo {
     transform: translateY(-2px);
+  
 }
 
 @media (min-width: 1200px) {
