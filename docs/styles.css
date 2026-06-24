@@ -1832,7 +1832,7 @@ body {
     color: transparent;
     -webkit-text-fill-color: transparent;
 
-    animation: rainbowFlow 20s ease-in-out infinite;
+    animation: rainbowFlow 13s ease-in-out infinite;
 }
 
 @keyframes rainbowFlow {
@@ -2111,5 +2111,6 @@ body {
         padding-top: 0;
     }
 }
+
 
 
