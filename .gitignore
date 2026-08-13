@@ -1,0 +1,13 @@
+# Dependencies are recreated from the package lockfiles.
+node_modules/
+
+# Local environment files can contain secrets and should never be committed.
+.env
+.env.*
+!.env.example
+
+# Runtime output and operating-system metadata.
+*.log
+coverage/
+.DS_Store
+Thumbs.db

@@ -1,1440 +1,927 @@
 import { SITE_CONFIG } from "./config.js";
 
-/* ======================================================
-   HELPERS
-   ====================================================== */
-const $ = (sel) => document.querySelector(sel);
+/* ==========================================================================
+   1. DOM REFERENCES AND APPLICATION STATE
+   --------------------------------------------------------------------------
+   Keeping selectors and mutable state near the top makes the data flow easy
+   to inspect: user actions update state, then one render path updates the UI.
+   ========================================================================== */
 
-function isToday(dateString) {
-    if (!dateString) return false;
-    const d = new Date(dateString);
-    if (isNaN(d)) return false;
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
-    const t = new Date();
-    return (
-        d.getFullYear() === t.getFullYear() &&
-        d.getMonth() === t.getMonth() &&
-        d.getDate() === t.getDate()
+const STORAGE_KEYS = {
+    appearance: "isheep:appearance",
+    enabledFeeds: "isheep:enabled-feeds",
+    savedArticles: "isheep:saved-articles",
+    viewMode: "isheep:view-mode",
+};
+
+const MOBILE_TILE_QUERY = window.matchMedia("(max-width: 639px)");
+const SYSTEM_DARK_QUERY = window.matchMedia("(prefers-color-scheme: dark)");
+
+const elements = {
+    grid: $("#newsGrid"),
+    status: $("#status"),
+    feedList: $("#feedList"),
+    settingsOverlay: $("#settingsOverlay"),
+    contactOverlay: $("#contactOverlay"),
+    mobileMenu: $("#mobileMenu"),
+    hamburgerButton: $("#hamburgerBtn"),
+    searchInput: $("#searchInput"),
+    searchClear: $("#searchClear"),
+    mobileSearchInput: $("#mobileSearchInput"),
+    mobileSearchClear: $("#mobileSearchClear"),
+};
+
+const state = {
+    activeCategory: "All",
+    availableFeeds: [],
+    enabledFeeds: [],
+    articles: [],
+    searchQuery: "",
+    viewMode: readStorage(STORAGE_KEYS.viewMode, "grid") === "compact" ? "compact" : "grid",
+    requestId: 0,
+};
+
+/* ==========================================================================
+   2. STORAGE AND THEME HELPERS
+   --------------------------------------------------------------------------
+   Local storage is optional in some privacy modes, so every read and write is
+   guarded. The site remains usable if it cannot persist a preference.
+   ========================================================================== */
+
+function readStorage(key, fallback) {
+    try {
+        const rawValue = window.localStorage.getItem(key);
+        return rawValue === null ? fallback : JSON.parse(rawValue);
+    } catch {
+        return fallback;
+    }
+}
+
+function writeStorage(key, value) {
+    try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+        // Storage failures should not block a visitor from using the news feed.
+    }
+}
+
+function getAppearance() {
+    const stored = readStorage(STORAGE_KEYS.appearance, {});
+    const theme = ["light", "dark", "system"].includes(stored?.theme)
+        ? stored.theme
+        : "system";
+
+    return { theme };
+}
+
+function getResolvedTheme(preference = getAppearance().theme) {
+    if (preference === "system") {
+        return SYSTEM_DARK_QUERY.matches ? "dark" : "light";
+    }
+
+    return preference;
+}
+
+function setButtonIcon(button, iconClass) {
+    const icon = button?.querySelector("i");
+
+    if (icon) {
+        icon.className = iconClass;
+        icon.setAttribute("aria-hidden", "true");
+    }
+}
+
+/**
+ * Apply the saved theme to the root element, then update every visible theme
+ * toggle. The document attribute lets CSS switch all tokens at once.
+ */
+function applyTheme() {
+    const resolvedTheme = getResolvedTheme();
+    if (resolvedTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+    }
+
+    const useDarkTheme = resolvedTheme !== "dark";
+    const iconClass = useDarkTheme ? "fa-solid fa-moon" : "fa-solid fa-sun";
+    const label = useDarkTheme ? "Dark theme" : "Light theme";
+
+    setButtonIcon($("#themeToggle"), iconClass);
+    setButtonIcon($("#mobileThemeToggle"), iconClass);
+    setButtonIcon($("#mobileDarkToggle"), iconClass);
+
+    const mobileThemeLabel = $("#mobileThemeLabel");
+    if (mobileThemeLabel) {
+        mobileThemeLabel.textContent = label;
+    }
+
+    [$("#themeToggle"), $("#mobileThemeToggle")].forEach((button) => {
+        button?.setAttribute("aria-label", "Use " + label.toLowerCase());
+    });
+}
+
+function toggleTheme() {
+    const nextTheme = getResolvedTheme() === "dark" ? "light" : "dark";
+    writeStorage(STORAGE_KEYS.appearance, { theme: nextTheme });
+    applyTheme();
+}
+
+/* ==========================================================================
+   3. GENERAL UI HELPERS
+   ========================================================================== */
+
+function setStatus(message) {
+    if (elements.status) {
+        elements.status.textContent = message;
+    }
+}
+
+function pluralize(count, singular, plural = singular + "s") {
+    return count === 1 ? singular : plural;
+}
+
+function isMobileTileView() {
+    return state.viewMode === "compact" && MOBILE_TILE_QUERY.matches;
+}
+
+function closeMobileMenu() {
+    if (!elements.mobileMenu || !elements.hamburgerButton) {
+        return;
+    }
+
+    elements.mobileMenu.hidden = true;
+    elements.hamburgerButton.setAttribute("aria-expanded", "false");
+    elements.hamburgerButton.setAttribute("aria-label", "Open menu");
+}
+
+function toggleMobileMenu() {
+    if (!elements.mobileMenu || !elements.hamburgerButton) {
+        return;
+    }
+
+    const willOpen = elements.mobileMenu.hidden;
+    elements.mobileMenu.hidden = !willOpen;
+    elements.hamburgerButton.setAttribute("aria-expanded", String(willOpen));
+    elements.hamburgerButton.setAttribute("aria-label", willOpen ? "Close menu" : "Open menu");
+}
+
+function updateOverlayScrollLock() {
+    const hasOpenOverlay = !elements.settingsOverlay?.hidden || !elements.contactOverlay?.hidden;
+    document.body.classList.toggle("has-overlay", hasOpenOverlay);
+}
+
+function openOverlay(overlay) {
+    if (!overlay) {
+        return;
+    }
+
+    // Only one modal dialog should be active at a time.
+    [elements.settingsOverlay, elements.contactOverlay].forEach((item) => {
+        if (item && item !== overlay) {
+            item.hidden = true;
+        }
+    });
+
+    closeMobileMenu();
+    overlay.hidden = false;
+    updateOverlayScrollLock();
+}
+
+function closeOverlay(overlay) {
+    if (!overlay) {
+        return;
+    }
+
+    overlay.hidden = true;
+    updateOverlayScrollLock();
+}
+
+function createElement(tagName, className, textContent) {
+    const element = document.createElement(tagName);
+
+    if (className) {
+        element.className = className;
+    }
+
+    if (textContent !== undefined) {
+        element.textContent = textContent;
+    }
+
+    return element;
+}
+
+function createIcon(iconClass) {
+    const icon = createElement("i", iconClass);
+    icon.setAttribute("aria-hidden", "true");
+    return icon;
+}
+
+/* ==========================================================================
+   4. CATEGORY, SEARCH, AND VIEW CONTROLS
+   --------------------------------------------------------------------------
+   These controls only affect rendering. A new network request is made for
+   category changes, while searching filters already-loaded articles instantly.
+   ========================================================================== */
+
+function syncCategoryControls() {
+    $$("[data-category]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.category === state.activeCategory);
+    });
+}
+
+async function setCategory(category) {
+    if (!SITE_CONFIG.categories.includes(category)) {
+        return;
+    }
+
+    state.activeCategory = category;
+    syncCategoryControls();
+    closeMobileMenu();
+    await loadAndRenderNews();
+}
+
+function syncSearchControls() {
+    const hasQuery = Boolean(state.searchQuery);
+
+    if (elements.searchInput) {
+        elements.searchInput.value = state.searchQuery;
+    }
+
+    if (elements.mobileSearchInput) {
+        elements.mobileSearchInput.value = state.searchQuery;
+    }
+
+    if (elements.searchClear) {
+        elements.searchClear.hidden = !hasQuery;
+    }
+
+    if (elements.mobileSearchClear) {
+        elements.mobileSearchClear.hidden = !hasQuery;
+    }
+}
+
+function setSearchQuery(value) {
+    state.searchQuery = value.trim().toLowerCase();
+    syncSearchControls();
+    renderArticles();
+}
+
+function syncViewControls() {
+    const compactView = state.viewMode === "compact";
+    const label = $("#mobileViewLabel");
+
+    if (label) {
+        label.textContent = compactView ? "Standard view" : "Compact view";
+    }
+
+    setButtonIcon(
+        $("#mobileViewToggle"),
+        compactView ? "fa-solid fa-table-cells-large" : "fa-solid fa-table-list"
     );
 }
 
-function timeAgo(dateString) {
-    if (!dateString) return "—";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "—";
-
-    const seconds = Math.floor((Date.now() - date) / 1000);
-    const units = [
-        { label: "y", secs: 31536000 },
-        { label: "mo", secs: 2592000 },
-        { label: "d", secs: 86400 },
-        { label: "h", secs: 3600 },
-        { label: "m", secs: 60 }
-    ];
-
-    for (const u of units) {
-        const v = Math.floor(seconds / u.secs);
-        if (v > 0) return `${v}${u.label} ago`;
-    }
-    return "just now";
+function toggleViewMode() {
+    state.viewMode = state.viewMode === "compact" ? "grid" : "compact";
+    writeStorage(STORAGE_KEYS.viewMode, state.viewMode);
+    syncViewControls();
+    renderArticles();
+    closeMobileMenu();
 }
 
-/* ======================================================
-   APPEARANCE
-   ====================================================== */
-function loadAppearance() {
+/* ==========================================================================
+   5. FEED PREFERENCES
+   --------------------------------------------------------------------------
+   The server remains the source of truth for valid feeds. Locally persisted
+   IDs are filtered against that list before being used in an API request.
+   ========================================================================== */
+
+async function fetchJson(url) {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error("Request failed with status " + response.status);
+    }
+
+    return response.json();
+}
+
+async function loadAvailableFeeds() {
     try {
-        return JSON.parse(localStorage.getItem("appearance")) || {
-            theme: "system",
-            borderColor: "#2b2b2b",
-            columns: 4
-        };
-    } catch {
-        return { theme: "system", borderColor: "#2b2b2b", columns: 4 };
-    }
-}
+        const feeds = await fetchJson(SITE_CONFIG.apiBase + "/api/feeds");
 
-function saveAppearance(settings) {
-    localStorage.setItem("appearance", JSON.stringify(settings));
-}
-
-function applyAppearance() {
-    const a = loadAppearance();
-    const root = document.documentElement;
-
-    // Clear previous theme
-    root.removeAttribute("data-theme");
-
-    if (a.theme === "dark") {
-        root.setAttribute("data-theme", "dark");
-    }
-
-    if (a.theme === "system") {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (prefersDark) {
-            root.setAttribute("data-theme", "dark");
+        if (!Array.isArray(feeds)) {
+            throw new Error("Feed list was not an array");
         }
-    }
 
-    root.style.setProperty("--grid-columns", a.columns ?? 4);
-}
-
-/* ======================================================
-   READ LATER
-   ====================================================== */
-function loadReadLater() {
-    try {
-        return JSON.parse(localStorage.getItem("readLater")) || [];
-    } catch {
-        return [];
+        state.availableFeeds = feeds.filter((feed) => feed?.id && feed?.name);
+        return true;
+    } catch (error) {
+        console.error("Unable to load feed list:", error);
+        state.availableFeeds = [];
+        setStatus("News sources are temporarily unavailable. Please try again shortly.");
+        return false;
     }
 }
 
-const savedTheme = loadAppearance().theme || "system";
-setTheme(savedTheme);
-
-function saveToReadLater(article) {
-    const saved = loadReadLater();
-    if (saved.some(a => a.link === article.link)) return;
-    saved.push(article);
-    localStorage.setItem("readLater", JSON.stringify(saved));
-}
-
-function removeFromReadLater(link) {
-    const updated = loadReadLater().filter(a => a.link !== link);
-    localStorage.setItem("readLater", JSON.stringify(updated));
-}
-
-function isSaved(link) {
-    return loadReadLater().some(a => a.link === link);
-}
-
-/* ======================================================
-   ELEMENTS
-   ====================================================== */
-const tabsEl = $("#tabs");
-const gridEl = $("#newsGrid");
-const statusEl = $("#status");
-
-const modalBackdrop = $("#modalBackdrop");
-const feedListEl = $("#feedList");
-
-const openSettingsBtn = $("#openSettings");
-const closeSettingsBtn = $("#closeSettings");
-const saveFeedsBtn = $("#saveFeeds");
-const selectAllBtn = $("#selectAll");
-const selectNoneBtn = $("#selectNone");
-
-const hamburgerBtn = $("#hamburgerBtn");
-const mobileMenu = $("#mobileMenu");
-const mobileSettingsBtn = $("#mobileSettings");
-
-const columnSelect = $("#columnSelect");
-const themePills = $("#themePills");
-const feedsActions = $("#feedsActions");
-
-/* ======================================================
-   STATE
-   ====================================================== */
-let activeCategory = "All";
-let allFeeds = [];
-let menuOpenedAt = 0;
-let enabledFeeds = [];
-let feedChecks = new Map();
-let isListView = false;
-// viewMode: "grid" | "tiles"
-let viewMode = "grid";
-
-/* ======================================================
-   INIT
-   ====================================================== */
-document.title = SITE_CONFIG.name;
-const siteNameEl = $(".site-name");
-if (siteNameEl) siteNameEl.textContent = SITE_CONFIG.name;
-
-applyAppearance();
-renderTabs();
-wireModal();
-wireSettingsTabs();
-wireHamburger();
-wireAppearanceControls();
-wireThemeToggle();
-wireSubscribe();
-wireNewsletterModal();
-wireSearch();
-wirePullToRefresh();
-wireViewToggle();
-wireFirstVisitPopup();
-
-await loadFeedsFromServer();
-enabledFeeds = loadEnabledFeeds();
-await loadAndRenderNews();
-
-/* ======================================================
-   TOP TABS (DESKTOP)
-   ====================================================== */
-function renderTabs() {
-    if (!tabsEl) return;
-    tabsEl.innerHTML = "";
-
-    SITE_CONFIG.categories.forEach(cat => {
-        const btn = document.createElement("button");
-        btn.className = "tab" + (cat === activeCategory ? " active" : "");
-        btn.textContent = cat;
-
-        btn.addEventListener("click", async () => {
-            activeCategory = cat;
-            document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-            btn.classList.add("active");
-
-            // Also sync mobile menu highlight if it exists
-            document.querySelectorAll(".mobile-item[data-category]").forEach(b => {
-                b.classList.toggle("active", b.dataset.category === cat);
-            });
-
-            await loadAndRenderNews();
-        });
-
-        tabsEl.appendChild(btn);
-    });
-}
-
-/* ======================================================
-   SETTINGS MODAL
-   ====================================================== */
-function openModal() {
-    buildFeedList();
-
-    // Default to Feeds tab when opening (nice + avoids weird states)
-    setSettingsTab("feeds");
-
-    modalBackdrop?.classList.remove("hidden");
-}
-
-function closeModal() {
-    modalBackdrop?.classList.add("hidden");
-}
-
-function wireModal() {
-    openSettingsBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openModal();
-    });
-
-    closeSettingsBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        closeModal();
-    });
-
-    modalBackdrop?.addEventListener("click", (e) => {
-        if (e.target === modalBackdrop) closeModal();
-    });
-
-    selectAllBtn?.addEventListener("click", () => {
-        feedChecks.forEach(cb => (cb.checked = true));
-    });
-
-    selectNoneBtn?.addEventListener("click", () => {
-        feedChecks.forEach(cb => (cb.checked = false));
-    });
-
-    saveFeedsBtn?.addEventListener("click", async () => {
-        enabledFeeds = [];
-        feedChecks.forEach((cb, id) => {
-            if (cb.checked) enabledFeeds.push(id);
-        });
-
-        localStorage.setItem("enabledFeeds", JSON.stringify(enabledFeeds));
-        closeModal();
-        await loadAndRenderNews();
-    });
-}
-
-/* ======================================================
-   SETTINGS: FEEDS ONLY
-   ====================================================== */
-function setSettingsTab() {
-    if (feedsActions) feedsActions.style.display = "flex";
-}
-
-function wireSettingsTabs() {
-    // No tabs anymore — feeds panel is always active
-}
-
-/* ======================================================
-   HAMBURGER MENU (MOBILE)
-   ====================================================== */
-function wireHamburger() {
-    // Toggle menu
-    function toggleMenu(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const isHidden = mobileMenu?.classList.contains("hidden");
-        mobileMenu?.classList.toggle("hidden");
-        hamburgerBtn?.classList.toggle("open", isHidden);
-        if (isHidden) menuOpenedAt = Date.now();
-    }
-
-    // Use touchend for instant response on mobile, click as fallback for desktop
-    hamburgerBtn?.addEventListener("touchend", toggleMenu, { passive: false });
-    hamburgerBtn?.addEventListener("click", (e) => {
-        // Only fire click if it wasn't already handled by touchend
-        if (Date.now() - menuOpenedAt > 500) toggleMenu(e);
-    });
-
-    // Clicking inside menu should NOT close it
-    mobileMenu?.addEventListener("touchend", (e) => e.stopPropagation());
-    mobileMenu?.addEventListener("click", (e) => e.stopPropagation());
-
-    // Touch/click outside closes menu — ignore the tap that opened it
-    document.addEventListener("touchend", (e) => {
-        if (Date.now() - menuOpenedAt < 300) return;
-        if (!mobileMenu?.contains(e.target) && e.target !== hamburgerBtn) {
-            mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
-            hamburgerBtn?.classList.remove("open");
-        }
-    }, { passive: true });
-
-    document.addEventListener("click", (e) => {
-        if (Date.now() - menuOpenedAt < 300) return;
-        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
-        hamburgerBtn?.classList.remove("open");
-    });
-
-    // Settings (Feeds) item in mobile menu
-    mobileSettingsBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
-        openModal();
-    });
-
-    // Contact item in mobile menu
-    const mobileContactBtn = $("#mobileContact");
-    mobileContactBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
-        $("#contactBackdrop")?.classList.remove("hidden");
-    });
-
-    $("#closeContact")?.addEventListener("click", () => {
-        $("#contactBackdrop")?.classList.add("hidden");
-    });
-
-    $("#contactBackdrop")?.addEventListener("click", (e) => {
-        if (e.target === $("#contactBackdrop")) {
-            $("#contactBackdrop")?.classList.add("hidden");
-        }
-    });
-
-    // Dark mode toggle in mobile menu
-    const mobileDarkBtn = $("#mobileDarkToggle");
-    const mobileDarkIcon = $("#mobileDarkIcon");
-    const mobileDarkLabel = $("#mobileDarkLabel");
-
-    // Dark mode toggle in mobile nav bar
-    const mobileNavThemeBtn = $("#mobileThemeToggle");
-    const mobileNavThemeIcon = $("#mobileThemeIcon");
-
-    function updateAllDarkBtns() {
-        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-        if (mobileDarkIcon) mobileDarkIcon.className = isDark ? "fa-solid fa-sun mobile-row-icon" : "fa-solid fa-moon mobile-row-icon";
-        if (mobileDarkLabel) mobileDarkLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
-        if (mobileNavThemeIcon) mobileNavThemeIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-        const navIcon = $("#themeToggleIcon");
-        if (navIcon) navIcon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    }
-
-    updateAllDarkBtns();
-
-    const toggleDark = (e) => {
-        e.stopPropagation();
-        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-        const next = { ...loadAppearance(), theme: isDark ? "light" : "dark" };
-        saveAppearance(next);
-        applyAppearance();
-        updateAllDarkBtns();
-    };
-
-    mobileDarkBtn?.addEventListener("click", toggleDark);
-    mobileNavThemeBtn?.addEventListener("touchend", (e) => { e.preventDefault(); e.stopPropagation(); toggleDark(e); }, { passive: false });
-    mobileNavThemeBtn?.addEventListener("click", toggleDark);
-
-    // Newsletter in mobile menu
-    const mobileNewsletterBtn = $("#mobileNewsletter");
-    mobileNewsletterBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
-        $("#newsletterBackdrop")?.classList.remove("hidden");
-    });
-
-    // Newsletter in mobile nav bar
-    const mobileNavNewsletterBtn = $("#mobileNewsletterBtn");
-    mobileNavNewsletterBtn?.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        $("#newsletterBackdrop")?.classList.remove("hidden");
-    }, { passive: false });
-    mobileNavNewsletterBtn?.addEventListener("click", (e) => {
-        e.stopPropagation();
-        $("#newsletterBackdrop")?.classList.remove("hidden");
-    });
-
-    // Category switching in mobile menu
-    document.querySelectorAll(".mobile-item[data-category]").forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-            e.preventDefault();
-
-            const category = btn.dataset.category; // ✅ this is what your HTML uses
-            activeCategory = category;
-
-            // Mobile highlight
-            document.querySelectorAll(".mobile-item[data-category]").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            // Desktop tabs highlight (if they exist on the page)
-            document.querySelectorAll(".tab").forEach(t => {
-                t.classList.toggle("active", t.textContent.trim() === category);
-            });
-
-            mobileMenu?.classList.add("hidden"); hamburgerBtn?.classList.remove("open");
-            await loadAndRenderNews();
-        });
-    });
-}
-
-/* ======================================================
-   APPEARANCE CONTROLS (Theme pills + desktop columns)
-   ====================================================== */
-function wireAppearanceControls() {
-    // Theme pills
-    if (themePills) {
-        const a = loadAppearance();
-        const buttons = themePills.querySelectorAll("button[data-theme]");
-
-        // Set active pill on load
-        buttons.forEach(b => b.classList.toggle("active", b.dataset.theme === a.theme));
-
-        buttons.forEach(btn => {
-            btn.addEventListener("click", () => {
-                const next = loadAppearance();
-                next.theme = btn.dataset.theme;
-                saveAppearance(next);
-
-                buttons.forEach(b => b.classList.toggle("active", b === btn));
-                applyAppearance();
-            });
-        });
-    }
-
-    // Columns select (desktop-only UI)
-    if (columnSelect) {
-        const a = loadAppearance();
-        columnSelect.value = String(a.columns ?? 4);
-
-        columnSelect.addEventListener("change", async () => {
-            const next = loadAppearance();
-            next.columns = Number(columnSelect.value);
-            saveAppearance(next);
-            applyAppearance();
-            await loadAndRenderNews();
-        });
-    }
-}
-
-/* ======================================================
-   THEME TOGGLE (NAV BAR)
-   ====================================================== */
-function wireThemeToggle() {
-    const btn = $("#themeToggle");
-    const icon = $("#themeToggleIcon");
-    if (!btn || !icon) return;
-
-    function updateIcon() {
-        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-        icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    }
-
-    updateIcon();
-
-    btn.addEventListener("click", () => {
-        const current = loadAppearance();
-        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-        const next = { ...current, theme: isDark ? "light" : "dark" };
-        saveAppearance(next);
-        applyAppearance();
-        updateIcon();
-
-        // Keep the settings panel pills in sync
-        document.querySelectorAll("#themePills button").forEach(b => {
-            b.classList.toggle("active", b.dataset.theme === next.theme);
-        });
-    });
-}
-
-/* ======================================================
-   FEEDS
-   ====================================================== */
 function loadEnabledFeeds() {
-    try {
-        const raw = localStorage.getItem("enabledFeeds");
-        if (raw) {
-            const ids = JSON.parse(raw);
-            if (Array.isArray(ids) && ids.length) return ids;
-        }
-    } catch {}
+    const storedIds = readStorage(STORAGE_KEYS.enabledFeeds, null);
+    const availableIds = new Set(state.availableFeeds.map((feed) => feed.id));
 
-    // First visit -> enable all
-    const all = allFeeds.map(f => f.id);
-    localStorage.setItem("enabledFeeds", JSON.stringify(all));
-    return all;
-}
+    // A saved empty array is meaningful: the visitor intentionally selected none.
+    if (Array.isArray(storedIds)) {
+        return storedIds.filter((id) => availableIds.has(id));
+    }
 
-async function loadFeedsFromServer() {
-    const res = await fetch(`${SITE_CONFIG.apiBase}/api/feeds`);
-    allFeeds = await res.json();
+    // First-time visitors see every available source, matching the original site behavior.
+    return state.availableFeeds.map((feed) => feed.id);
 }
 
 function buildFeedList() {
-    if (!feedListEl) return;
+    if (!elements.feedList) {
+        return;
+    }
 
-    feedListEl.innerHTML = "";
-    feedChecks.clear();
+    const enabledIds = new Set(state.enabledFeeds);
+    const fragment = document.createDocumentFragment();
 
-    const enabledSet = new Set(enabledFeeds);
+    state.availableFeeds.forEach((feed) => {
+        const label = createElement("label", "feed-option");
+        const checkbox = createElement("input");
+        const name = createElement("span", "feed-option-name", feed.name);
 
-    allFeeds.forEach(feed => {
-        const row = document.createElement("div");
-        row.className = "feed-row";
+        checkbox.type = "checkbox";
+        checkbox.checked = enabledIds.has(feed.id);
+        checkbox.dataset.feedId = feed.id;
+        checkbox.setAttribute("aria-label", "Include " + feed.name);
 
-        const left = document.createElement("div");
-        const name = document.createElement("div");
-        name.style.fontWeight = "800";
-        name.textContent = feed.name;
-
-        const cats = document.createElement("small");
-        cats.textContent = (feed.categories || []).join(" • ");
-
-        left.appendChild(name);
-        left.appendChild(cats);
-
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.checked = enabledSet.has(feed.id);
-
-        feedChecks.set(feed.id, cb);
-
-        row.appendChild(left);
-        row.appendChild(cb);
-        feedListEl.appendChild(row);
-    });
-}
-
-/* ======================================================
-   NEWS
-   ====================================================== */
-function isNew(dateString) {
-    if (!dateString) return false;
-    const d = new Date(dateString);
-    if (isNaN(d)) return false;
-    return (Date.now() - d.getTime()) < 60 * 60 * 1000; // within 1 hour
-}
-
-function renderDealCard(deal) {
-    const card = document.createElement("div");
-    card.className = "card deal-card";
-    card.style.cursor = "pointer";
-    card.addEventListener("click", () => {
-        window.open(deal.link, "_blank", "noopener,noreferrer");
+        label.append(checkbox, name);
+        fragment.appendChild(label);
     });
 
-    // Image
-    const imgWrap = document.createElement("div");
-    imgWrap.className = "card-image";
-    const img = document.createElement("img");
-    img.src = deal.image;
-    img.loading = "lazy";
-    img.onerror = () => { imgWrap.style.display = "none"; };
-    imgWrap.appendChild(img);
+    elements.feedList.replaceChildren(fragment);
+}
 
-    // Badge
-    const badge = document.createElement("span");
-    badge.className = "deal-badge";
-    badge.textContent = deal.badge;
-    imgWrap.appendChild(badge);
+function saveSelectedFeeds() {
+    const selectedIds = $$("input[data-feed-id]", elements.feedList)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.dataset.feedId);
 
-    card.appendChild(imgWrap);
+    state.enabledFeeds = selectedIds;
+    writeStorage(STORAGE_KEYS.enabledFeeds, selectedIds);
+    closeOverlay(elements.settingsOverlay);
+    void loadAndRenderNews();
+}
 
-    // Body
-    const body = document.createElement("div");
-    body.className = "card-body";
+/* ==========================================================================
+   6. SAVED ARTICLES
+   --------------------------------------------------------------------------
+   Saved stories are stored as whole article objects so they remain readable
+   even after their original RSS entry no longer appears in a live response.
+   ========================================================================== */
 
-    const title = document.createElement("h3");
-    title.className = "title";
-    title.textContent = deal.title;
-    body.appendChild(title);
+function loadSavedArticles() {
+    const articles = readStorage(STORAGE_KEYS.savedArticles, []);
 
-    const summary = document.createElement("p");
-    summary.className = "summary";
-    summary.textContent = deal.summary;
-    body.appendChild(summary);
+    return Array.isArray(articles)
+        ? articles.filter((article) => article?.link && article?.title)
+        : [];
+}
 
-    card.appendChild(body);
+function writeSavedArticles(articles) {
+    writeStorage(STORAGE_KEYS.savedArticles, articles);
+}
 
-    // Footer
-    const footer = document.createElement("div");
-    footer.className = "card-header";
+function isSavedArticle(article) {
+    return loadSavedArticles().some((savedArticle) => savedArticle.link === article.link);
+}
 
-    const price = document.createElement("div");
-    price.className = "deal-price";
-    price.textContent = deal.price;
+function toggleSavedArticle(article) {
+    const savedArticles = loadSavedArticles();
+    const matchingIndex = savedArticles.findIndex((savedArticle) => savedArticle.link === article.link);
 
-    const shopBtn = document.createElement("a");
-    shopBtn.className = "deal-shop-btn";
-    shopBtn.href = deal.link;
-    shopBtn.target = "_blank";
-    shopBtn.rel = "noopener noreferrer";
-    shopBtn.textContent = "Shop on Amazon →";
-    shopBtn.addEventListener("click", (e) => e.stopPropagation());
+    if (matchingIndex >= 0) {
+        savedArticles.splice(matchingIndex, 1);
+    } else {
+        savedArticles.push(article);
+    }
 
-    footer.appendChild(price);
-    footer.appendChild(shopBtn);
-    card.appendChild(footer);
+    writeSavedArticles(savedArticles);
+    renderArticles();
+}
+
+/* ==========================================================================
+   7. ARTICLE DATA AND RENDERING
+   ========================================================================== */
+
+function isToday(dateString) {
+    const date = new Date(dateString);
+
+    if (Number.isNaN(date.getTime())) {
+        return false;
+    }
+
+    const today = new Date();
+    return (
+        date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth() &&
+        date.getDate() === today.getDate()
+    );
+}
+
+function isNewArticle(dateString) {
+    const date = new Date(dateString);
+    const elapsed = Date.now() - date.getTime();
+
+    return !Number.isNaN(elapsed) && elapsed >= 0 && elapsed < 60 * 60 * 1_000;
+}
+
+function formatRelativeTime(dateString) {
+    const date = new Date(dateString);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Recently";
+    }
+
+    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1_000));
+    const units = [
+        [365 * 24 * 60 * 60, "y"],
+        [30 * 24 * 60 * 60, "mo"],
+        [24 * 60 * 60, "d"],
+        [60 * 60, "h"],
+        [60, "m"],
+    ];
+
+    for (const [seconds, suffix] of units) {
+        const value = Math.floor(elapsedSeconds / seconds);
+
+        if (value > 0) {
+            return value + suffix + " ago";
+        }
+    }
+
+    return "Just now";
+}
+
+function getYouTubeThumbnail(url) {
+    const match = String(url || "").match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+
+    return match ? "https://img.youtube.com/vi/" + match[1] + "/mqdefault.jpg" : "";
+}
+
+function createImagePlaceholder(sourceName) {
+    const placeholder = createElement(
+        "div",
+        "card-placeholder",
+        String(sourceName || "?").charAt(0).toUpperCase()
+    );
+    placeholder.setAttribute("aria-hidden", "true");
+    return placeholder;
+}
+
+function createArticleMedia(article) {
+    const media = createElement("div", "card-media");
+    const imageUrl = article.image || getYouTubeThumbnail(article.link);
+
+    if (imageUrl) {
+        const image = createElement("img", "card-image");
+        image.src = imageUrl;
+        image.alt = "";
+        image.loading = "lazy";
+        image.addEventListener("error", () => {
+            image.replaceWith(createImagePlaceholder(article.source));
+        }, { once: true });
+        media.appendChild(image);
+    } else {
+        media.appendChild(createImagePlaceholder(article.source));
+    }
+
+    if (isNewArticle(article.date)) {
+        media.appendChild(createElement("span", "new-badge", "NEW"));
+    }
+
+    return media;
+}
+
+function openArticle(article) {
+    window.open(article.link, "_blank", "noopener,noreferrer");
+}
+
+function createActionButton({ label, iconClass, active = false, onClick }) {
+    const button = createElement("button", "action-button");
+
+    button.type = "button";
+    button.setAttribute("aria-label", label);
+    button.classList.toggle("is-saved", active);
+    button.appendChild(createIcon(iconClass));
+    button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        onClick(button);
+    });
+
+    return button;
+}
+
+async function shareArticle(article, button) {
+    try {
+        if (navigator.share) {
+            await navigator.share({
+                title: article.title,
+                url: article.link,
+            });
+            return;
+        }
+
+        if (!navigator.clipboard?.writeText) {
+            throw new Error("Clipboard access is unavailable");
+        }
+
+        await navigator.clipboard.writeText(article.link);
+        setButtonIcon(button, "fa-solid fa-check");
+        button.setAttribute("aria-label", "Link copied");
+
+        window.setTimeout(() => {
+            setButtonIcon(button, "fa-solid fa-arrow-up-from-bracket");
+            button.setAttribute("aria-label", "Share article");
+        }, 1_500);
+    } catch (error) {
+        // Dismissing the native share sheet is normal and does not need a UI error.
+        if (error?.name !== "AbortError") {
+            console.warn("Unable to share article:", error);
+        }
+    }
+}
+
+/**
+ * Render one article structure for both normal and compact modes. User-provided
+ * RSS text is assigned with textContent, never parsed as HTML.
+ */
+function createArticleCard(article, index) {
+    const card = createElement("article", "card card-enter");
+    const content = createElement("div", "card-content");
+    const source = createElement("p", "card-source", article.source || "Source");
+    const title = createElement("h2", "card-title");
+    const link = createElement("a", "", article.title || "Untitled");
+    const summary = createElement("p", "card-summary", article.summary || "");
+    const footer = createElement("footer", "card-footer");
+    const time = createElement("time", "card-time", formatRelativeTime(article.date));
+    const actions = createElement("div", "card-actions");
+
+    card.tabIndex = 0;
+    card.style.animationDelay = Math.min(index * 35, 420) + "ms";
+    card.addEventListener("click", (event) => {
+        if (!event.target.closest("a, button")) {
+            openArticle(article);
+        }
+    });
+    card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.target.closest("a, button")) {
+            event.preventDefault();
+            openArticle(article);
+        }
+    });
+
+    link.href = article.link;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    const articleDate = new Date(article.date);
+    if (!Number.isNaN(articleDate.getTime())) {
+        time.dateTime = articleDate.toISOString();
+    }
+
+    const saved = isSavedArticle(article);
+    const saveButton = createActionButton({
+        label: saved ? "Remove from saved stories" : "Save story",
+        iconClass: saved ? "fa-solid fa-star" : "fa-regular fa-star",
+        active: saved,
+        onClick: () => toggleSavedArticle(article),
+    });
+    const shareButton = createActionButton({
+        label: "Share article",
+        iconClass: "fa-solid fa-arrow-up-from-bracket",
+        onClick: (button) => {
+            void shareArticle(article, button);
+        },
+    });
+
+    title.appendChild(link);
+    content.append(source, title);
+
+    if (article.summary) {
+        content.appendChild(summary);
+    }
+
+    actions.append(saveButton, shareButton);
+    footer.append(time, actions);
+    card.append(createArticleMedia(article), content, footer);
 
     return card;
 }
 
 function renderSkeletons() {
-    const cols = loadAppearance().columns ?? 4;
-    const count = window.innerWidth < 600 ? 4 : cols * 2;
-    gridEl.innerHTML = "";
-    for (let i = 0; i < count; i++) {
-        const card = document.createElement("div");
-        card.className = "card skeleton-card";
-        card.innerHTML = `
-            <div class="skeleton skeleton-image"></div>
-            <div class="card-body" style="padding: 16px; gap: 10px;">
-                <div class="skeleton skeleton-title"></div>
-                <div class="skeleton skeleton-title" style="width: 75%;"></div>
-                <div class="skeleton skeleton-line"></div>
-                <div class="skeleton skeleton-line" style="width: 60%;"></div>
-            </div>
-            <div class="card-header">
-                <div class="skeleton skeleton-badge"></div>
-                <div class="skeleton skeleton-time"></div>
-            </div>
-        `;
-        gridEl.appendChild(card);
+    if (!elements.grid) {
+        return;
+    }
+
+    const skeletonCount = MOBILE_TILE_QUERY.matches ? 4 : 8;
+    const fragment = document.createDocumentFragment();
+
+    for (let index = 0; index < skeletonCount; index += 1) {
+        const card = createElement("article", "card skeleton-card");
+        const media = createElement("div", "skeleton skeleton-media");
+        const content = createElement("div", "skeleton-content");
+
+        content.append(
+            createElement("div", "skeleton skeleton-line short"),
+            createElement("div", "skeleton skeleton-line"),
+            createElement("div", "skeleton skeleton-line medium")
+        );
+        card.append(media, content);
+        fragment.appendChild(card);
+    }
+
+    elements.grid.classList.remove("tile-view");
+    elements.grid.replaceChildren(fragment);
+}
+
+function getVisibleArticles() {
+    let articles = state.articles;
+
+    if (state.activeCategory === "Today") {
+        articles = articles.filter((article) => isToday(article.date));
+    }
+
+    if (!state.searchQuery) {
+        return articles;
+    }
+
+    return articles.filter((article) => {
+        const searchableText = [
+            article.title,
+            article.summary,
+            article.source,
+        ].join(" ").toLowerCase();
+
+        return searchableText.includes(state.searchQuery);
+    });
+}
+
+function getEmptyMessage() {
+    if (state.activeCategory === "Saved") {
+        return state.searchQuery
+            ? "No saved stories match your search."
+            : "No saved stories yet.";
+    }
+
+    if (state.activeCategory === "Today") {
+        return state.searchQuery
+            ? "No stories from today match your search."
+            : "No stories from today.";
+    }
+
+    return state.searchQuery
+        ? "No stories match your search."
+        : "No articles found.";
+}
+
+function renderArticles() {
+    if (!elements.grid) {
+        return;
+    }
+
+    const articles = getVisibleArticles();
+    elements.grid.classList.toggle("tile-view", isMobileTileView());
+    elements.grid.replaceChildren();
+
+    if (articles.length === 0) {
+        setStatus(getEmptyMessage());
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    articles.forEach((article, index) => {
+        fragment.appendChild(createArticleCard(article, index));
+    });
+    elements.grid.appendChild(fragment);
+
+    if (state.searchQuery) {
+        setStatus(
+            articles.length + " " +
+            pluralize(articles.length, "result") +
+            " for \"" + state.searchQuery + "\""
+        );
+    } else {
+        setStatus(articles.length + " " + pluralize(articles.length, "story"));
     }
 }
 
+/**
+ * A request ID prevents a slow prior request from overwriting newer category
+ * results when a visitor quickly switches between All, Today, and Saved.
+ */
 async function loadAndRenderNews() {
-    if (!gridEl || !statusEl) return;
+    const requestId = ++state.requestId;
 
-    gridEl.innerHTML = "";
-    statusEl.textContent = "";
+    if (state.activeCategory === "Saved") {
+        state.articles = loadSavedArticles();
+        renderArticles();
+        return;
+    }
+
+    if (state.enabledFeeds.length === 0) {
+        state.articles = [];
+        elements.grid?.replaceChildren();
+        setStatus("No feeds selected. Open Feeds to choose sources.");
+        return;
+    }
 
     renderSkeletons();
+    setStatus("Loading news...");
 
-    // ✅ Saved (your UI says "Saved" but your data-category uses "Read Later")
-    if (activeCategory === "Read Later" || activeCategory === "Saved") {
-        const saved = loadReadLater();
-        if (!saved.length) {
-            statusEl.textContent = "No saved stories yet.";
-            return;
-        }
-        gridEl.innerHTML = "";
-        statusEl.textContent = `${saved.length} saved stories`;
-        saved.forEach((a, i) => {
-            const card = renderCard(a);
-            card.style.animationDelay = `${i * 40}ms`;
-            card.classList.add("card-fadein");
-            gridEl.appendChild(card);
-        });
-        return;
-    }
-
-    const url = new URL(`${SITE_CONFIG.apiBase}/api/news`);
-    url.searchParams.set("feeds", enabledFeeds.join(","));
+    const url = new URL(SITE_CONFIG.apiBase + "/api/news");
+    url.searchParams.set("feeds", state.enabledFeeds.join(","));
     url.searchParams.set("limit", "60");
 
-    let articles = await (await fetch(url)).json();
+    try {
+        const articles = await fetchJson(url);
 
-    // ✅ Today filter
-    if (activeCategory === "Today") {
-        articles = articles.filter(a =>
-            isToday(a.published || a.isoDate || a.pubDate || a.date)
-        );
+        if (requestId !== state.requestId) {
+            return;
+        }
+
+        state.articles = Array.isArray(articles) ? articles : [];
+        renderArticles();
+    } catch (error) {
+        if (requestId !== state.requestId) {
+            return;
+        }
+
+        console.error("Unable to load news:", error);
+        elements.grid?.replaceChildren();
+        setStatus("Unable to load news right now. Please try again shortly.");
     }
+}
 
-    if (!articles.length) {
-        gridEl.innerHTML = "";
-        statusEl.textContent = "No articles found.";
+/* ==========================================================================
+   8. EVENT WIRING
+   --------------------------------------------------------------------------
+   Event listeners are grouped by feature and only call named helpers. This
+   avoids the duplicated touch/click handlers that previously caused races.
+   ========================================================================== */
+
+function wireCategoryControls() {
+    $$("[data-category]").forEach((button) => {
+        button.addEventListener("click", () => {
+            void setCategory(button.dataset.category);
+        });
+    });
+}
+
+function wireSearchControl(input, clearButton) {
+    if (!input || !clearButton) {
         return;
     }
 
-    gridEl.innerHTML = "";
-    applyViewMode();
-    statusEl.textContent = `${articles.length} stories`;
-    articles.forEach((a, i) => {
-        let card;
-        if (window.innerWidth <= 600 && viewMode === "tiles") {
-            card = renderSmallTileCard(a);
-        } else {
-            card = renderCard(a);
-        }
-        card.style.animationDelay = `${i * 40}ms`;
-        card.classList.add("card-fadein");
-        gridEl.appendChild(card);
+    input.addEventListener("input", () => setSearchQuery(input.value));
+    clearButton.addEventListener("click", () => {
+        setSearchQuery("");
+        input.focus();
     });
 }
 
-document.querySelectorAll("#themePills button").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll("#themePills button")
-            .forEach(b => b.classList.remove("active"));
-
-        btn.classList.add("active");
-        setTheme(btn.dataset.theme);
-    });
-});
-
-/* ======================================================
-   CARD (KEEP HEADER AT BOTTOM)
-   ====================================================== */
-function renderCard(a) {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    // Card click — open article
-    card.style.cursor = "pointer";
-    card.addEventListener("click", () => {
-        window.open(a.link, "_blank", "noopener,noreferrer");
+function wireThemeControls() {
+    [$("#themeToggle"), $("#mobileThemeToggle"), $("#mobileDarkToggle")].forEach((button) => {
+        button?.addEventListener("click", toggleTheme);
     });
 
-    // Image — always render the block, fallback to source-letter placeholder
-    const imgWrap = document.createElement("div");
-    imgWrap.className = "card-image";
+    const updateSystemTheme = () => {
+        if (getAppearance().theme === "system") {
+            applyTheme();
+        }
+    };
 
-    const articleDate = a.published || a.isoDate || a.pubDate || a.date;
-
-    // Try YouTube thumbnail from link if no image
-    function getYtThumb(url) {
-        if (!url) return null;
-        const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-        return m ? `https://img.youtube.com/vi/${m[1]}/mqdefault.jpg` : null;
-    }
-
-    const imgSrc = a.image || getYtThumb(a.link);
-
-    if (imgSrc) {
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        img.loading = "lazy";
-        img.onerror = () => {
-            img.remove();
-            const ph = document.createElement("div");
-            ph.className = "card-image-placeholder";
-            ph.textContent = (a.source || "?")[0].toUpperCase();
-            imgWrap.appendChild(ph);
-        };
-        imgWrap.appendChild(img);
+    if (SYSTEM_DARK_QUERY.addEventListener) {
+        SYSTEM_DARK_QUERY.addEventListener("change", updateSystemTheme);
     } else {
-        const ph = document.createElement("div");
-        ph.className = "card-image-placeholder";
-        ph.textContent = (a.source || "?")[0].toUpperCase();
-        imgWrap.appendChild(ph);
+        SYSTEM_DARK_QUERY.addListener(updateSystemTheme);
     }
-
-    // NEW badge
-    if (isNew(articleDate)) {
-        const badge = document.createElement("span");
-        badge.className = "new-badge";
-        badge.textContent = "NEW";
-        imgWrap.appendChild(badge);
-    }
-
-    card.appendChild(imgWrap);
-
-    // Title
-    const title = document.createElement("h3");
-    title.className = "title";
-    const link = document.createElement("a");
-    link.href = a.link;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = a.title || "Untitled";
-    title.appendChild(link);
-    card.appendChild(title);
-
-    // Summary
-    const summary = document.createElement("p");
-    summary.className = "summary";
-    summary.textContent = (a.summary || "").slice(0, 220);
-    card.appendChild(summary);
-
-    // Header (ALWAYS LAST)
-    const header = document.createElement("div");
-    header.className = "card-header";
-
-    const source = document.createElement("div");
-    source.className = "badge";
-    source.textContent = a.source || "Source";
-
-    const time = document.createElement("div");
-    time.className = "time";
-    time.textContent = timeAgo(a.published || a.isoDate || a.pubDate || a.date);
-
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "save-btn";
-    saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
-    saveBtn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
-        saveBtn.textContent = isSaved(a.link) ? "★" : "☆";
-    };
-
-    // Share button
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "share-btn";
-    shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
-    shareBtn.setAttribute("aria-label", "Share");
-    shareBtn.onclick = async (e) => {
-        e.stopPropagation();
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: a.title,
-                    url: a.link
-                });
-            } catch {}
-        } else {
-            await navigator.clipboard.writeText(a.link);
-            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-            setTimeout(() => {
-                shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
-            }, 1500);
-        }
-    };
-
-    header.appendChild(source);
-    header.appendChild(time);
-    header.appendChild(saveBtn);
-    header.appendChild(shareBtn);
-
-    card.appendChild(header); // 🔒 DO NOT MOVE
-
-    return card;
 }
 
-function setTheme(theme) {
-    const root = document.documentElement;
+function wireSettingsDialog() {
+    const openSettings = () => {
+        buildFeedList();
+        openOverlay(elements.settingsOverlay);
+    };
 
-    // Remove existing theme
-    root.removeAttribute("data-theme");
+    $("#openSettings")?.addEventListener("click", openSettings);
+    $("#mobileSettings")?.addEventListener("click", openSettings);
+    $("#closeSettings")?.addEventListener("click", () => closeOverlay(elements.settingsOverlay));
+    $("#selectAll")?.addEventListener("click", () => {
+        $$("input[data-feed-id]", elements.feedList).forEach((checkbox) => {
+            checkbox.checked = true;
+        });
+    });
+    $("#selectNone")?.addEventListener("click", () => {
+        $$("input[data-feed-id]", elements.feedList).forEach((checkbox) => {
+            checkbox.checked = false;
+        });
+    });
+    $("#saveFeeds")?.addEventListener("click", saveSelectedFeeds);
 
-    if (theme === "dark") {
-        root.setAttribute("data-theme", "dark");
-    }
-
-    if (theme === "system") {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            root.setAttribute("data-theme", "dark");
+    elements.settingsOverlay?.addEventListener("click", (event) => {
+        if (event.target === elements.settingsOverlay) {
+            closeOverlay(elements.settingsOverlay);
         }
-    }
-
-    const appearance = loadAppearance();
-    appearance.theme = theme;
-    localStorage.setItem("appearance", JSON.stringify(appearance));
+    });
 }
 
+function wireContactDialog() {
+    $("#mobileContact")?.addEventListener("click", () => openOverlay(elements.contactOverlay));
+    $("#closeContact")?.addEventListener("click", () => closeOverlay(elements.contactOverlay));
 
-/* ======================================================
-   NEWSLETTER SUBSCRIBE
-   ====================================================== */
-function wireSubscribe() {
-    const btn = $("#subscribeBtn");
-    const status = $("#subscribeStatus");
-    if (!btn) return;
-
-    btn.addEventListener("click", async () => {
-        const email = $("#subEmail")?.value.trim();
-        const firstName = $("#subFirstName")?.value.trim();
-        const consent = $("#subConsent")?.checked;
-
-        if (!email) {
-            status.textContent = "Please enter your email.";
-            status.style.color = "#e53e3e";
-            return;
+    elements.contactOverlay?.addEventListener("click", (event) => {
+        if (event.target === elements.contactOverlay) {
+            closeOverlay(elements.contactOverlay);
         }
-        if (!consent) {
-            status.textContent = "Please agree to receive emails.";
-            status.style.color = "#e53e3e";
+    });
+}
+
+function wireMobileMenu() {
+    elements.hamburgerButton?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleMobileMenu();
+    });
+
+    elements.mobileMenu?.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
+    document.addEventListener("click", () => closeMobileMenu());
+}
+
+function wireViewControl() {
+    $("#mobileViewToggle")?.addEventListener("click", toggleViewMode);
+}
+
+function wireGlobalKeyboardAndResize() {
+    document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") {
             return;
         }
 
-        btn.textContent = "Subscribing…";
-        btn.disabled = true;
-        status.textContent = "";
+        closeMobileMenu();
+        closeOverlay(elements.settingsOverlay);
+        closeOverlay(elements.contactOverlay);
+    });
 
-        try {
-            const res = await fetch(`${SITE_CONFIG.apiBase}/api/subscribe`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, firstName })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                status.textContent = "🎉 You're subscribed! Check your inbox.";
-                status.style.color = "#f58220";
-                btn.textContent = "Subscribed!";
-                $("#subEmail").value = "";
-                $("#subFirstName").value = "";
-                $("#subConsent").checked = false;
-            } else if (res.status === 409) {
-                status.textContent = "You're already subscribed!";
-                status.style.color = "#f58220";
-                btn.textContent = "Subscribe";
-                btn.disabled = false;
-            } else {
-                throw new Error(data.error);
-            }
-        } catch (err) {
-            status.textContent = err.message || "Something went wrong. Try again.";
-            status.style.color = "#e53e3e";
-            btn.textContent = "Subscribe";
-            btn.disabled = false;
-        }
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+            closeMobileMenu();
+            renderArticles();
+        }, 120);
     });
 }
 
-/* ======================================================
-   NEWSLETTER MODAL
-   ====================================================== */
-function wireNewsletterModal() {
-    const openBtn = $("#openNewsletter");
-    const backdrop = $("#newsletterBackdrop");
-    const closeBtn = $("#closeNewsletter");
-    const submitBtn = $("#nlSubmitBtn");
-    const status = $("#nlStatus");
+/* ==========================================================================
+   9. INITIALIZATION
+   ========================================================================== */
 
-    openBtn?.addEventListener("click", () => {
-        backdrop?.classList.remove("hidden");
+async function initialize() {
+    document.title = SITE_CONFIG.name + " | Your Apple News Hub";
+    $$(".brand").forEach((brand) => {
+        brand.textContent = SITE_CONFIG.name;
     });
 
-    closeBtn?.addEventListener("click", () => {
-        backdrop?.classList.add("hidden");
-    });
+    applyTheme();
+    syncCategoryControls();
+    syncSearchControls();
+    syncViewControls();
 
-    backdrop?.addEventListener("click", (e) => {
-        if (e.target === backdrop) backdrop.classList.add("hidden");
-    });
+    wireCategoryControls();
+    wireSearchControl(elements.searchInput, elements.searchClear);
+    wireSearchControl(elements.mobileSearchInput, elements.mobileSearchClear);
+    wireThemeControls();
+    wireSettingsDialog();
+    wireContactDialog();
+    wireMobileMenu();
+    wireViewControl();
+    wireGlobalKeyboardAndResize();
 
-    submitBtn?.addEventListener("click", async () => {
-        const email = $("#nlEmail")?.value.trim();
-        const firstName = $("#nlFirstName")?.value.trim();
-        const consent = $("#nlConsent")?.checked;
+    const feedsLoaded = await loadAvailableFeeds();
+    if (!feedsLoaded) {
+        return;
+    }
 
-        if (!email) {
-            status.textContent = "Please enter your email.";
-            status.style.color = "#e53e3e";
-            return;
-        }
-        if (!consent) {
-            status.textContent = "Please agree to receive emails.";
-            status.style.color = "#e53e3e";
-            return;
-        }
-
-        submitBtn.textContent = "Subscribing…";
-        submitBtn.disabled = true;
-        status.textContent = "";
-
-        try {
-            const res = await fetch(`${SITE_CONFIG.apiBase}/api/subscribe`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, firstName })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                status.textContent = "🎉 You're subscribed! Check your inbox.";
-                status.style.color = "#f58220";
-                submitBtn.textContent = "Subscribed!";
-                $("#nlEmail").value = "";
-                $("#nlFirstName").value = "";
-                $("#nlConsent").checked = false;
-            } else if (res.status === 409) {
-                status.textContent = "You're already subscribed!";
-                status.style.color = "#f58220";
-                submitBtn.textContent = "Subscribe";
-                submitBtn.disabled = false;
-            } else {
-                throw new Error(data.error);
-            }
-        } catch (err) {
-            status.textContent = err.message || "Something went wrong. Try again.";
-            status.style.color = "#e53e3e";
-            submitBtn.textContent = "Subscribe";
-            submitBtn.disabled = false;
-        }
-    });
+    state.enabledFeeds = loadEnabledFeeds();
+    await loadAndRenderNews();
 }
 
-/* ======================================================
-   SEARCH
-   ====================================================== */
-let searchQuery = "";
-
-function wireSearch() {
-    // Desktop search
-    const input = $("#searchInput");
-    const clear = $("#searchClear");
-
-    if (input) {
-        input.addEventListener("input", () => {
-            searchQuery = input.value.trim().toLowerCase();
-            clear?.classList.toggle("hidden", !searchQuery);
-            // Sync mobile input
-            const mobileInput = $("#mobileSearchInput");
-            if (mobileInput) mobileInput.value = input.value;
-            filterCards();
-        });
-
-        clear?.addEventListener("click", () => {
-            input.value = "";
-            searchQuery = "";
-            clear.classList.add("hidden");
-            filterCards();
-            input.focus();
-        });
-    }
-
-    // Mobile search
-    const mobileInput = $("#mobileSearchInput");
-    const mobileClear = $("#mobileSearchClear");
-
-    if (mobileInput) {
-        mobileInput.addEventListener("input", () => {
-            searchQuery = mobileInput.value.trim().toLowerCase();
-            mobileClear?.classList.toggle("hidden", !searchQuery);
-            // Sync desktop input
-            if (input) input.value = mobileInput.value;
-            filterCards();
-            // Close menu and show results
-            if (searchQuery) {
-                $("#mobileMenu")?.classList.add("hidden");
-            }
-        });
-
-        mobileClear?.addEventListener("click", () => {
-            mobileInput.value = "";
-            searchQuery = "";
-            mobileClear.classList.add("hidden");
-            if (input) input.value = "";
-            filterCards();
-        });
-    }
-}
-
-function filterCards() {
-    const cards = gridEl?.querySelectorAll(".card:not(.skeleton-card)");
-    if (!cards) return;
-    let visible = 0;
-    cards.forEach(card => {
-        const text = card.textContent.toLowerCase();
-        const match = !searchQuery || text.includes(searchQuery);
-        card.style.display = match ? "" : "none";
-        if (match) visible++;
-    });
-    if (statusEl) {
-        statusEl.textContent = searchQuery
-            ? `${visible} result${visible !== 1 ? "s" : ""} for "${searchQuery}"`
-            : `${cards.length} stories`;
-    }
-}
-
-/* ======================================================
-   PULL TO REFRESH
-   ====================================================== */
-function wirePullToRefresh() {
-    // Desktop only — mobile uses touch
-    if (window.innerWidth > 600) return;
-
-    let startY = 0;
-    let pulling = false;
-    let indicator = null;
-
-    function createIndicator() {
-        indicator = document.createElement("div");
-        indicator.className = "pull-indicator";
-        indicator.innerHTML = '<i class="fa-solid fa-rotate"></i>';
-        document.body.appendChild(indicator);
-    }
-
-    function removeIndicator() {
-        indicator?.remove();
-        indicator = null;
-    }
-
-    document.addEventListener("touchstart", (e) => {
-        if (window.scrollY === 0) {
-            startY = e.touches[0].clientY;
-            pulling = true;
-        }
-    }, { passive: true });
-
-    document.addEventListener("touchmove", (e) => {
-        if (!pulling) return;
-        const dy = e.touches[0].clientY - startY;
-        if (dy > 60) {
-            if (!indicator) createIndicator();
-            indicator.classList.add("visible");
-        }
-    }, { passive: true });
-
-    document.addEventListener("touchend", async (e) => {
-        if (!pulling) return;
-        pulling = false;
-        const dy = e.changedTouches[0].clientY - startY;
-        if (dy > 60 && indicator) {
-            indicator.classList.add("spinning");
-            await loadAndRenderNews();
-            removeIndicator();
-        } else {
-            removeIndicator();
-        }
-    });
-}
-
-
-/* ======================================================
-   MOBILE LIST VIEW TOGGLE
-   ====================================================== */
-function wireViewToggle() {
-    // Nav bar button
-    const navBtn = $("#mobileViewToggle");
-    // Menu row button (different element, same action)
-    const menuRowBtn = $("#mobileViewToggleRow");
-
-    viewMode = localStorage.getItem("viewMode") || "tiles";
-    isListView = false;
-    applyViewMode();
-
-    function doToggle(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        viewMode = viewMode === "grid" ? "tiles" : "grid";
-        localStorage.setItem("viewMode", viewMode);
-        mobileMenu?.classList.add("hidden");
-        hamburgerBtn?.classList.remove("open");
-        applyViewMode();
-        loadAndRenderNews();
-    }
-
-    if (navBtn) {
-        navBtn.addEventListener("touchend", doToggle, { passive: false });
-        navBtn.addEventListener("click", doToggle);
-    }
-
-    if (menuRowBtn) {
-        menuRowBtn.addEventListener("touchend", doToggle, { passive: false });
-        menuRowBtn.addEventListener("click", doToggle);
-    }
-}
-
-function applyViewMode() {
-    const icon = $("#mobileViewIcon");
-    const label = $("#mobileViewLabel");
-    const grid = gridEl;
-    if (!grid) return;
-
-    grid.classList.remove("list-view", "small-tiles-view");
-
-    // Only apply tile view on mobile
-    if (viewMode === "tiles" && window.innerWidth <= 600) {
-        grid.classList.add("small-tiles-view");
-    }
-
-    if (icon) icon.className = "fa-solid fa-grip mobile-row-icon";
-    if (label) label.textContent = viewMode === "tiles" ? "Standard View" : "Compact View";
-}
-
-function renderCompactCard(a) {
-    const card = document.createElement("div");
-    card.className = "card compact-card";
-    card.style.cursor = "pointer";
-    card.addEventListener("click", () => {
-        window.open(a.link, "_blank", "noopener,noreferrer");
-    });
-
-    // NEW badge
-    const articleDate = a.published || a.isoDate || a.pubDate || a.date;
-    if (isNew(articleDate)) {
-        const badge = document.createElement("span");
-        badge.className = "new-badge compact-new";
-        badge.textContent = "NEW";
-        card.appendChild(badge);
-    }
-
-    // Main row: thumbnail + content
-    const row = document.createElement("div");
-    row.className = "compact-row";
-
-    // Thumbnail
-    if (a.image) {
-        const img = document.createElement("img");
-        img.src = a.image;
-        img.className = "compact-thumb";
-        img.loading = "lazy";
-        row.appendChild(img);
-    }
-
-    // Text content
-    const text = document.createElement("div");
-    text.className = "compact-text";
-
-    const source = document.createElement("div");
-    source.className = "compact-source";
-    source.textContent = a.source || "Source";
-    text.appendChild(source);
-
-    const title = document.createElement("div");
-    title.className = "compact-title";
-    title.textContent = a.title || "Untitled";
-    text.appendChild(title);
-
-    // Footer: time + actions
-    const footer = document.createElement("div");
-    footer.className = "compact-footer";
-
-    const time = document.createElement("span");
-    time.className = "compact-time";
-    time.textContent = timeAgo(articleDate);
-    footer.appendChild(time);
-
-    const actions = document.createElement("div");
-    actions.className = "compact-actions";
-
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "compact-action-btn";
-    saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
-    saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
-        saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
-    };
-
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "compact-action-btn";
-    shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
-    shareBtn.onclick = async (e) => {
-        e.stopPropagation();
-        if (navigator.share) {
-            try { await navigator.share({ title: a.title, url: a.link }); } catch {}
-        } else {
-            await navigator.clipboard.writeText(a.link);
-            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-            setTimeout(() => { shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }, 1500);
-        }
-    };
-
-    actions.appendChild(saveBtn);
-    actions.appendChild(shareBtn);
-    footer.appendChild(actions);
-    text.appendChild(footer);
-
-    row.appendChild(text);
-    card.appendChild(row);
-
-    return card;
-}
-
-/* ======================================================
-   SMALL TILE CARD — 2-col Apple News style (mobile)
-   ====================================================== */
-function renderSmallTileCard(a) {
-    const card = document.createElement("div");
-    card.className = "card small-tile-card";
-    card.addEventListener("click", () => {
-        window.open(a.link, "_blank", "noopener,noreferrer");
-    });
-
-    const articleDate = a.published || a.isoDate || a.pubDate || a.date;
-
-    // NEW badge
-    if (isNew(articleDate)) {
-        const badge = document.createElement("span");
-        badge.className = "small-tile-new";
-        badge.textContent = "NEW";
-        card.appendChild(badge);
-    }
-
-    // Image or placeholder — with YouTube thumbnail extraction
-    function getYoutubeThumbnail(url) {
-        if (!url) return null;
-        const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-        return m ? `https://img.youtube.com/vi/${m[1]}/mqdefault.jpg` : null;
-    }
-
-    const ytThumb = getYoutubeThumbnail(a.link);
-    const imgSrc = a.image || ytThumb;
-
-    if (imgSrc) {
-        const img = document.createElement("img");
-        img.src = imgSrc;
-        img.className = "small-tile-img";
-        img.loading = "lazy";
-        img.onerror = () => {
-            // If YouTube thumb also fails, or image 404s — show letter placeholder
-            const ph = document.createElement("div");
-            ph.className = "small-tile-img-placeholder";
-            ph.textContent = (a.source || "?")[0].toUpperCase();
-            img.replaceWith(ph);
-        };
-        card.appendChild(img);
-    } else {
-        const ph = document.createElement("div");
-        ph.className = "small-tile-img-placeholder";
-        ph.textContent = (a.source || "?")[0].toUpperCase();
-        card.appendChild(ph);
-    }
-
-    // Body
-    const body = document.createElement("div");
-    body.className = "small-tile-body";
-
-    const source = document.createElement("div");
-    source.className = "small-tile-source";
-    source.textContent = a.source || "Source";
-    body.appendChild(source);
-
-    const title = document.createElement("div");
-    title.className = "small-tile-title";
-    title.textContent = a.title || "Untitled";
-    body.appendChild(title);
-
-    // Footer
-    const footer = document.createElement("div");
-    footer.className = "small-tile-footer";
-
-    const time = document.createElement("span");
-    time.className = "small-tile-time";
-    time.textContent = timeAgo(articleDate);
-    footer.appendChild(time);
-
-    const actions = document.createElement("div");
-    actions.className = "small-tile-actions";
-
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "small-tile-btn";
-    saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
-    saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        isSaved(a.link) ? removeFromReadLater(a.link) : saveToReadLater(a);
-        saveBtn.innerHTML = isSaved(a.link) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
-    };
-
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "small-tile-btn";
-    shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>';
-    shareBtn.onclick = async (e) => {
-        e.stopPropagation();
-        if (navigator.share) {
-            try { await navigator.share({ title: a.title, url: a.link }); } catch {}
-        } else {
-            await navigator.clipboard.writeText(a.link);
-            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-            setTimeout(() => { shareBtn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }, 1500);
-        }
-    };
-
-    actions.appendChild(saveBtn);
-    actions.appendChild(shareBtn);
-    footer.appendChild(actions);
-    body.appendChild(footer);
-    card.appendChild(body);
-
-    return card;
-}
-
-/* ======================================================
-   FIRST VISIT NEWSLETTER POPUP
-   ====================================================== */
-function wireFirstVisitPopup() {
-    const backdrop = $("#firstVisitBackdrop");
-    if (!backdrop) return;
-
-    // Only show once — check flag
-    const seen = localStorage.getItem("fv_newsletter_seen");
-    if (seen) return;
-
-    // Show after a short delay so page loads first
-    setTimeout(() => {
-        backdrop.classList.remove("hidden");
-    }, 8000);
-
-    const close = () => {
-        backdrop.classList.add("hidden");
-        localStorage.setItem("fv_newsletter_seen", "1");
-    };
-
-    $("#fvClose")?.addEventListener("click", close);
-    $("#fvSkip")?.addEventListener("click", close);
-    backdrop.addEventListener("click", (e) => {
-        if (e.target === backdrop) close();
-    });
-
-    $("#fvSubmit")?.addEventListener("click", async () => {
-        const email = $("#fvEmail")?.value.trim();
-        const firstName = $("#fvFirstName")?.value.trim();
-        const consent = $("#fvConsent")?.checked;
-        const status = $("#fvStatus");
-        const btn = $("#fvSubmit");
-
-        if (!email) { status.textContent = "Please enter your email."; status.style.color = "#e53e3e"; return; }
-        if (!consent) { status.textContent = "Please check the box to agree."; status.style.color = "#e53e3e"; return; }
-
-        btn.textContent = "Subscribing…";
-        btn.disabled = true;
-        status.textContent = "";
-
-        try {
-            const res = await fetch(`${SITE_CONFIG.apiBase}/api/subscribe`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, firstName })
-            });
-            const data = await res.json();
-
-            if (res.ok) {
-                status.textContent = "🎉 You're in! Check your inbox.";
-                status.style.color = "#f58220";
-                btn.textContent = "Subscribed!";
-                setTimeout(close, 2000);
-            } else if (res.status === 409) {
-                status.textContent = "Already subscribed!";
-                status.style.color = "#f58220";
-                btn.textContent = "Subscribe";
-                btn.disabled = false;
-                setTimeout(close, 1500);
-            } else {
-                throw new Error(data.error);
-            }
-        } catch (err) {
-            status.textContent = err.message || "Something went wrong.";
-            status.style.color = "#e53e3e";
-            btn.textContent = "Subscribe";
-            btn.disabled = false;
-        }
-    });
-}
+void initialize();

@@ -1,270 +1,200 @@
 <!doctype html>
 <html lang="en">
 <head>
-
-    <!-- Google tag (gtag.js) -->
+    <!-- Analytics is intentionally isolated here so application code stays focused on the UI. -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JDHLWREGNE"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-JDHLWREGNE');
+        function gtag() { window.dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", "G-JDHLWREGNE");
     </script>
-    
 
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>iSheep</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f58220">
+    <meta name="description" content="iSheep brings Apple news from trusted sources together in one clean feed.">
+    <meta name="keywords" content="Apple news, Mac news, iPhone news, iPad news, Apple aggregator, iSheep">
+    <meta name="author" content="mcknz.dev">
 
+    <title>iSheep | Your Apple News Hub</title>
+    <link rel="canonical" href="https://isheep.news/">
     <link rel="icon" type="image/png" href="assets/homepage/Sheep.png">
     <link rel="apple-touch-icon" href="assets/homepage/Sheep.png">
 
-    <link rel="stylesheet" href="./styles.css" />
-    <link rel="manifest" href="./manifest.json" />
+    <!-- Social previews use the same copy as the page metadata. -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isheep.news/">
+    <meta property="og:title" content="iSheep &mdash; Your Apple News Hub">
+    <meta property="og:description" content="All the best Apple news in one clean, minimal feed.">
+    <meta property="og:image" content="https://isheep.news/assets/homepage/new.png">
+    <meta property="og:site_name" content="iSheep">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@isheepnews">
+    <meta name="twitter:title" content="iSheep &mdash; Your Apple News Hub">
+    <meta name="twitter:description" content="All the best Apple news in one clean, minimal feed.">
+    <meta name="twitter:image" content="https://isheep.news/assets/homepage/new.png">
 
-    <!-- SEO -->
-    <meta name="description" content="iSheep is your Apple news hub, bringing together the latest from 9to5Mac, MacRumors, AppleInsider, Cult of Mac, and more in one single feed" />
-    <meta name="keywords" content="Apple news, Mac news, iPhone news, iPad news, Apple aggregator, iSheep, Apple rumors" />
-    <meta name="author" content="mcknz.dev" />
-    <link rel="canonical" href="https://isheep.news/" />
-
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://isheep.news/" />
-    <meta property="og:title" content="iSheep — Your Apple News Hub" />
-    <meta property="og:description" content="All the best Apple news from 9to5Mac, MacRumors, AppleInsider and more — in one clean, minimal feed." />
-    <meta property="og:image" content="https://isheep.news/assets/homepage/new.png" />
-    <meta property="og:site_name" content="iSheep" />
-
-    <!-- Twitter / X Card -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@isheepnews" />
-    <meta name="twitter:title" content="iSheep — Your Apple News Hub" />
-    <meta name="twitter:description" content="All the best Apple news from 9to5Mac, MacRumors, AppleInsider and more — in one clean, minimal feed." />
-    <meta name="twitter:image" content="https://isheep.news/assets/homepage/new.png" />
-
-    <!-- PWA -->
-    <meta name="theme-color" content="#f58220" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="iSheep" />
+    <!-- External presentation dependencies are loaded once and kept separate from local styles. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
+    <div class="shell">
+        <!-- The mobile header is intentionally separate: it keeps the compact controls accessible. -->
+        <header class="mobile-header">
+            <a class="brand rainbow-logo" href="/" aria-label="iSheep home">iSheep</a>
 
-<div class="shell">
-
-    <!-- MOBILE HEADER -->
-
-    <div class="mobile-header">
-
-        <div class="hero-logo">
-            <h1 class="site-name rainbow-logo">
-                iSheep
-            </h1>
-        </div>
-        
-        <div class="floating-controls">
-
-            <button
-                    class="mobile-icon-btn"
-                    id="mobileThemeToggle"
-                    aria-label="Toggle Theme">
-
-                <i class="fa-solid fa-moon" id="mobileThemeIcon"></i>
-
-            </button>
-
-            <button
-                    class="mobile-icon-btn"
-                    id="hamburgerBtn"
-                    aria-label="Menu">
-
-                <i class="fa-solid fa-bars"></i>
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <div class="desktop-header">
-
-        <div class="desktop-left">
-            <h1 class="site-name rainbow-logo">iSheep</h1>
-            <nav class="tabs" id="tabs"></nav>
-        </div>
-
-        <div class="desktop-right">
-            <div class="search-wrap" id="searchWrap">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input
-                        type="text"
-                        class="search-input"
-                        id="searchInput"
-                        placeholder="Search news…" />
-                <button class="search-clear hidden" id="searchClear">×</button>
+            <div class="mobile-header-actions" aria-label="Site controls">
+                <button class="icon-button" id="mobileThemeToggle" type="button" aria-label="Use dark theme">
+                    <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                </button>
+                <button class="icon-button" id="hamburgerBtn" type="button" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
             </div>
+        </header>
+
+        <!-- Desktop navigation stays visible at wider widths; tabs are kept in the document for keyboard access. -->
+        <header class="desktop-header">
+            <div class="desktop-header-start">
+                <a class="brand rainbow-logo" href="/" aria-label="iSheep home">iSheep</a>
+                <nav class="tabs" aria-label="News filters">
+                    <button class="tab is-active" type="button" data-category="All">All</button>
+                    <button class="tab" type="button" data-category="Today">Today</button>
+                    <button class="tab" type="button" data-category="Saved">Saved</button>
+                </nav>
+            </div>
+
+            <div class="desktop-header-actions">
+                <label class="search-field" for="searchInput">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <span class="sr-only">Search news</span>
+                    <input id="searchInput" type="search" placeholder="Search news">
+                    <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" hidden>&times;</button>
+                </label>
+                <button class="text-button" id="openSettings" type="button">
+                    <i class="fa-solid fa-rss" aria-hidden="true"></i>
+                    Feeds
+                </button>
+                <button class="icon-button" id="themeToggle" type="button" aria-label="Use dark theme">
+                    <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Cards are rendered by app.js. The live status also announces loading and empty states. -->
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+            <section class="news-grid" id="newsGrid" aria-label="Apple news"></section>
+        </main>
+    </div>
+
+    <!-- Feed picker: hidden by default and opened from either desktop or mobile navigation. -->
+    <div class="overlay" id="settingsOverlay" hidden>
+        <section class="modal settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+            <header class="modal-header">
+                <div>
+                    <p class="eyebrow">Customize</p>
+                    <h2 id="settingsTitle">News sources</h2>
+                </div>
+                <button class="icon-button modal-close" id="closeSettings" type="button" aria-label="Close news sources">&times;</button>
+            </header>
+
+            <div class="modal-content">
+                <p class="muted">Choose the sources that should appear in your feed.</p>
+                <div class="feed-list" id="feedList"></div>
+                <p class="source-request">
+                    Missing a source?
+                    <a href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source">Request it</a>.
+                </p>
+            </div>
+
+            <footer class="modal-actions">
+                <button class="text-button" id="selectAll" type="button">Select all</button>
+                <button class="text-button" id="selectNone" type="button">Select none</button>
+                <button class="primary-button" id="saveFeeds" type="button">Save sources</button>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Mobile navigation is a regular region, not a modal, so search results remain visible behind it. -->
+    <aside class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation" hidden>
+        <label class="mobile-search-field" for="mobileSearchInput">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <span class="sr-only">Search news</span>
+            <input id="mobileSearchInput" type="search" placeholder="Search news">
+            <button class="search-clear" id="mobileSearchClear" type="button" aria-label="Clear search" hidden>&times;</button>
+        </label>
+
+        <div class="mobile-menu-group" aria-label="News filters">
+            <button class="mobile-menu-item is-active" type="button" data-category="All">All</button>
+            <button class="mobile-menu-item" type="button" data-category="Today">Today</button>
+            <button class="mobile-menu-item" type="button" data-category="Saved">Saved</button>
         </div>
 
-    </div>
-    
-       
-
-        
-
-
-       
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <main class="main">
-        <!-- Mobile WWDC banner — scrolls with content -->
-
-        <div class="news-grid" id="newsGrid"></div>
-        <div class="status" id="status"></div>
-    </main>
-
-</div>
-
-<!-- SETTINGS MODAL BACKDROP -->
-<div class="modal-backdrop hidden" id="modalBackdrop">
-
-    <div class="modal">
-
-        <div class="modal-header">
-            <h3>Feeds</h3>
-            <button id="closeSettings" aria-label="Close">×</button>
+        <div class="mobile-menu-group" aria-label="Preferences">
+            <button class="mobile-menu-item" id="mobileDarkToggle" type="button">
+                <span id="mobileThemeLabel">Dark theme</span>
+                <i class="fa-solid fa-moon" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-menu-item" id="mobileViewToggle" type="button">
+                <span id="mobileViewLabel">Compact view</span>
+                <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-menu-item" id="mobileSettings" type="button">
+                <span>Feeds</span>
+                <i class="fa-solid fa-rss" aria-hidden="true"></i>
+            </button>
+            <button class="mobile-menu-item" id="mobileContact" type="button">
+                <span>Contact</span>
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            </button>
         </div>
 
-        <!-- FEEDS PANEL -->
-        <div class="settings-panel active" id="feedsPanel">
-            <p class="muted">Choose which sources you want included.</p>
-            <div id="feedList"></div>
+        <p class="mobile-menu-footer">&copy; 2026 iSheep.news &middot; MCKNZ.DEV</p>
+    </aside>
 
-            <div class="request-sources">
-                <p class="muted" style="margin-top:14px;">Want more sources?</p>
-                <a class="request-link" href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source">
-                    Request more news sources
+    <!-- Contact information is a separate dialog, independent of the feed settings. -->
+    <div class="overlay" id="contactOverlay" hidden>
+        <section class="modal contact-modal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+            <button class="icon-button modal-close" id="closeContact" type="button" aria-label="Close contact details">&times;</button>
+            <header class="contact-hero">
+                <img src="assets/homepage/Sheep.png" alt="" width="56" height="56">
+                <h2 id="contactTitle">iSheep</h2>
+                <p>Your Apple news, all in one place.</p>
+            </header>
+
+            <nav class="contact-links" aria-label="Contact links">
+                <a class="contact-link" href="mailto:hello@mcknz.dev">
+                    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                    <span>hello@mcknz.dev</span>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                 </a>
-            </div>
-        </div>
-
-        <!-- MODAL ACTIONS -->
-        <div class="modal-actions" id="feedsActions">
-            <button id="selectAll" class="btn">Select all</button>
-            <button id="selectNone" class="btn">Select none</button>
-            <button id="saveFeeds" class="btn primary">Save</button>
-        </div>
-
-    </div>
-</div>
-
-
-
-
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu hidden" id="mobileMenu">
-
-    <!-- SEARCH -->
-    <div class="mobile-search-wrap">
-        <i class="fa-solid fa-magnifying-glass mobile-search-icon"></i>
-        <input type="text" class="mobile-search-input" id="mobileSearchInput" placeholder="Search news…" />
-        <button class="search-clear hidden" id="mobileSearchClear">×</button>
+                <a class="contact-link" href="https://mcknz.dev" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                    <span>mcknz.dev</span>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </a>
+                <a class="contact-link" href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source">
+                    <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
+                    <span>Request a news source</span>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </a>
+                <a class="contact-link" href="https://www.buymeacoffee.com/mcknz.dev" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
+                    <span>Buy me a coffee</span>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </a>
+            </nav>
+            <p class="contact-footer">&copy; 2026 iSheep.news. All rights reserved.</p>
+        </section>
     </div>
 
-    <!-- NAV ITEMS -->
-    <div class="mobile-section">
-        <button class="mobile-row active" data-category="All">All</button>
-        <button class="mobile-row" data-category="Today">Today</button>
-        <button class="mobile-row" data-category="Read Later">Saved</button>
-    </div>
-
-    <!-- ACTIONS -->
-    <div class="mobile-section">
-        <button class="mobile-row" id="mobileDarkToggle">
-            <span id="mobileDarkLabel">Dark Mode</span>
-            <i class="fa-solid fa-moon mobile-row-icon" id="mobileDarkIcon"></i>
-        </button>
-        <button class="mobile-row" id="mobileViewToggleRow">
-            <span id="mobileViewLabel">Compact View</span>
-            <i class="fa-solid fa-grip mobile-row-icon" id="mobileViewIcon"></i>
-        </button>
-
-        <button class="mobile-row" id="mobileSettings" type="button">
-            <span>Feeds</span>
-            <i class="fa-solid fa-rss mobile-row-icon"></i>
-        </button>
-        <button class="mobile-row" id="mobileContact" type="button">
-            <span>Contact</span>
-            <i class="fa-solid fa-envelope mobile-row-icon"></i>
-        </button>
-    </div>
-
-    <!-- FOOTER -->
-    <p class="mobile-footer">©2026 iSheep.news • MCKNZ.DEV</p>
-
-
-</div>
-
-<!-- CONTACT MODAL -->
-<div class="fv-backdrop hidden" id="contactBackdrop">
-    <div class="fv-card">
-        <button class="fv-close" id="closeContact" aria-label="Close" style="z-index:2;background:rgba(255,255,255,0.25);color:#fff;">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-
-        <div class="contact-modal-header">
-            <img src="assets/homepage/Sheep.png" alt="iSheep" />
-            <h2>iSheep</h2>
-            <p>Your Apple news, all in one place.</p>
-        </div>
-
-        <div class="about-links" style="width:100%;padding:0 20px;box-sizing:border-box;">
-            <a href="mailto:hello@mcknz.dev" class="about-link-row">
-                <span class="about-link-icon">✉️</span>
-                <span class="about-link-label">hello@mcknz.dev</span>
-                <span class="about-link-arrow">›</span>
-            </a>
-            <a href="https://mcknz.dev" target="_blank" rel="noopener noreferrer" class="about-link-row">
-                <span class="about-link-icon">🌐</span>
-                <span class="about-link-label">mcknz.dev</span>
-                <span class="about-link-arrow">›</span>
-            </a>
-            <a href="mailto:hello@mcknz.dev?subject=iSheep%20-%20Request%20a%20news%20source" class="about-link-row">
-                <span class="about-link-icon">📰</span>
-                <span class="about-link-label">Request a news source</span>
-                <span class="about-link-arrow">›</span>
-            </a>
-            <a href="https://www.buymeacoffee.com/mcknz.dev" target="_blank" rel="noopener noreferrer" class="about-link-row">
-                <span class="about-link-icon">☕</span>
-                <span class="about-link-label">Buy me a coffee</span>
-                <span class="about-link-arrow">›</span>
-            </a>
-        </div>
-
-        <p class="contact-modal-footer">© 2026 iSheep.news — All rights reserved.</p>
-    </div>
-</div>
-<svg style="display: none;">
-    <defs>
-        <filter id="liquid-glass">
-            ‹feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2
-
-        </filter>
-    </defs>
-</svg>
-
-
-<script type="module" src="./app.js"></script>
-
+    <script type="module" src="./app.js"></script>
 </body>
 </html>
