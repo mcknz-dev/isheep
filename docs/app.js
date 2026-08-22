@@ -17,8 +17,10 @@ const STORAGE_KEYS = {
     viewMode: "isheep:view-mode",
 };
 
-const MOBILE_TILE_QUERY = window.matchMedia("(max-width: 639px)");
+// Keep the compact presentation aligned with the live site's phone breakpoint.
+const MOBILE_TILE_QUERY = window.matchMedia("(max-width: 600px)");
 const SYSTEM_DARK_QUERY = window.matchMedia("(prefers-color-scheme: dark)");
+const FEATURED_STORY_COUNT = 5;
 
 const elements = {
     grid: $("#newsGrid"),
@@ -40,7 +42,9 @@ const state = {
     enabledFeeds: [],
     articles: [],
     searchQuery: "",
-    viewMode: readStorage(STORAGE_KEYS.viewMode, "grid") === "compact" ? "compact" : "grid",
+    // The live site opens in its compact, Apple News-style phone layout. A
+    // visitor can still opt into the full-card view from the mobile menu.
+    viewMode: readStorage(STORAGE_KEYS.viewMode, "compact") === "compact" ? "compact" : "grid",
     requestId: 0,
 };
 
@@ -146,6 +150,14 @@ function pluralize(count, singular, plural = singular + "s") {
 
 function isMobileTileView() {
     return state.viewMode === "compact" && MOBILE_TILE_QUERY.matches;
+}
+
+function shouldShowFeaturedCarousel() {
+    return (
+        isMobileTileView() &&
+        state.activeCategory === "All" &&
+        !state.searchQuery
+    );
 }
 
 function closeMobileMenu() {
@@ -624,6 +636,93 @@ function createArticleCard(article, index) {
     return card;
 }
 
+function getNewestArticles(articles) {
+    return [...articles]
+        .sort((firstArticle, secondArticle) => {
+            const firstDate = Date.parse(firstArticle.date);
+            const secondDate = Date.parse(secondArticle.date);
+            const firstTimestamp = Number.isNaN(firstDate) ? 0 : firstDate;
+            const secondTimestamp = Number.isNaN(secondDate) ? 0 : secondDate;
+
+            return secondTimestamp - firstTimestamp;
+        })
+        .slice(0, FEATURED_STORY_COUNT);
+}
+
+function createFeaturedCarousel(articles) {
+    const carousel = createElement("section", "featured-carousel card-enter");
+    const heading = createElement("h2", "sr-only", "Latest stories");
+    const track = createElement("div", "featured-carousel-track");
+
+    carousel.setAttribute("aria-roledescription", "carousel");
+    track.tabIndex = 0;
+    track.setAttribute(
+        "aria-label",
+        "Latest stories. Swipe left or right to browse, or use the arrow keys."
+    );
+
+    articles.forEach((article, index) => {
+        const card = createArticleCard(article, index);
+        card.classList.add("featured-card");
+        card.classList.remove("card-enter");
+        card.classList.toggle("is-current", index === 0);
+        card.setAttribute("aria-label", "Latest story " + (index + 1) + " of " + articles.length);
+        track.appendChild(card);
+    });
+
+    const cards = $$(".featured-card", track);
+    const syncCurrentCard = () => {
+        const trackBounds = track.getBoundingClientRect();
+        const trackCenter = trackBounds.left + (trackBounds.width / 2);
+        let closestCard = cards[0];
+        let closestDistance = Number.POSITIVE_INFINITY;
+
+        cards.forEach((card) => {
+            const cardBounds = card.getBoundingClientRect();
+            const cardCenter = cardBounds.left + (cardBounds.width / 2);
+            const distance = Math.abs(trackCenter - cardCenter);
+
+            if (distance < closestDistance) {
+                closestCard = card;
+                closestDistance = distance;
+            }
+        });
+
+        cards.forEach((card) => {
+            card.classList.toggle("is-current", card === closestCard);
+        });
+    };
+
+    let scrollFrame;
+    track.addEventListener("scroll", () => {
+        window.cancelAnimationFrame(scrollFrame);
+        scrollFrame = window.requestAnimationFrame(syncCurrentCard);
+    }, { passive: true });
+    window.requestAnimationFrame(syncCurrentCard);
+
+    track.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+            return;
+        }
+
+        event.preventDefault();
+        track.scrollBy({
+            left: (event.key === "ArrowRight" ? 1 : -1) * track.clientWidth,
+            behavior: "smooth",
+        });
+    });
+
+    carousel.append(heading, track);
+
+    if (articles.length > 1) {
+        const hint = createElement("p", "featured-carousel-hint", "Swipe for more");
+        hint.setAttribute("aria-hidden", "true");
+        carousel.appendChild(hint);
+    }
+
+    return carousel;
+}
+
 function renderSkeletons() {
     if (!elements.grid) {
         return;
@@ -705,8 +804,22 @@ function renderArticles() {
     }
 
     const fragment = document.createDocumentFragment();
-    articles.forEach((article, index) => {
-        fragment.appendChild(createArticleCard(article, index));
+    let remainingArticles = articles;
+    let renderedFeaturedCount = 0;
+
+    if (shouldShowFeaturedCarousel()) {
+        const featuredArticles = getNewestArticles(articles);
+
+        if (featuredArticles.length > 0) {
+            fragment.appendChild(createFeaturedCarousel(featuredArticles));
+            const featuredSet = new Set(featuredArticles);
+            remainingArticles = articles.filter((article) => !featuredSet.has(article));
+            renderedFeaturedCount = featuredArticles.length;
+        }
+    }
+
+    remainingArticles.forEach((article, index) => {
+        fragment.appendChild(createArticleCard(article, index + renderedFeaturedCount));
     });
     elements.grid.appendChild(fragment);
 
