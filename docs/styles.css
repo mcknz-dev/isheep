@@ -1050,7 +1050,7 @@ a {
     .tile-view .featured-card {
         position: relative;
         display: flex;
-        flex: 0 0 calc(100% - 4rem);
+        flex: 0 0 calc(100% - 2rem);
         grid-template-columns: none;
         grid-template-rows: none;
         height: 100%;
