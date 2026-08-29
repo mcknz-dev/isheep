@@ -993,14 +993,21 @@ function wireGlobalKeyboardAndResize() {
         closeOverlay(elements.contactOverlay);
     });
 
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-        window.clearTimeout(resizeTimer);
-        resizeTimer = window.setTimeout(() => {
-            closeMobileMenu();
-            renderArticles();
-        }, 120);
-    });
+    // Mobile browsers resize the visual viewport while their browser chrome
+    // hides and shows during a page scroll. Re-rendering the feed for every
+    // one of those events destroys and recreates the cards mid-scroll. The
+    // only viewport change that requires new markup is crossing the compact
+    // layout breakpoint, where the featured carousel is added or removed.
+    const handleTileBreakpointChange = () => {
+        closeMobileMenu();
+        renderArticles();
+    };
+
+    if (MOBILE_TILE_QUERY.addEventListener) {
+        MOBILE_TILE_QUERY.addEventListener("change", handleTileBreakpointChange);
+    } else {
+        MOBILE_TILE_QUERY.addListener(handleTileBreakpointChange);
+    }
 }
 
 /* ==========================================================================
