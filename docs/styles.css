@@ -2136,10 +2136,49 @@ body {
     }
 }
 
+/* ==========================================
+   MOBILE iSHEEP TOOLBAR
+========================================== */
+
 @media (max-width: 768px) {
+
+    .floating-controls {
+        position: fixed;
+
+        top: 23px;
+        left: 16px;
+        right: 16px;
+
+        height: 58px;
+
+        display: flex;
+        align-items: center;
+
+        box-sizing: border-box;
+
+        padding: 0 10px 0 18px;
+
+        border-radius: 16px;
+
+        background: rgba(255, 255, 255, 0.94);
+
+        border: 1px solid rgba(0, 0, 0, 0.06);
+
+        box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.08);
+
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        z-index: 9999;
+    }
+
+
+    /* Logo */
 
     .hero-logo {
         flex: 1;
+
         height: 100%;
 
         display: flex;
@@ -2147,90 +2186,114 @@ body {
         justify-content: flex-start;
     }
 
-    .toolbar-sheep {
-        width: 30px;
-        height: 30px;
 
-        object-fit: contain;
+    .hero-logo .site-name {
+        margin: 0 !important;
 
-        display: block;
+        font-family: "Orbitron", sans-serif;
+
+        font-size: 23px !important;
+        font-weight: 500;
+
+        letter-spacing: 1px !important;
+
+        line-height: 1 !important;
+
+        white-space: nowrap;
+
+        /*
+         * Orbitron sits slightly high visually,
+         * so move the visible logo down slightly.
+         */
+        position: relative;
+        top: 3px;
     }
 
-}
-@media (max-width: 768px) {
-    .toolbar-sheep {
-        width: 34px;
-        height: 34px;
 
-        object-fit: contain;
+    /* Moon + menu buttons */
 
-        display: block;
+    .floating-controls > .mobile-icon-btn {
+        width: 42px;
+        height: 42px;
 
-        transform: translateY(4px);
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border: none;
+        border-radius: 12px;
+
+        background: transparent;
+
+        color: #111;
+
+        font-size: 17px;
     }
-}
-@media (max-width: 768px) {
 
-    .floating-controls {
-        border-radius: 16px;
-    }
 
-    /* Space between toolbar and first article */
+    /* Space below toolbar */
+
     .main {
         padding-top: 35px;
     }
 
 }
 
+.hero-logo .site-name {
+    margin: 0 !important;
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 23px !important;
+    font-weight: 300;
+
+    letter-spacing: 1px !important;
+    line-height: 1 !important;
+
+    white-space: nowrap;
+
+    position: relative;
+    top: 6px !important;
+}
+
+/* ==========================================
+   iOS / Apple Liquid Glass Toolbar
+========================================== */
+
 @media (max-width: 768px) {
 
-    .hero-logo {
-        height: 100%;
+    .floating-controls {
+        background: rgba(255, 255, 255, 0.55) !important;
 
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
+        backdrop-filter: blur(18px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
 
-        gap: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+
+        box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+        overflow: hidden;
     }
 
-    .toolbar-brand {
-        font-family: "Orbitron", sans-serif;
-
-        font-size: 30px;
-        font-weight: 100;
-
-        letter-spacing: 0.5px;
-
-        line-height: 1;
-
-        white-space: nowrap;
+    .floating-controls::before {
+        content: "";
+        position: absolute;
+        inset: 0;
 
         background: linear-gradient(
-                90deg,
-                #c23d72,
-                #7654bd,
-                #2998d1,
-                #49b879
+                180deg,
+                rgba(255, 255, 255, 0.35),
+                rgba(255, 255, 255, 0.08)
         );
 
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        pointer-events: none;
+        border-radius: inherit;
     }
-
-    .toolbar-sheep {
-        width: 30px;
-        height: 30px;
-
-        object-fit: contain;
-
-        display: block;
-
-        position: relative;
-        top: 3px;
-    }
-
 }
 
 
