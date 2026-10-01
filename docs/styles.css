@@ -2247,7 +2247,7 @@ body {
     margin: 0 !important;
 
     font-family: "Orbitron", sans-serif;
-    font-size: 23px !important;
+    font-size: 30px !important;
     font-weight: 300;
 
     letter-spacing: 1px !important;
@@ -2296,5 +2296,115 @@ body {
     }
 }
 
+/* ==========================================
+   DESKTOP iSHEEP POLISH
+   ========================================== */
+
+@media (min-width: 769px) {
+
+    /* Main page width */
+    .shell {
+        max-width: 1320px;
+        margin: 0 auto;
+    }
+
+    /* ------------------------------------------
+       DESKTOP HEADER
+       ------------------------------------------ */
+
+    .desktop-header {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 22px 0 18px;
+    }
+
+    /* Logo */
+    .desktop-header .site-name {
+        margin: 0;
+        font-size: 42px;
+        line-height: 1;
+    }
+
+    /* ------------------------------------------
+       NAVIGATION
+       ------------------------------------------ */
+
+    .desktop-header nav {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+    }
+
+    .desktop-header nav a {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ------------------------------------------
+       SEARCH
+       ------------------------------------------ */
+
+    .desktop-header .search {
+        width: 190px;
+        height: 32px;
+        border-radius: 18px;
+    }
+
+    /* ------------------------------------------
+       MAIN CONTENT
+       ------------------------------------------ */
+
+    .main {
+        padding-top: 0;
+    }
+
+    /* ------------------------------------------
+       NEWS GRID
+       ------------------------------------------ */
+
+    .news-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    /* ------------------------------------------
+       NEWS CARDS
+       ------------------------------------------ */
+
+    .news-card {
+        border-radius: 22px;
+        overflow: hidden;
+    }
+
+    .news-card img {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+    }
+
+    .news-card-content {
+        padding: 14px 16px 15px;
+    }
+
+    .news-card h2 {
+        font-size: 16px;
+        line-height: 1.2;
+        margin-bottom: 10px;
+    }
+
+    .news-card p {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .floating-controls > .mobile-icon-btn {
+        color: #EE8131 !important;
+    }
+
+}
 
 
