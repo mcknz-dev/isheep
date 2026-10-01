@@ -2399,12 +2399,4 @@ body {
 
 }
 
-@media (max-width: 768px) {
-
-    .floating-controls > .mobile-icon-btn {
-        color: #EE8131 !important;
-    }
-
-}
-
 
