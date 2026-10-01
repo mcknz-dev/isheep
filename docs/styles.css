@@ -1680,7 +1680,7 @@ body {
 
 /* Dark mode */
 :root[data-theme="dark"] .fv-card {
-    background: #1c1c1e;
+    background: #000000;
     box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
 }
 
@@ -1799,7 +1799,7 @@ body {
 .site-name {
     display: inline-block;
 
-    font-size: 55px;
+    font-size: 20px;
     font-weight: 250;
     line-height: 1;
 
@@ -1850,57 +1850,78 @@ body {
 }
 
 /* ==========================================
-   FLOATING LIQUID GLASS CONTROLS
+   iSHEEP MOBILE TOP TOOLBAR
 ========================================== */
 
 .floating-controls {
     position: fixed;
 
     top: 16px;
+    left: 16px;
     right: 16px;
+
+    width: auto;
+    height: 58px;
 
     z-index: 9999;
 
     display: flex;
     align-items: center;
-    gap: 1px;
+    justify-content: space-between;
 
-    padding: 5px 4px;
+    box-sizing: border-box;
+
+    padding: 0 12px 0 20px;
 
     border-radius: 999px;
 
-    background: rgba(255,255,255,0.14);
+    background: rgba(255, 255, 255, 0.55);
 
     backdrop-filter:
-            blur(1.5px)
+            blur(18px)
             saturate(180%);
 
-    
+    -webkit-backdrop-filter:
+            blur(18px)
+            saturate(180%);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
 
     box-shadow:
-            0 4px 20px rgba(0,0,0,0.05),
-            inset 0 1px 0 rgba(255,255,255,0.6);
+            0 4px 20px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
 
     overflow: hidden;
 }
+
+
+/* Glass highlight */
 
 .floating-controls::before {
     content: "";
 
     position: absolute;
+
     inset: 1px;
 
     border-radius: inherit;
 
     background: linear-gradient(
             180deg,
-            rgba(255,255,255,0.45),
-            rgba(255,255,255,0.05)
+            rgba(255, 255, 255, 0.45),
+            rgba(255, 255, 255, 0.05)
     );
 
     pointer-events: none;
 }
 
+
+/* Keep actual content above glass */
+
+.floating-controls > * {
+    position: relative;
+    z-index: 1;
+}
 /* ==========================================
    ICON BUTTONS
 ========================================== */
@@ -2113,6 +2134,103 @@ body {
     .main {
         padding-top: 0;
     }
+}
+
+@media (max-width: 768px) {
+
+    .hero-logo {
+        flex: 1;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .toolbar-sheep {
+        width: 30px;
+        height: 30px;
+
+        object-fit: contain;
+
+        display: block;
+    }
+
+}
+@media (max-width: 768px) {
+    .toolbar-sheep {
+        width: 34px;
+        height: 34px;
+
+        object-fit: contain;
+
+        display: block;
+
+        transform: translateY(4px);
+    }
+}
+@media (max-width: 768px) {
+
+    .floating-controls {
+        border-radius: 16px;
+    }
+
+    /* Space between toolbar and first article */
+    .main {
+        padding-top: 35px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .hero-logo {
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        gap: 10px;
+    }
+
+    .toolbar-brand {
+        font-family: "Orbitron", sans-serif;
+
+        font-size: 30px;
+        font-weight: 100;
+
+        letter-spacing: 0.5px;
+
+        line-height: 1;
+
+        white-space: nowrap;
+
+        background: linear-gradient(
+                90deg,
+                #c23d72,
+                #7654bd,
+                #2998d1,
+                #49b879
+        );
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .toolbar-sheep {
+        width: 30px;
+        height: 30px;
+
+        object-fit: contain;
+
+        display: block;
+
+        position: relative;
+        top: 3px;
+    }
+
 }
 
 
