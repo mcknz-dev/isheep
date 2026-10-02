@@ -2466,7 +2466,7 @@ body {
 
         border-radius: 0;
 
-        background: rgba(255, 255, 255, 0.92);
+        background: rgba(236, 236, 236, 0.2);
 
         backdrop-filter: blur(18px) saturate(180%);
         -webkit-backdrop-filter: blur(18px) saturate(180%);
@@ -2531,4 +2531,18 @@ body {
             padding-top: 18px !important;
         }
     }
+}
+
+@media (max-width: 768px) {
+
+    .floating-controls {
+        background: #3f3f3f !important;
+
+        border: none !important;
+        box-shadow: none !important;
+
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
 }
