@@ -1534,7 +1534,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    height: 122px;
+    height: 120px;
     border-radius: 14px !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04) !important;
     border: 1px solid rgba(0,0,0,0.06) !important;
@@ -1553,7 +1553,7 @@ body {
 
 /* Thumbnail on the LEFT */
 .small-tile-img {
-    width: 145px;
+    width: 175px;
     height: 100%;
     object-fit: cover;
     display: block;
@@ -2471,7 +2471,7 @@ body {
         border-radius: 0;
 
         /* Solid grey */
-        background: rgba(96, 94, 94, 0.56) !important;
+        background: #7D7D7D !important;
 
         /* Completely flat */
         border: none !important;
@@ -2568,7 +2568,7 @@ body {
        ------------------------------------------ */
 
     .main {
-        padding-top: 18px !important;
+        padding-top: 22px !important;
     }
 
 }}
