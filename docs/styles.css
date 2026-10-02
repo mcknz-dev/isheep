@@ -2446,6 +2446,10 @@ body {
 
 }
 
+/* ==========================================
+   iSHEEP MOBILE NAVBAR
+   ========================================== */
+
 @media (max-width: 768px) {
 
     .floating-controls {
@@ -2466,19 +2470,23 @@ body {
 
         border-radius: 0;
 
-        background: rgba(236, 236, 236, 0.2);
+        /* Solid grey */
+        background: rgba(96, 94, 94, 0.56) !important;
 
-        backdrop-filter: blur(18px) saturate(180%);
-        -webkit-backdrop-filter: blur(18px) saturate(180%);
+        /* Completely flat */
+        border: none !important;
+        box-shadow: none !important;
 
-        border: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
-        box-shadow:
-                0 2px 10px rgba(0, 0, 0, 0.05);
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
 
         z-index: 9999;
     }
+
+
+    /* ------------------------------------------
+       iSHEEP LOGO
+       ------------------------------------------ */
 
     .hero-logo {
         flex: 1;
@@ -2493,6 +2501,8 @@ body {
         margin: 0 !important;
 
         font-family: "Orbitron", sans-serif;
+
+        /* Keep your current size */
         font-size: 30px !important;
         font-weight: 300;
 
@@ -2503,7 +2513,21 @@ body {
 
         position: relative;
         top: 6px !important;
+
+        /* White iSheep */
+        color: #ffffff !important;
+
+        /* Remove rainbow gradient */
+        background: none !important;
+        -webkit-background-clip: initial !important;
+        background-clip: initial !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
+
+
+    /* ------------------------------------------
+       MOON + MENU ICONS
+       ------------------------------------------ */
 
     .floating-controls > .mobile-icon-btn {
         width: 42px;
@@ -2516,52 +2540,35 @@ body {
         justify-content: center;
 
         padding: 0;
-        border: none;
+
+        border: none !important;
         border-radius: 12px;
 
-        background: transparent;
+        background: transparent !important;
 
-        color: #000000 !important;
+        color: #ffffff !important;
 
         font-size: 17px;
     }
 
-    @media (max-width: 768px) {
-        .main {
-            padding-top: 18px !important;
-        }
-    }
-}
 
-@media (max-width: 768px) {
+    /* ------------------------------------------
+       REMOVE OLD GLASS OVERLAY
+       ------------------------------------------ */
 
-    .floating-controls {
-        background: #3f3f3f !important;
-
-        border: none !important;
-        box-shadow: none !important;
-
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-    }
-
-}
-
-@media (max-width: 768px) {
-
-    .floating-controls {
-        background: #605e5e !important;
-
-        border: none !important;
-        box-shadow: none !important;
-
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-    }
-
-    .floating-controls::before {
+    .floating-controls::before,
+    .floating-controls::after {
         display: none !important;
         content: none !important;
     }
 
-}
+
+    /* ------------------------------------------
+       CONTENT SPACING
+       ------------------------------------------ */
+
+    .main {
+        padding-top: 18px !important;
+    }
+
+}}
