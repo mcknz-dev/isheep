@@ -1,0 +1,38 @@
+
+/* =========================================
+   iSHEEP — NEWS GRID
+========================================= */
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--news-gap);
+    align-items: stretch;
+    width: 100%;
+}
+
+.news-grid:empty {
+    display: block;
+}
+
+/* Smaller desktop / foldable */
+@media (max-width: 1200px) {
+    .news-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Tablet */
+@media (max-width: 950px) {
+    .news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

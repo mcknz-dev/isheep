@@ -1,0 +1,143 @@
+
+/* =========================================
+   iSHEEP — BOLD APPLE COLOUR ATMOSPHERE
+========================================= */
+
+html {
+    min-height: 100%;
+    background: #EEEEF2;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    background: transparent;
+    color: var(--text-primary);
+    isolation: isolate;
+}
+
+html::before {
+    content: "";
+    position: fixed;
+    inset: -5%;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        /* Green */
+            radial-gradient(circle at 8% 18%,
+            rgba(52, 199, 89, 0.65), transparent 17%),
+
+            radial-gradient(circle at 35% 78%,
+            rgba(52, 199, 89, 0.48), transparent 18%),
+
+                /* Blue */
+            radial-gradient(circle at 22% 88%,
+            rgba(0, 122, 255, 0.62), transparent 21%),
+
+            radial-gradient(circle at 58% 28%,
+            rgba(0, 122, 255, 0.42), transparent 16%),
+
+                /* Cyan */
+            radial-gradient(circle at 78% 78%,
+            rgba(90, 200, 250, 0.65), transparent 19%),
+
+            radial-gradient(circle at 42% 12%,
+            rgba(90, 200, 250, 0.42), transparent 15%),
+
+                /* Orange */
+            radial-gradient(circle at 5% 5%,
+            rgba(255, 149, 0, 0.58), transparent 18%),
+
+            radial-gradient(circle at 91% 15%,
+            rgba(255, 149, 0, 0.38), transparent 15%),
+
+                /* Purple */
+            radial-gradient(circle at 68% 52%,
+            rgba(175, 82, 222, 0.52), transparent 19%),
+
+                /* Pink */
+            radial-gradient(circle at 96% 48%,
+            rgba(255, 45, 85, 0.42), transparent 17%),
+
+                /* Yellow */
+            radial-gradient(circle at 47% 52%,
+            rgba(255, 204, 0, 0.38), transparent 15%),
+
+                /* Teal */
+            radial-gradient(circle at 28% 42%,
+            rgba(90, 200, 168, 0.42), transparent 16%),
+
+            #EEEEF2;
+
+    filter: blur(38px);
+    transform: translateZ(0);
+}
+
+html::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+            radial-gradient(circle at 15% 48%,
+            rgba(52, 199, 89, 0.20), transparent 12%),
+
+            radial-gradient(circle at 55% 85%,
+            rgba(0, 122, 255, 0.20), transparent 14%),
+
+            radial-gradient(circle at 83% 30%,
+            rgba(175, 82, 222, 0.18), transparent 13%);
+
+    filter: blur(45px);
+}
+
+
+
+/* =========================================
+   MORE ACTIVE APPLE COLOUR ATMOSPHERE
+========================================= */
+
+html::before {
+    animation: colourDrift 8s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+html::after {
+    animation: colourDriftSecondary 5s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+@keyframes colourDrift {
+    0% {
+        transform: translate3d(-5%, -3%, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(5%, 4%, 0) scale(1.12);
+    }
+    100% {
+        transform: translate3d(-3%, 6%, 0) scale(1.04);
+    }
+}
+
+@keyframes colourDriftSecondary {
+    0% {
+        transform: translate3d(5%, -4%, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(-6%, 5%, 0) scale(1.15);
+    }
+    100% {
+        transform: translate3d(4%, -5%, 0) scale(1.05);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html::before,
+    html::after {
+        animation: none;
+        will-change: auto;
+    }
+}

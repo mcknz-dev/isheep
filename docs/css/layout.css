@@ -1,0 +1,94 @@
+
+/* =========================================================
+   iSHEEP 2.0 — APPLICATION LAYOUT
+========================================================= */
+
+/* Main application shell */
+.shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    gap: var(--content-gap);
+
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
+    padding: var(--page-padding);
+    overflow: hidden;
+}
+
+/* Allow dynamically loaded components to participate
+   directly in the shell grid */
+#menubar-container,
+#main-workspace-container {
+    display: contents;
+}
+
+/* Main content scrolls independently */
+.main {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 5px 4px 40px 0;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 100, 115, 0.28) transparent;
+}
+
+/* Main scrollbar */
+.main::-webkit-scrollbar {
+    width: 7px;
+}
+
+.main::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.main::-webkit-scrollbar-thumb {
+    background: rgba(100, 100, 115, 0.25);
+    border-radius: 20px;
+}
+
+/* Status message */
+.status {
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* Mobile header hidden on desktop */
+.mobile-header {
+    display: none;
+}
+
+/* Tablet */
+@media (max-width: 1050px) and (min-width: 701px) {
+    :root {
+        --sidebar-width: 205px;
+        --page-padding: 18px;
+        --content-gap: 18px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    .shell {
+        display: block;
+        height: 100dvh;
+        padding: 0;
+    }
+
+    .main {
+        height: 100dvh;
+        padding: 16px;
+        padding-top: 88px;
+    }
+
+    .mobile-header {
+        display: block;
+    }
+}

@@ -1,0 +1,272 @@
+
+/* =========================================
+   iSHEEP — SIDEBAR NAVIGATION
+   MCKNZ glass design system
+========================================= */
+
+/* Main sidebar panel */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 18px 17px;
+
+    background: rgba(220, 223, 231, 0.64);
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: 27px;
+
+    box-shadow:
+            0 12px 35px rgba(45, 48, 60, 0.07),
+            inset 0 1px 0 rgba(255, 255, 255, 0.75);
+
+    backdrop-filter: blur(35px) saturate(155%);
+    -webkit-backdrop-filter: blur(35px) saturate(155%);
+
+    overflow: hidden;
+}
+
+/* =========================================
+   BRAND
+========================================= */
+
+.sidebar-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 5px 5px 22px;
+}
+
+.sidebar-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.sidebar-brand .site-name {
+    margin: 0;
+    color: #242630;
+    font-family: var(--font-brand);
+    font-size: 27px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.sidebar-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.sidebar-navigation::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Section headings */
+.sidebar-section-label {
+    padding: 0 10px;
+    margin-bottom: 6px;
+
+    color: #777D8B;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   NAVIGATION ITEMS
+========================================= */
+
+.sidebar-link,
+#tabs .tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 38px;
+    padding: 0 11px;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    background: transparent;
+    color: #41434F;
+
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 550;
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+            background 180ms ease,
+            color 180ms ease,
+            border-color 180ms ease,
+            box-shadow 180ms ease,
+            transform 180ms ease;
+}
+
+/* Icons */
+.sidebar-link i,
+.sidebar-link svg,
+#tabs .tab i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 18px;
+    flex-shrink: 0;
+
+    color: #626674;
+    font-size: 14px;
+
+    transition: color 180ms ease;
+}
+
+/* Hover */
+.sidebar-link:hover:not(:disabled),
+#tabs .tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.42);
+    color: #292A32;
+}
+
+.sidebar-link:hover:not(:disabled) i,
+.sidebar-link:hover:not(:disabled) svg,
+#tabs .tab:hover:not(.active) i {
+    color: #454B58;
+}
+
+/* Active navigation */
+.sidebar-link.active,
+#tabs .tab.active {
+    background: rgba(84, 124, 157, 0.10);
+    border-color: rgba(84, 124, 157, 0.15);
+    color: #456F91;
+    font-weight: 650;
+
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.sidebar-link.active i,
+.sidebar-link.active svg,
+#tabs .tab.active i {
+    color: #547C9D;
+}
+
+/* Press feedback */
+.sidebar-link:active:not(:disabled),
+#tabs .tab:active {
+    transform: scale(0.985);
+}
+
+/* Disabled placeholders */
+.sidebar-link:disabled {
+    opacity: 0.52;
+    cursor: default;
+}
+
+.sidebar-link:disabled:hover {
+    background: transparent;
+    border-color: transparent;
+    color: #41434F;
+    transform: none;
+}
+
+.sidebar-link:disabled:hover i {
+    color: #626674;
+}
+
+/* =========================================
+   DIVIDERS
+========================================= */
+
+.sidebar-divider {
+    height: 1px;
+    margin: 1px 5px;
+    flex-shrink: 0;
+    background: rgba(70, 73, 85, 0.10);
+}
+
+/* =========================================
+   DYNAMIC LIBRARY TABS
+========================================= */
+
+#tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+#tabs .tab {
+    justify-content: flex-start;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    padding-top: 10px;
+    margin-top: auto;
+}
+
+/* Copyright */
+.sidebar-copyright {
+    padding: 3px 0 0;
+
+    color: #777B87;
+    font-size: 9px;
+    font-weight: 450;
+    line-height: 1.2;
+    letter-spacing: -0.2px;
+
+    white-space: nowrap;
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+.sidebar-link:focus-visible,
+#tabs .tab:focus-visible {
+    outline: 2px solid rgba(84, 124, 157, 0.65);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+    .sidebar {
+        display: none;
+    }
+}

@@ -1,0 +1,26 @@
+
+/* iSheep — LIGHT MODE / SMOKE GLASS */
+
+:root {
+    color-scheme: light;
+
+    --page-background: #EEEEF2;
+
+    /* Translucent grey glass */
+    --surface-primary: rgba(225, 227, 233, 0.48);
+    --surface-secondary: rgba(255, 255, 255, 0.20);
+    --surface-card: rgba(222, 224, 231, 0.43);
+
+    --text-primary: #292A32;
+    --text-secondary: #555966;
+    --text-muted: #777B87;
+
+    --border-color: rgba(255, 255, 255, 0.68);
+    --divider-color: rgba(70, 73, 85, 0.12);
+
+    --shadow-soft:
+            0 10px 35px rgba(40, 43, 55, 0.09);
+
+    --shadow-hover:
+            0 16px 42px rgba(40, 43, 55, 0.14);
+}

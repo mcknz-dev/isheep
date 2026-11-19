@@ -1,0 +1,37 @@
+
+:root {
+    /* Brand */
+    --brand-accent: #5B86AD;
+    --brand-accent-soft: rgba(238, 129, 49, 0.13);
+
+    /* Typography */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-brand: 'Orbitron', sans-serif;
+
+    /* Layout */
+    --sidebar-width: 250px;
+    --sidebar-radius: 26px;
+    --sidebar-padding: 20px;
+    --page-padding: 24px;
+    --content-gap: 22px;
+
+    /* Surfaces */
+    --glass-blur: 28px;
+    --glass-saturation: 165%;
+    --surface-opacity: 0.84;
+
+    /* Shapes */
+    --radius-small: 10px;
+    --radius-medium: 16px;
+    --radius-large: 24px;
+    --radius-pill: 999px;
+
+    /* News */
+    --news-columns: 3;
+    --news-gap: 20px;
+    --card-radius: 22px;
+
+    /* Motion */
+    --transition-fast: 180ms ease;
+    --transition-normal: 280ms ease;
+}

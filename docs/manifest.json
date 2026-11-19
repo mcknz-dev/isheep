@@ -1,0 +1,22 @@
+{
+    "name": "iSheep",
+    "short_name": "iSheep",
+    "description": "Your Apple news, all in one place.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f6f6f6",
+    "theme_color": "#f58220",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/assets/homepage/Sheep.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/homepage/Sheep.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

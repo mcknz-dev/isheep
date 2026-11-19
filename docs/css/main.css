@@ -1,0 +1,27 @@
+/* =========================================================
+   iSHEEP 2.0 — MAIN STYLESHEET
+   All component styles are imported here.
+========================================================= */
+
+/* FOUNDATION */
+@import url("./variables.css");
+@import url("./reset.css");
+@import url("./themes.css");
+@import url("./background.css");
+
+/* APPLICATION */
+@import url("./layout.css");
+@import url("./menubar.css");
+@import url("./workspace.css");
+
+/* NEWS */
+@import url("./newsgrid.css");
+@import url("./newscard.css");
+
+/* COMPONENTS */
+@import url("./search.css");
+@import url("./modals.css");
+@import url("./settings.css");
+
+/* RESPONSIVE */
+@import url("./responsive.css");

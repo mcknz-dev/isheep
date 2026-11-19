@@ -1,0 +1,817 @@
+
+/* =========================================
+   iSHEEP — NEWS CARDS
+   MCKNZ Glass Design System
+========================================= */
+
+
+/* =========================================
+   1. CARD SURFACE
+========================================= */
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+
+    background: rgba(242, 244, 249, 0.58);
+
+
+    border-radius: 23px;
+
+    box-shadow:
+            0 8px 28px rgba(45, 48, 60, 0.075),
+            0 2px 6px rgba(45, 48, 60, 0.025),
+            inset 0 1px 0 rgba(255, 255, 255, 0.72);
+
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+
+    transition:
+            transform 250ms ease,
+            box-shadow 250ms ease,
+            border-color 250ms ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.96);
+
+    box-shadow:
+            0 15px 38px rgba(45, 48, 60, 0.105),
+            0 4px 10px rgba(45, 48, 60, 0.035),
+            inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+
+/* =========================================
+   2. ARTICLE IMAGE
+========================================= */
+
+.card-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    background: var(--surface-secondary);
+}
+
+.card-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    transition: transform 450ms ease;
+}
+
+.card:hover .card-image img {
+    transform: scale(1.035);
+}
+
+
+/* Missing image */
+
+.card-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(
+            135deg,
+            rgba(84, 124, 157, 0.16),
+            rgba(160, 140, 220, 0.14)
+    );
+
+    color: var(--brand-accent);
+    font-family: var(--font-brand);
+    font-size: 44px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   3. NEW BADGE — CLASSIC APPLE RAINBOW
+========================================= */
+
+.new-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+
+    background: linear-gradient(
+            110deg,
+            #61BB46 0%,
+            #FDB827 22%,
+            #F5821F 42%,
+            #E03A3E 61%,
+            #963D97 80%,
+            #009DDC 100%
+    );
+
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.5px;
+
+    box-shadow: 0 2px 7px rgba(45, 48, 60, 0.14);
+}
+
+
+/* =========================================
+   4. ARTICLE TITLE
+========================================= */
+
+.card .title {
+    margin: 0;
+    padding: 15px 15px 7px;
+
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.36;
+    letter-spacing: -0.3px;
+
+    text-align: left;
+}
+
+.card .title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 180ms ease;
+}
+
+.card .title a:hover {
+    color: var(--brand-accent);
+}
+
+
+/* =========================================
+   5. ARTICLE SUMMARY
+========================================= */
+
+.card .summary {
+    flex: 1;
+
+    margin: 0 0 12px;
+    padding: 0 15px;
+
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0.05px;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+
+    text-align: left;
+}
+
+
+/* =========================================
+   6. SOURCE AND PUBLICATION TIME
+========================================= */
+
+.card-attribution {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 0 15px 13px;
+    margin: 0;
+
+    color: var(--text-secondary);
+    font-size: 10px;
+}
+
+.card-attribution .badge {
+    max-width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    padding: 4px 7px;
+    border-radius: 7px;
+
+    background: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.42);
+
+    color: var(--text-secondary);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.card-attribution .time {
+    flex: 0;
+
+    color: var(--text-muted);
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+
+
+
+/* =========================================
+   7. CLEAN ACTION FOOTER
+========================================= */
+
+.card .card-header {
+    display: block;
+    padding: 8px 12px;
+    margin-top: auto;
+    background: rgba(255, 255, 255, 0.16);
+    border-top: 1px solid rgba(255, 255, 255, 0.42);
+}
+
+.card .card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+}
+
+.card-action-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card-action-group-left {
+    justify-content: flex-start;
+}
+
+.card-action-group-right {
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+/* Individual action buttons */
+
+.card .card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    width: auto;
+    min-width: 26px;
+    height: 30px;
+    padding: 0 4px;
+
+    flex-shrink: 0;
+
+    border: none !important;
+    outline: none;
+    border-radius: 7px;
+    box-shadow: none !important;
+
+    background: transparent !important;
+    color: var(--text-secondary);
+
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.82;
+
+    transition:
+            color 160ms ease,
+            opacity 160ms ease,
+            background 160ms ease;
+}
+
+.card .card-action i {
+    font-size: 12px;
+}
+
+/* Counter */
+
+.card-action-count {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+
+    border: none !important;
+    background: transparent !important;
+
+    color: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+/* Hover — no button outline */
+
+.card .card-action:hover {
+    color: var(--text-primary);
+    opacity: 1;
+    background: rgba(91, 134, 173, 0.08) !important;
+    transform: none;
+}
+
+/* Selected reactions — colour only */
+
+.card .card-action.active {
+    color: #397eb8;
+    background: transparent !important;
+    border: none !important;
+    opacity: 1;
+}
+
+.card .card-action.active .card-action-count {
+    color: #397eb8;
+    opacity: 1;
+}
+
+/* Comments panel */
+
+.card .card-comments {
+    padding: 12px 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.card .card-comments strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.card .card-comments p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.card .card-comments.hidden {
+    display: none !important;
+}
+
+/* Dark appearance */
+
+:root[data-theme="dark"] .card .card-header {
+    background: rgba(255, 255, 255, 0.025);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .card .card-action {
+    color: var(--text-secondary);
+    background: transparent !important;
+}
+
+:root[data-theme="dark"] .card .card-action:hover {
+    background: rgba(141, 180, 213, 0.08) !important;
+    color: var(--text-primary);
+}
+
+:root[data-theme="dark"] .card .card-action.active,
+:root[data-theme="dark"] .card .card-action.active .card-action-count {
+    color: #8DB4D5;
+}
+
+:root[data-theme="dark"] .card .card-comments {
+    background: rgba(255, 255, 255, 0.035);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================
+   8. COMMENTS
+========================================= */
+
+.card .card-comments {
+    padding: 12px 15px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.17);
+
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.card .card-comments strong {
+    display: block;
+    margin-bottom: 5px;
+
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.card .card-comments p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.card .card-comments.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   9. DARK APPEARANCE
+========================================= */
+
+:root[data-theme="dark"] .card {
+    background: rgba(35, 37, 46, 0.68);
+    border-color: rgba(255, 255, 255, 0.10);
+
+    box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .card:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+
+    box-shadow:
+            0 15px 38px rgba(0, 0, 0, 0.24),
+            inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+:root[data-theme="dark"] .card .card-header {
+    background: rgba(255, 255, 255, 0.035);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .card-attribution .badge {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .card .card-action {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .card .card-action.active {
+    background: rgba(91, 134, 173, 0.20);
+    border-color: rgba(91, 134, 173, 0.35);
+    color: #8DB4D5;
+}
+
+:root[data-theme="dark"] .card .card-comments {
+    background: rgba(255, 255, 255, 0.035);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================
+   10. ACCESSIBILITY
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .card-image img,
+    .card .title a,
+    .card .card-action {
+        transition: none;
+    }
+
+    .card:hover,
+    .card:hover .card-image img {
+        transform: none;
+    }
+}
+
+
+.card .card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+}
+
+.card-action-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card .card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.card-action-count {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    opacity: 0.78;
+}
+
+
+/* Cleaner card actions — remove individual button boxes */
+.card .card-action {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 8px;
+    padding: 5px 7px;
+    opacity: 0.8;
+    transition: background 0.2s ease, opacity 0.2s ease, color 0.2s ease;
+}
+
+.card .card-action:hover {
+    background: rgba(80, 130, 190, 0.10) !important;
+    opacity: 1;
+}
+
+.card .card-action.active {
+    background: rgba(80, 130, 190, 0.15) !important;
+    color: #397eb8;
+    opacity: 1;
+}
+
+.card-action-count {
+    border: none !important;
+    background: transparent !important;
+}
+
+
+/* Completely borderless reaction states */
+
+.card .card-action {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Subtle hover without a background */
+.card .card-action:hover {
+    background: transparent !important;
+    color: var(--text-primary);
+    opacity: 1;
+}
+
+/* Selected like/dislike: colour the icon and count only */
+.card .card-action.active {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
+.card .card-action.active i,
+.card .card-action.active .card-action-count {
+    color: #397eb8 !important;
+    opacity: 1;
+}
+
+/* Dark appearance */
+:root[data-theme="dark"] .card .card-action.active i,
+:root[data-theme="dark"] .card .card-action.active .card-action-count {
+    color: #8DB4D5 !important;
+}
+
+
+
+/* =========================================
+   iSHEEP — SLOW CINEMATIC IMAGE MOTION
+========================================= */
+
+.card-image {
+    overflow: hidden;
+}
+
+.card-image img {
+    animation: newsImageZoom 24s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+.card:nth-child(6n + 1) .card-image img {
+    animation-duration: 22s;
+    animation-delay: -8s;
+}
+
+.card:nth-child(6n + 2) .card-image img {
+    animation-duration: 28s;
+    animation-direction: alternate-reverse;
+    animation-delay: -14s;
+}
+
+.card:nth-child(6n + 3) .card-image img {
+    animation-duration: 20s;
+    animation-delay: -6s;
+}
+
+.card:nth-child(6n + 4) .card-image img {
+    animation-duration: 30s;
+    animation-direction: alternate-reverse;
+    animation-delay: -18s;
+}
+
+.card:nth-child(6n + 5) .card-image img {
+    animation-duration: 25s;
+    animation-delay: -11s;
+}
+
+.card:nth-child(6n) .card-image img {
+    animation-duration: 27s;
+    animation-direction: alternate-reverse;
+    animation-delay: -16s;
+}
+
+@keyframes newsImageZoom {
+    0% {
+        transform: scale(1) translate3d(1%, 1%, 0);
+    }
+
+    50% {
+        transform: scale(1.09) translate3d(-2%, 2%, 0);
+    }
+
+    100% {
+        transform: scale(1.18) translate3d(2%, -2%, 0);
+    }
+}
+
+.card:hover .card-image img {
+    animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-image img {
+        animation: none !important;
+        transform: none !important;
+        will-change: auto;
+    }
+}
+
+/* =====================================
+   MOBILE COMPACT CARD ENGAGEMENT
+   ===================================== */
+
+.compact-engagement {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 10px;
+    padding-top: 9px;
+    border-top: 1px solid rgba(128, 145, 165, 0.18);
+}
+
+.compact-engagement-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 5px 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0.72;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.compact-engagement-btn:hover {
+    opacity: 1;
+}
+
+.compact-engagement-btn.active {
+    color: #6689b5;
+    opacity: 1;
+}
+
+.compact-engagement-count {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.compact-comments {
+    margin-top: 10px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    background: rgba(120, 140, 165, 0.09);
+    font-size: 12px;
+}
+
+.compact-comments p {
+    margin: 5px 0 0;
+    opacity: 0.7;
+}
+
+/* =====================================
+   MOBILE COMPACT CARD — WIDE IMAGE
+   ===================================== */
+
+.compact-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.compact-card .compact-thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 16px 16px 0 0;
+}
+
+.compact-card .compact-row {
+    display: block;
+    width: 100%;
+}
+
+.compact-card .compact-text {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px 10px;
+}
+
+.compact-card .compact-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.compact-card .compact-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 13px;
+    flex-wrap: nowrap;
+}
+
+.compact-card .compact-action-btn,
+.compact-card .compact-engagement-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.compact-card .compact-engagement-count {
+    font-size: 10px;
+}
+
+.compact-card .compact-comments {
+    margin-top: 10px;
+}
+
+/* Mobile compact cards — full-width images */
+
+.compact-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.compact-card > .compact-thumb {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 18px 18px 0 0;
+    flex: none;
+}
+
+.compact-card .compact-row {
+    display: block;
+    width: 100%;
+}
+
+.compact-card .compact-text {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+}
+
