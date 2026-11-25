@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>iSheep — Your Apple News Hub</title>
+
+    <!-- SEO -->
+    <meta name="description" content="iSheep brings together the latest Apple news from your favourite publications in one place.">
+    <meta name="keywords" content="Apple news, Mac news, iPhone news, iPad news, Apple aggregator, iSheep">
+    <meta name="author" content="mcknz.dev">
+    <link rel="canonical" href="https://isheep.news/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isheep.news/">
+    <meta property="og:title" content="iSheep — Your Apple News Hub">
+    <meta property="og:description" content="Your Apple world, all in one place.">
+    <meta property="og:image" content="https://isheep.news/assets/homepage/new.png">
+    <meta property="og:site_name" content="iSheep">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@isheepnews">
+    <meta name="twitter:title" content="iSheep — Your Apple News Hub">
+    <meta name="twitter:description" content="Your Apple world, all in one place.">
+    <meta name="twitter:image" content="https://isheep.news/assets/homepage/new.png">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#EE8131">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="iSheep">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Brand font -->
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+
+    <!-- Existing application fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- App Icons -->
+    <link rel="icon" type="image/png" href="assets/homepage/Sheep.png">
+    <link rel="apple-touch-icon" href="assets/homepage/Sheep.png">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="manifest" href="./manifest.json">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JDHLWREGNE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-JDHLWREGNE');
+    </script>
+
+</head>
+
+<body>
+
+<!-- Application components are loaded by components.js -->
+<div id="app-container"></div>
+
+<!-- Application initialization -->
+<script type="module" src="./js/components.js"></script>
+
+</body>
+</html>

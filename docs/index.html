@@ -1,80 +1,323 @@
 
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700&display=swap');
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    /* =========================================
+       MAINTENANCE SCREEN
+    ========================================= */
 
-    <title>iSheep — Your Apple News Hub</title>
+    .maintenance-screen,
+    .maintenance-screen * {
+        box-sizing: border-box;
+    }
 
-    <!-- SEO -->
-    <meta name="description" content="iSheep brings together the latest Apple news from your favourite publications in one place.">
-    <meta name="keywords" content="Apple news, Mac news, iPhone news, iPad news, Apple aggregator, iSheep">
-    <meta name="author" content="mcknz.dev">
-    <link rel="canonical" href="https://isheep.news/">
+    .maintenance-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        isolation: isolate;
+        font-family: "Inter", sans-serif;
+        background: transparent;
+        color: #30313a;
+    }
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://isheep.news/">
-    <meta property="og:title" content="iSheep — Your Apple News Hub">
-    <meta property="og:description" content="Your Apple world, all in one place.">
-    <meta property="og:image" content="https://isheep.news/assets/homepage/new.png">
-    <meta property="og:site_name" content="iSheep">
+    /* =========================================
+       ANIMATED BACKGROUND
+    ========================================= */
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:site" content="@isheepnews">
-    <meta name="twitter:title" content="iSheep — Your Apple News Hub">
-    <meta name="twitter:description" content="Your Apple world, all in one place.">
-    <meta name="twitter:image" content="https://isheep.news/assets/homepage/new.png">
+    .maintenance-atmosphere {
+        position: absolute;
+        inset: -35%;
+        z-index: -3;
+        pointer-events: none;
+        background:
+                radial-gradient(ellipse at 18% 25%, rgba(255,255,255,.65), transparent 35%),
+                radial-gradient(ellipse at 75% 20%, rgba(120,125,140,.20), transparent 38%),
+                radial-gradient(ellipse at 80% 80%, rgba(255,255,255,.45), transparent 35%),
+                radial-gradient(ellipse at 25% 85%, rgba(105,110,125,.20), transparent 40%),
+                linear-gradient(135deg, #d9dbe1, #bfc2cb 55%, #d4d6dc);
+        filter: blur(55px);
+        animation: maintenanceDrift 32s ease-in-out infinite alternate;
+    }
 
-    <!-- PWA -->
-    <meta name="theme-color" content="#EE8131">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="iSheep">
+    .maintenance-atmosphere::after {
+        content: "";
+        position: absolute;
+        inset: 5%;
+        background:
+                radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.35), transparent 45%),
+                radial-gradient(ellipse at 10% 70%, rgba(90,95,110,.12), transparent 35%);
+        filter: blur(65px);
+        animation: maintenanceDriftSecondary 40s ease-in-out infinite alternate;
+    }
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    @keyframes maintenanceDrift {
+        0% {
+            transform: translate3d(-2%, -1%, 0) scale(1);
+        }
+        50% {
+            transform: translate3d(2%, 2%, 0) scale(1.06);
+        }
+        100% {
+            transform: translate3d(-1%, 3%, 0) scale(1.02);
+        }
+    }
 
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    @keyframes maintenanceDriftSecondary {
+        0% {
+            transform: translate3d(2%, 1%, 0) scale(1);
+        }
+        100% {
+            transform: translate3d(-3%, -2%, 0) scale(1.08);
+        }
+    }
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    /* =========================================
+       GHOST WORKSPACE OUTLINES
+    ========================================= */
 
-    <!-- App Icons -->
-    <link rel="icon" type="image/png" href="assets/homepage/Sheep.png">
-    <link rel="apple-touch-icon" href="assets/homepage/Sheep.png">
+    .maintenance-workspace {
+        position: absolute;
+        inset: 4.5% 1.3% 3%;
+        z-index: -2;
+        display: grid;
+        grid-template-columns: minmax(145px, .72fr) minmax(0, 3fr) minmax(190px, 1fr);
+        gap: 16px;
+        opacity: .58;
+        pointer-events: none;
+    }
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="manifest" href="./manifest.json">
+    .ghost-pane {
+        min-width: 0;
+        border: 1px solid rgba(255,255,255,.52);
+        border-radius: 24px;
+        background: rgba(255,255,255,.025);
+    }
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JDHLWREGNE"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+    .ghost-news {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        padding: 12px;
+    }
 
-        function gtag() {
-            dataLayer.push(arguments);
+    .ghost-news-column {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ghost-card {
+        flex: 1;
+        min-height: 100px;
+        border: 1px solid rgba(255,255,255,.42);
+        border-radius: 17px;
+        background: rgba(255,255,255,.025);
+    }
+
+    .ghost-card:first-child {
+        flex: 1.15;
+    }
+
+    .ghost-community {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .ghost-community-card {
+        flex: 1;
+        min-height: 100px;
+        border: 1px solid rgba(255,255,255,.42);
+        border-radius: 15px;
+        background: rgba(255,255,255,.025);
+    }
+
+    /* =========================================
+       FOREGROUND GLASS CARD
+    ========================================= */
+
+    .maintenance-card {
+        position: relative;
+        z-index: 1;
+        width: min(580px, calc(100% - 40px));
+        min-height: 330px;
+        padding: 58px 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 46px;
+
+        border: 1px solid rgba(255,255,255,.9);
+        border-radius: 27px;
+
+        background: rgba(238,239,244,.48);
+        backdrop-filter: blur(35px) saturate(135%);
+        -webkit-backdrop-filter: blur(35px) saturate(135%);
+
+        box-shadow:
+                0 20px 65px rgba(50,53,65,.10),
+                inset 0 1px 1px rgba(255,255,255,.65);
+    }
+
+    /* =========================================
+       LOGO AND WORDMARK
+    ========================================= */
+
+    .maintenance-brand {
+        position: relative;
+        width: min(340px, 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .maintenance-logo {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .maintenance-wordmark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        margin: 0;
+        color: #fff;
+
+        font-family: "Michroma", sans-serif !important;
+        font-size: clamp(19px, 3vw, 27px);
+        font-weight: 400;
+        letter-spacing: 1.5px;
+        white-space: nowrap;
+
+        text-shadow: 0 1px 5px rgba(40,40,50,.16);
+    }
+
+    /* =========================================
+       UPDATE MESSAGE
+    ========================================= */
+
+    .maintenance-title {
+        margin: 0;
+        color: #30313a;
+
+        font-family: "Orbitron", sans-serif !important;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2.5px;
+        line-height: 1.6;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 700px) {
+        .maintenance-workspace {
+            inset: 3% 2%;
+            grid-template-columns: 1fr;
         }
 
-        gtag('js', new Date());
-        gtag('config', 'G-JDHLWREGNE');
-    </script>
+        .ghost-sidebar,
+        .ghost-community {
+            display: none;
+        }
 
-</head>
+        .ghost-news {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
 
-<body>
+        .ghost-news-column:last-child {
+            display: none;
+        }
 
-<!-- Application components are loaded by components.js -->
-<div id="app-container"></div>
+        .maintenance-card {
+            min-height: 280px;
+            padding: 45px 25px;
+            gap: 38px;
+        }
 
-<!-- Application initialization -->
-<script type="module" src="./js/components.js"></script>
+        .maintenance-brand {
+            width: min(290px, 100%);
+        }
 
-</body>
-</html>
+        .maintenance-title {
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .maintenance-atmosphere,
+        .maintenance-atmosphere::after {
+            animation: none;
+        }
+    }
+</style>
+
+<div class="maintenance-screen">
+
+    <div class="maintenance-atmosphere"></div>
+
+    <!-- Background workspace silhouette -->
+    <div class="maintenance-workspace">
+
+        <div class="ghost-pane ghost-sidebar"></div>
+
+        <div class="ghost-pane ghost-news">
+            <div class="ghost-news-column">
+                <div class="ghost-card"></div>
+                <div class="ghost-card"></div>
+            </div>
+
+            <div class="ghost-news-column">
+                <div class="ghost-card"></div>
+                <div class="ghost-card"></div>
+            </div>
+
+            <div class="ghost-news-column">
+                <div class="ghost-card"></div>
+                <div class="ghost-card"></div>
+            </div>
+        </div>
+
+        <div class="ghost-pane ghost-community">
+            <div class="ghost-community-card"></div>
+            <div class="ghost-community-card"></div>
+            <div class="ghost-community-card"></div>
+        </div>
+
+    </div>
+
+    <!-- Main maintenance card -->
+    <main class="maintenance-card">
+
+        <div class="maintenance-brand">
+            <img
+                    class="maintenance-logo"
+                    src="assets/homepage/sheep.png"
+                    alt="iSheep logo"
+            />
+
+            <h1 class="maintenance-wordmark">iSheep+</h1>
+        </div>
+
+        <p class="maintenance-title">
+            Update in Progress
+        </p>
+
+    </main>
+
+</div>

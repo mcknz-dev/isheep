@@ -32,11 +32,23 @@ async function initializeApp() {
             loadComponent("contact-container", "./layout/shared/contact.html")
         ]);
 
-        // 3. Load components inside the main workspace
+
+// 3. Load components inside the main workspace
         await Promise.all([
-            loadComponent("mobile-header-container", "./layout/mobile/mobile-header.html"),
-            loadComponent("news-content-container", "./layout/desktop/news-content.html")
+            loadComponent(
+                "mobile-header-container",
+                "./layout/mobile/mobile-header.html"
+            ),
+            loadComponent(
+                "news-content-container",
+                "./layout/desktop/news-content.html"
+            ),
+            loadComponent(
+                "community-pane-container",
+                "./layout/desktop/community-pane.html"
+            )
         ]);
+
 
         // 4. Initialize the existing application logic
         await import("./app.js");

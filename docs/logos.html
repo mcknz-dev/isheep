@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iUpdates — Typography Studio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Chakra+Petch:wght@400;500;600;700&family=Comfortaa:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Exo+2:wght@400;500;600;700&family=Electrolize&family=Inter:wght@400;500;600;700&family=Jura:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Michroma&family=Montserrat:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700;800&family=Orbitron:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Oxanium:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Syncopate:wght@400;700&family=Sora:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 35px 20px 60px;
+            min-height: 100vh;
+            background: linear-gradient(120deg, #b9d08f, #e5e7ed, #c5e5ef);
+            font-family: Inter, sans-serif;
+            color: #252832;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+            padding: 28px;
+            border: 1px solid rgba(255,255,255,.85);
+            border-radius: 26px;
+            background: rgba(235,239,235,.55);
+            backdrop-filter: blur(30px);
+        }
+
+        .header {
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            margin: 0 0 6px;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #737987;
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .option {
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,.75);
+            border-radius: 17px;
+            background: rgba(255,255,255,.24);
+            transition: background .2s, transform .2s;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,.55);
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 105px;
+            overflow: hidden;
+        }
+
+        .brush {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .wordmark {
+            position: relative;
+            z-index: 1;
+            color: white;
+            font-size: clamp(23px, 3.4vw, 39px);
+            white-space: nowrap;
+            text-align: center;
+            text-shadow: 0 1px 4px rgba(0,0,0,.16);
+        }
+
+        .name {
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .description {
+            margin-top: 3px;
+            color: #777d88;
+            font-size: 10px;
+        }
+
+        .audiowide { font-family: Audiowide; font-weight: 400; }
+        .chakra { font-family: 'Chakra Petch'; font-weight: 600; }
+        .comfortaa { font-family: Comfortaa; font-weight: 600; }
+        .dm { font-family: 'DM Sans'; font-weight: 700; }
+        .exo { font-family: 'Exo 2'; font-weight: 600; }
+        .electrolize { font-family: Electrolize; }
+        .inter { font-family: Inter; font-weight: 700; }
+        .jura { font-family: Jura; font-weight: 600; }
+        .manrope { font-family: Manrope; font-weight: 700; }
+        .michroma { font-family: Michroma; font-size: clamp(17px, 2.5vw, 28px); }
+        .montserrat { font-family: Montserrat; font-weight: 600; }
+        .nunito { font-family: 'Nunito Sans'; font-weight: 800; }
+        .orbitron { font-family: Orbitron; font-weight: 500; }
+        .outfit { font-family: Outfit; font-weight: 600; }
+        .oxanium { font-family: Oxanium; font-weight: 600; }
+        .rajdhani { font-family: Rajdhani; font-weight: 600; }
+        .roboto { font-family: Roboto; font-weight: 700; }
+        .space { font-family: 'Space Grotesk'; font-weight: 600; }
+        .syncopate { font-family: Syncopate; font-weight: 700; font-size: clamp(19px, 2.7vw, 31px); }
+        .sora { font-family: Sora; font-weight: 600; }
+        .urbanist { font-family: Urbanist; font-weight: 700; }
+
+        @media(max-width: 650px) {
+            body { padding: 15px 10px 35px; }
+            .container { padding: 16px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+
+    <header class="header">
+        <h1>iUpdates Typography Studio</h1>
+        <p>20 typefaces · One rainbow identity · Find your favourite.</p>
+    </header>
+
+    <div class="grid">
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark audiowide">iUpdates</span></div>
+            <div class="name">01 — Audiowide</div>
+            <div class="description">Futuristic and rounded</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark chakra">iUpdates</span></div>
+            <div class="name">02 — Chakra Petch</div>
+            <div class="description">Technical and geometric</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark comfortaa">iUpdates</span></div>
+            <div class="name">03 — Comfortaa</div>
+            <div class="description">Soft and friendly</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark dm">iUpdates</span></div>
+            <div class="name">04 — DM Sans</div>
+            <div class="description">Clean and contemporary</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark exo">iUpdates</span></div>
+            <div class="name">05 — Exo 2</div>
+            <div class="description">Modern technology aesthetic</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark electrolize">iUpdates</span></div>
+            <div class="name">06 — Electrolize</div>
+            <div class="description">Minimal futuristic</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark inter">iUpdates</span></div>
+            <div class="name">07 — Inter</div>
+            <div class="description">Modern editorial</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark jura">iUpdates</span></div>
+            <div class="name">08 — Jura</div>
+            <div class="description">Geometric and understated</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark manrope">iUpdates</span></div>
+            <div class="name">09 — Manrope</div>
+            <div class="description">Premium and balanced</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark michroma">iUpdates</span></div>
+            <div class="name">10 — Michroma</div>
+            <div class="description">Classic sci-fi / retro tech</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark montserrat">iUpdates</span></div>
+            <div class="name">11 — Montserrat</div>
+            <div class="description">Bold and recognizable</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark nunito">iUpdates</span></div>
+            <div class="name">12 — Nunito Sans</div>
+            <div class="description">Approachable and rounded</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark orbitron">iUpdates</span></div>
+            <div class="name">13 — Orbitron</div>
+            <div class="description">Your current brand font</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark outfit">iUpdates</span></div>
+            <div class="name">14 — Outfit</div>
+            <div class="description">Contemporary and polished</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark oxanium">iUpdates</span></div>
+            <div class="name">15 — Oxanium</div>
+            <div class="description">Digital and distinctive</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark rajdhani">iUpdates</span></div>
+            <div class="name">16 — Rajdhani</div>
+            <div class="description">Tall, sleek and modern</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark roboto">iUpdates</span></div>
+            <div class="name">17 — Roboto</div>
+            <div class="description">Familiar and functional</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark space">iUpdates</span></div>
+            <div class="name">18 — Space Grotesk</div>
+            <div class="description">Modern design-led technology</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark syncopate">iUpdates</span></div>
+            <div class="name">19 — Syncopate</div>
+            <div class="description">Wide, bold and futuristic</div>
+        </div>
+
+        <div class="option">
+            <div class="logo"><img class="brush" src="assets/homepage/Sheep.png" alt=""><span class="wordmark sora">iUpdates</span></div>
+            <div class="name">20 — Sora</div>
+            <div class="description">Polished and geometric</div>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>

@@ -36,24 +36,39 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 5px 5px 22px;
+    padding: 12px 5px 22px;
 }
 
-.sidebar-logo {
-    width: 60px;
-    height: 60px;
+.sidebar-brand-mark {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 2.5 / 1;
+}
+
+.sidebar-brand-brush {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+    z-index: 0;
 }
 
 .sidebar-brand .site-name {
+    position: relative;
+    z-index: 1;
     margin: 0;
-    color: #242630;
-    font-family: var(--font-brand);
+    color: #FFFFFF;
+    font-family: 'Michroma', sans-serif;
     font-size: 27px;
-    font-weight: 500;
-    letter-spacing: 1px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
     text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 /* =========================================

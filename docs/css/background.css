@@ -1,11 +1,11 @@
 
 /* =========================================
-   iSHEEP — BOLD APPLE COLOUR ATMOSPHERE
+   iSHEEP — DEEP GREYSCALE ATMOSPHERE
 ========================================= */
 
 html {
     min-height: 100%;
-    background: #EEEEF2;
+    background: #C9CBD1;
 }
 
 body {
@@ -16,123 +16,160 @@ body {
     isolation: isolate;
 }
 
-html::before {
-    content: "";
-    position: fixed;
-    inset: -5%;
-    z-index: -1;
-    pointer-events: none;
-
-    background:
-        /* Green */
-            radial-gradient(circle at 8% 18%,
-            rgba(52, 199, 89, 0.65), transparent 17%),
-
-            radial-gradient(circle at 35% 78%,
-            rgba(52, 199, 89, 0.48), transparent 18%),
-
-                /* Blue */
-            radial-gradient(circle at 22% 88%,
-            rgba(0, 122, 255, 0.62), transparent 21%),
-
-            radial-gradient(circle at 58% 28%,
-            rgba(0, 122, 255, 0.42), transparent 16%),
-
-                /* Cyan */
-            radial-gradient(circle at 78% 78%,
-            rgba(90, 200, 250, 0.65), transparent 19%),
-
-            radial-gradient(circle at 42% 12%,
-            rgba(90, 200, 250, 0.42), transparent 15%),
-
-                /* Orange */
-            radial-gradient(circle at 5% 5%,
-            rgba(255, 149, 0, 0.58), transparent 18%),
-
-            radial-gradient(circle at 91% 15%,
-            rgba(255, 149, 0, 0.38), transparent 15%),
-
-                /* Purple */
-            radial-gradient(circle at 68% 52%,
-            rgba(175, 82, 222, 0.52), transparent 19%),
-
-                /* Pink */
-            radial-gradient(circle at 96% 48%,
-            rgba(255, 45, 85, 0.42), transparent 17%),
-
-                /* Yellow */
-            radial-gradient(circle at 47% 52%,
-            rgba(255, 204, 0, 0.38), transparent 15%),
-
-                /* Teal */
-            radial-gradient(circle at 28% 42%,
-            rgba(90, 200, 168, 0.42), transparent 16%),
-
-            #EEEEF2;
-
-    filter: blur(38px);
-    transform: translateZ(0);
-}
-
-html::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-
-    background:
-            radial-gradient(circle at 15% 48%,
-            rgba(52, 199, 89, 0.20), transparent 12%),
-
-            radial-gradient(circle at 55% 85%,
-            rgba(0, 122, 255, 0.20), transparent 14%),
-
-            radial-gradient(circle at 83% 30%,
-            rgba(175, 82, 222, 0.18), transparent 13%);
-
-    filter: blur(45px);
-}
-
-
-
 /* =========================================
-   MORE ACTIVE APPLE COLOUR ATMOSPHERE
+   LARGE OVERLAPPING GREY CIRCLES
 ========================================= */
 
 html::before {
-    animation: colourDrift 8s ease-in-out infinite alternate;
-    will-change: transform;
+    content: "";
+    position: fixed;
+    inset: -35%;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        /* Bright silver */
+            radial-gradient(
+                    circle at 12% 12%,
+                    rgba(255,255,255,0.95) 0%,
+                    transparent 30%
+            ),
+
+                /* Light steel */
+            radial-gradient(
+                    circle at 48% 8%,
+                    rgba(218,220,225,0.95) 0%,
+                    transparent 34%
+            ),
+
+                /* Graphite */
+            radial-gradient(
+                    circle at 88% 20%,
+                    rgba(105,109,119,0.55) 0%,
+                    transparent 34%
+            ),
+
+                /* Charcoal grey */
+            radial-gradient(
+                    circle at 92% 65%,
+                    rgba(75,79,89,0.48) 0%,
+                    transparent 37%
+            ),
+
+                /* Medium silver */
+            radial-gradient(
+                    circle at 65% 92%,
+                    rgba(180,184,193,0.9) 0%,
+                    transparent 35%
+            ),
+
+                /* Dark steel */
+            radial-gradient(
+                    circle at 30% 90%,
+                    rgba(100,105,116,0.45) 0%,
+                    transparent 38%
+            ),
+
+                /* Pale grey */
+            radial-gradient(
+                    circle at 15% 55%,
+                    rgba(240,241,244,0.9) 0%,
+                    transparent 35%
+            ),
+
+                /* Central silver */
+            radial-gradient(
+                    circle at 50% 48%,
+                    rgba(210,212,218,0.9) 0%,
+                    transparent 40%
+            ),
+
+                /* Base */
+            #D2D4DA;
+
+    filter: blur(75px);
+    transform: translateZ(0);
+    animation: greyDrift 32s ease-in-out infinite alternate;
 }
+
+/* =========================================
+   SECONDARY DEPTH LAYERS
+========================================= */
 
 html::after {
-    animation: colourDriftSecondary 5s ease-in-out infinite alternate;
-    will-change: transform;
+    content: "";
+    position: fixed;
+    inset: -15%;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+            radial-gradient(
+                    circle at 20% 25%,
+                    rgba(85,89,99,0.24) 0%,
+                    transparent 28%
+            ),
+
+            radial-gradient(
+                    circle at 75% 15%,
+                    rgba(255,255,255,0.65) 0%,
+                    transparent 30%
+            ),
+
+            radial-gradient(
+                    circle at 48% 75%,
+                    rgba(125,130,141,0.3) 0%,
+                    transparent 32%
+            ),
+
+            radial-gradient(
+                    circle at 95% 90%,
+                    rgba(235,236,239,0.75) 0%,
+                    transparent 30%
+            ),
+
+            radial-gradient(
+                    circle at 5% 90%,
+                    rgba(65,69,79,0.22) 0%,
+                    transparent 28%
+            );
+
+    filter: blur(65px);
+    transform: translateZ(0);
+    animation: greyDriftSecondary 40s ease-in-out infinite alternate;
 }
 
-@keyframes colourDrift {
+/* =========================================
+   ANIMATION
+========================================= */
+
+@keyframes greyDrift {
     0% {
-        transform: translate3d(-5%, -3%, 0) scale(1);
+        transform: translate3d(-3%, -2%, 0) scale(1);
     }
+
     50% {
-        transform: translate3d(5%, 4%, 0) scale(1.12);
+        transform: translate3d(3%, 2%, 0) scale(1.08);
     }
+
     100% {
-        transform: translate3d(-3%, 6%, 0) scale(1.04);
+        transform: translate3d(-2%, 4%, 0) scale(1.04);
     }
 }
 
-@keyframes colourDriftSecondary {
+@keyframes greyDriftSecondary {
     0% {
-        transform: translate3d(5%, -4%, 0) scale(1);
+        transform: translate3d(2%, -2%, 0) scale(1);
     }
-    50% {
-        transform: translate3d(-6%, 5%, 0) scale(1.15);
-    }
+
     100% {
-        transform: translate3d(4%, -5%, 0) scale(1.05);
+        transform: translate3d(-3%, 3%, 0) scale(1.1);
     }
 }
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
     html::before,
